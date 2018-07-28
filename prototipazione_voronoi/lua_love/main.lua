@@ -43,12 +43,15 @@ function generate_Voronoi(width, height, num_cells)
 	-- Scorro punto per punto tutta la mappa
 	for y = 1, img_height do
 	   	for x = 1, img_width do
-			-- Elaboro il punto di coordinate (x, y)
 			-- dmin contiene la distanza massima possibile, ovvero la diagonale
 			-- del rettangolo
 			dmin = hypot(img_width - 1, img_height - 1)
-			-- j contiene la partizione a cui appartiene il punto (x, y)
+			-- j contiene l'indice del drone al quale il punto (x, y)
+			-- è più vicino
    			j = -1
+			-- Itero su tutte le posizioni dei droni
+			-- e dipingo il punto (x, y) in base al colore del drone
+			-- più vicino
 	   		for i = 1, num_cells do
 	   			d = hypot(drone_pos_x[i] - x, drone_pos_y[i] - y)
 	   			if d < dmin then

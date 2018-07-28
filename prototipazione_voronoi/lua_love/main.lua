@@ -64,7 +64,7 @@ function generate_Voronoi(width, height, num_cells)
 	love.graphics.setColor({255, 255, 255})
 
 	for b = 1, num_cells do
-		love.graphics.points(drone_pos_x[b], drone_pos_y[b])
+		love.graphics.circle("fill", drone_pos_x[b], drone_pos_y[b], 2)
 	end
 
 	love.graphics.setCanvas()

@@ -1,8 +1,8 @@
-// Source: http://book.xogeny.com/behavior/equations/electrical/
-//
+// Fonte: http://book.xogeny.com/behavior/equations/electrical/
+
 model RLC "An R-L-C circuit model"
 
-      // Define some types
+      // Definizione di alcuni tipi
 
       type Voltage = Real(unit="V");
       type Current = Real(unit="A");
@@ -10,14 +10,14 @@ model RLC "An R-L-C circuit model"
       type Capacitance = Real(unit = "F");
       type Inductance = Real(unit="H");
 
-      // Define some parameters
+      // Definizione dei parametri
 
       parameter Voltage Vb = 24 "Battery Voltage";
       parameter Inductance L = 1;
       parameter Resistance R = 100;
       parameter Capacitance C = 1e-3;
 
-      // Define some variables
+      // Definizione delle variabili
 
       Voltage V;
       Current i_L;
@@ -26,7 +26,7 @@ model RLC "An R-L-C circuit model"
 
 equation
 
-      // Four equations of the model
+      // Le 4 equazioni necessarie al modello
 
       V = i_R * R;
       C * der(V) = i_C;

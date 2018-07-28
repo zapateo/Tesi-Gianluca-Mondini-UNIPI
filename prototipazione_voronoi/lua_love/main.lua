@@ -1,77 +1,91 @@
-function love.load( )
-	love.math.setRandomSeed( os.time( ) ) --set the random seed
-	keys = { } --an empty table where we will store key presses
-	number_cells = 50 --the number of cells we want in our diagram
-	--draw the voronoi diagram to a canvas
-	voronoiDiagram = generateVoronoi( love.graphics.getWidth( ), love.graphics.getHeight( ), number_cells )
+function love.load()
+	love.math.setRandomSeed(os.time())
+
+	-- Numero di celle in cui suddividere l'area
+	number_cells = 50
+
+	voronoiDiagram = generate_Voronoi(love.graphics.getWidth(), love.graphics.getHeight(), number_cells)
 end
 
-function hypot( x, y )
-	return math.sqrt( x*x + y*y )
+function hypot(x, y)
+	return math.sqrt(x*x + y*y)
 end
 
-function generateVoronoi( width, height, num_cells )
-	canvas = love.graphics.newCanvas( width, height )
-	local imgx = canvas:getWidth( )
-	local imgy = canvas:getHeight( )
-	local nx = { }
-	local ny = { }
-	local nr = { }
-	local ng = { }
-	local nb = { }
+function generate_Voronoi(width, height, num_cells)
+	io.write("Generazione in corso.."); io.flush()
+	canvas = love.graphics.newCanvas(width, height)
+	local img_width = canvas:getWidth()
+	local img_height = canvas:getHeight()
+
+	-- Vettori contenenti le coordinate dei vari droni
+	-- Il drone i avrà coordinate (drone_pos_x[i], drone_pos_y[i])
+	local drone_pos_x = {}
+	local drone_pos_y = {}
+
+	-- Vettori contenenti i colori delle varie partizioni
+	local partition_color_red = {}
+	local partition_color_green = {}
+	local partition_color_blue = {}
+
+	-- Genero le posizioni dei vari droni e i colori delle rispettive
+	-- partizioni
 	for a = 1, num_cells do
-   	table.insert( nx, love.math.random( 0, imgx ) )
-   	table.insert( ny, love.math.random( 0, imgy ) )
-   	table.insert( nr, love.math.random( 0, 255 ) )
-   	table.insert( ng, love.math.random( 0, 255 ) )
-   	table.insert( nb, love.math.random( 0, 255 ) )
+   	table.insert(drone_pos_x, love.math.random(0, img_width))
+   	table.insert(drone_pos_y, love.math.random(0, img_height))
+   	table.insert(partition_color_red, love.math.random(0, 255))
+   	table.insert(partition_color_green, love.math.random(0, 255))
+   	table.insert(partition_color_blue, love.math.random(0, 255))
 	end
-	love.graphics.setColor( { 255, 255, 255 } )
-	love.graphics.setCanvas( canvas )
-	for y = 1, imgy do
-   	for x = 1, imgx do
-   			dmin = hypot( imgx-1, imgy-1 )
+
+	love.graphics.setColor({ 255, 255, 255 })
+	love.graphics.setCanvas(canvas)
+
+	-- Scorro punto per punto tutta la mappa
+	for y = 1, img_height do
+   	for x = 1, img_width do
+			-- Elaboro il punto di coordinate (x, y)
+			-- dmin contiene la distanza massima possibile, ovvero la diagonale
+			-- del rettangolo
+			dmin = hypot(img_width - 1, img_height - 1)
+			-- j contiene la partizione a cui appartiene il punto (x, y)
    		j = -1
    		for i = 1, num_cells do
-   		d = hypot( nx[i]-x, ny[i]-y )
-   		if d < dmin then
-   	 	    dmin = d
-   			j = i
-   		end
-   		end
-   		love.graphics.setColor( { nr[j], ng[j], nb[j] } )
-   		love.graphics.points( x, y )
+   			d = hypot(drone_pos_x[i] - x, drone_pos_y[i] - y)
+   			if d < dmin then
+   	 	    	dmin = d
+   				j = i
+   			end
+			end
+   		love.graphics.setColor({partition_color_red[j], partition_color_green[j], partition_color_blue[j]})
+   		love.graphics.points(x, y)
    	end
 	end
-	--reset color
-	love.graphics.setColor( { 255, 255, 255 } )
-	--draw points
+
+	love.graphics.setColor({255, 255, 255})
+
 	for b = 1, num_cells do
-	love.graphics.points( nx[b], ny[b] )
+		love.graphics.points(drone_pos_x[b], drone_pos_y[b])
 	end
-	love.graphics.setCanvas( )
+
+	love.graphics.setCanvas()
+	io.write("fatto!\n")
 	return canvas
 end
 
---RENDER
-function love.draw( )
-	--reset color
-	love.graphics.setColor( { 255, 255, 255 } )
-	--draw diagram
-	love.graphics.draw( voronoiDiagram )
-	--draw drop shadow text
-	love.graphics.setColor( { 0, 0, 0 } )
-	love.graphics.print( "space: regenerate\nesc: quit", 1, 1 )
-	--draw text
-	love.graphics.setColor( { 200, 200, 0 } )
-	love.graphics.print( "space: regenerate\nesc: quit" )
+function love.draw()
+	love.graphics.setColor({255, 255, 255})
+	love.graphics.draw(voronoiDiagram)
+
+	love.graphics.setColor({0, 0, 0})
+	love.graphics.print("SPAZIO: rigenera diagramma\nESC: esci", 1, 1)
+	love.graphics.setColor({200, 200, 0})
+	love.graphics.print("SPAZIO: rigenera diagramma\nESC: esci")
 end
 
---CONTROL
-function love.keyreleased( key )
+function love.keyreleased(key)
 	if key == 'space' then
-	voronoiDiagram = generateVoronoi( love.graphics.getWidth( ), love.graphics.getHeight( ), number_cells )
+		voronoiDiagram = generate_Voronoi(love.graphics.getWidth(), love.graphics.getHeight(), number_cells)
 	elseif key == 'escape' then
-	love.event.quit( )
+		love.event.quit()
 	end
 end

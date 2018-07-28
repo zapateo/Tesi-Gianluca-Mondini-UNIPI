@@ -42,23 +42,23 @@ function generate_Voronoi(width, height, num_cells)
 
 	-- Scorro punto per punto tutta la mappa
 	for y = 1, img_height do
-   	for x = 1, img_width do
+	   	for x = 1, img_width do
 			-- Elaboro il punto di coordinate (x, y)
 			-- dmin contiene la distanza massima possibile, ovvero la diagonale
 			-- del rettangolo
 			dmin = hypot(img_width - 1, img_height - 1)
 			-- j contiene la partizione a cui appartiene il punto (x, y)
-   		j = -1
-   		for i = 1, num_cells do
-   			d = hypot(drone_pos_x[i] - x, drone_pos_y[i] - y)
-   			if d < dmin then
-   	 	    	dmin = d
-   				j = i
-   			end
+   			j = -1
+	   		for i = 1, num_cells do
+	   			d = hypot(drone_pos_x[i] - x, drone_pos_y[i] - y)
+	   			if d < dmin then
+	   	 	    		dmin = d
+	   				j = i
+	   			end
 			end
-   		love.graphics.setColor({partition_color_red[j], partition_color_green[j], partition_color_blue[j]})
-   		love.graphics.points(x, y)
-   	end
+	   		love.graphics.setColor({partition_color_red[j], partition_color_green[j], partition_color_blue[j]})
+	   		love.graphics.points(x, y)
+	   	end
 	end
 
 	love.graphics.setColor({255, 255, 255})

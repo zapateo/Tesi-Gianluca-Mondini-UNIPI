@@ -30,11 +30,11 @@ function generate_Voronoi(width, height, num_cells)
 	-- Genero le posizioni dei vari droni e i colori delle rispettive
 	-- partizioni
 	for a = 1, num_cells do
-   	table.insert(drone_pos_x, love.math.random(0, img_width))
-   	table.insert(drone_pos_y, love.math.random(0, img_height))
-   	table.insert(partition_color_red, love.math.random(0, 255))
-   	table.insert(partition_color_green, love.math.random(0, 255))
-   	table.insert(partition_color_blue, love.math.random(0, 255))
+	   	table.insert(drone_pos_x, love.math.random(0, img_width))
+	   	table.insert(drone_pos_y, love.math.random(0, img_height))
+	   	table.insert(partition_color_red, love.math.random(0, 255))
+	   	table.insert(partition_color_green, love.math.random(0, 255))
+	   	table.insert(partition_color_blue, love.math.random(0, 255))
 	end
 
 	love.graphics.setColor({ 255, 255, 255 })

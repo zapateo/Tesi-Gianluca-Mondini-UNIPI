@@ -154,14 +154,39 @@ def compute_voronoi(S, width, height):
 
     # Step 3
     for site in S:
+
         # Step 4
         # Crea una nuova cella "cell", che abbia "site" come suo sito
         cell = Cell(site, [])
 
         # Step 5
         for c in C:
+
             # Step 6
-            pass
+            # Trova la bisettrice del segmento che unisce `site` e `c.site` e chiamala `pb`
+            pb = perpendicular_bisector(Edge(site, c.site))
+
+            # Step 7
+            # Crea una struttura dati X che andrà a contenere i punti critici dell'algoritmo
+            X = []
+
+            # Step 8
+            # Per ogni edge `e` in `c`
+            for e in c.edges:
+
+                # Step 9
+                # Calcola la distanza tra il segmento `e` e la linea retta `pb`
+
+            # Step 12
+            # In questo momento X dovrebbe contenere 0 o 2 punti; se ne ha 2, crea un nuovo Edge che li connetta, e aggiungi questo nuovo `new_edge` a `c`, `cell` e `E`
+            if len(X) == 2:
+                new_edge = Edge(X[0], X[1])
+                c.edges.append(new_edge)
+                cell.edges.append(new_edge)
+                E.append(new_edge)
+
+            # Step 13
+            # Se necessario, cancella ogni segmento marcato nello step 10 sia da `c` che da `E`
 
 compute_voronoi([Point(-3, -4), Point(0, 2), Point(1, 3), Point(-3, 3)], 10, 20)
 

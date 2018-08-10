@@ -78,6 +78,27 @@ def perpendicular_bisector(edge):
     q = - m2 * p.x + p.y
     return Line(m2, q)
 
+def y_intercept_of_segment(edge):
+    """
+    Restituisce il termine noto del segmento `edge`
+
+    >>> y_intercept_of_segment(Edge(Point(1, 1), Point(2, 2)))
+    0.0
+    >>> y_intercept_of_segment(Edge(Point(0, 1), Point(1, 2)))
+    1.0
+    """
+
+    x1 = edge.start.x
+    x2 = edge.end.x
+    y1 = edge.start.y
+    y2 = edge.end.y
+
+    if x2 == x1:
+        raise Exception("Unable to compute the y-intercept of a vertical segment")
+
+    q = (x2 * y1 - x1 * y2)/(x2 - x1)
+    return q
+
 def compute_voronoi(S, width, height):
     """
     S: lista di siti che compongono il diagramma di Voronoi

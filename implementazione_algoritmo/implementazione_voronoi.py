@@ -99,6 +99,34 @@ def y_intercept_of_segment(edge):
     q = (x2 * y1 - x1 * y2)/(x2 - x1)
     return q
 
+def lines_intersection(line1, line2):
+    """
+    Se `line1` e `line2` hanno un punto di intersezione restituisce un oggetto di tipo Point, altrimenti None
+
+    >>> p = lines_intersection(Line(1, 0), Line(-1, 1))
+    >>> p.x
+    0.5
+    >>> p.y
+    0.5
+    """
+    # From https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_the_equations_of_the_lines
+    a = line1.m
+    c = line1.q
+    b = line2.m
+    d = line2.q
+
+    x = (d - c)/(a - b)
+    y = a * x + c
+    return Point(x, y)
+
+def from_segment_to_line(edge):
+    """
+    Restituisce la retta associata al segmento `edge`
+    """
+    m = segment_slope(edge)
+    q = y_intercept_of_segment(edge)
+    return Line(m, q)
+
 def compute_voronoi(S, width, height):
     """
     S: lista di siti che compongono il diagramma di Voronoi

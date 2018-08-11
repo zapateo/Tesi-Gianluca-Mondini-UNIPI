@@ -1,3 +1,6 @@
+import pygame
+import sys
+
 class Point:
     """
     Un generico punto nello spazio bidimensionale
@@ -127,6 +130,33 @@ def from_segment_to_line(edge):
     q = y_intercept_of_segment(edge)
     return Line(m, q)
 
+class Draw:
+    @staticmethod
+    def edge(e):
+        pygame.draw.line(
+            screen,
+            (0, 0, 0),
+            (e.start.x + int(screen_size[0]/2), e.start.y + int(screen_size[1]/2)),
+            (e.end.x + int(screen_size[0]/2), e.end.y + int(screen_size[1]/2))
+        )
+        pygame.display.flip()
+
+    @staticmethod
+    def point(p):
+        pygame.draw.circle(
+            screen,
+            (255, 0, 0),
+            (p.x + int(screen_size[0]/2), p.y + int(screen_size[1]/2)),
+            3
+        )
+        pygame.display.flip()
+
+    @staticmethod
+    def cell(c):
+        Draw.point(c.site)
+        for edge in c.edges:
+            Draw.edge(edge)
+
 def compute_voronoi(S, width, height):
     """
     S: lista di siti che compongono il diagramma di Voronoi
@@ -189,7 +219,22 @@ def compute_voronoi(S, width, height):
             # Se necessario, cancella ogni segmento marcato nello step 10 sia da `c` che da `E`
 
 compute_voronoi([Point(-3, -4), Point(0, 2), Point(1, 3), Point(-3, 3)], 10, 20)
+    screen.fill((255, 255, 255))
+    for edge in E:
+        Draw.edge(edge)
+    for cell in C:
+        Draw.cell(cell)
+
+
+screen_size = 800, 600
+pygame.init()
+screen = pygame.display.set_mode(screen_size)
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()

@@ -27,6 +27,9 @@ class Edge:
         assert type(end) == Point
         self.start = start
         self.end = end
+        self.to_be_deleted = False # Usato nell'algoritmo di Voronoi
+    def __str__(self):
+        return f"Edge_from:{self.start}to:{self.end}"
 
 class Cell:
     """

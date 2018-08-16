@@ -39,13 +39,15 @@ class Cell:
         self.site = site
         self.edges = edges
 
-class Line:
+class Line_abc:
     """
-    Una linea retta con coefficiente angolare "m" e termine noto "q"
+    Una linea retta rappresentata nella forma
+    ax + by + c = 0
     """
-    def __init__(self, m, q):
-        self.m = m
-        self.q = q
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
 
 def midpoint(edge):
     """

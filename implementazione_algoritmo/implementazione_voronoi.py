@@ -85,21 +85,19 @@ def point_to_point_distance(p1, p2):
 
 def segment_slope(edge):
     """
-    Restituisce il coefficiente angolare del segmento "edge"
+    Restituisce il coefficiente angolare del segmento "edge",
+    oppure `None` nel caso in cui `edge` sia verticale
 
     >>> segment_slope(Edge(Point(0, 0), Point(10, 10)))
     1.0
     >>> segment_slope(Edge(Point(0, 2), Point(2, 0)))
     -1.0
+    >>> segment_slope(Edge(Point(1, 10), Point(1, -2)))
     """
     dy = edge.end.y - edge.start.y
     dx = edge.end.x - edge.start.x
-    if dx == 0 and dy > 0:
-        return float("inf")
-    elif dx == 0 and dy < 0:
-        return float("inf")
-    elif dx == 0 and dy == 0:
-        return float("Nan")
+    if dx == 0:
+        return None
     else:
         return dy/dx
 

@@ -3,6 +3,8 @@ import sys
 import math
 from warnings import warn
 
+# Può essere utile: https://www.cs.hmc.edu/ACM/lectures/convex_hull.html
+
 class Point:
     """
     Un generico punto nello spazio bidimensionale

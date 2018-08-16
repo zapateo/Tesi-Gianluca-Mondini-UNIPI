@@ -69,6 +69,20 @@ def midpoint(edge):
     ym = (edge.start.y + edge.end.y)/2
     return Point(xm, ym)
 
+def point_to_point_distance(p1, p2):
+    """
+    Restituisce la distanza tra i punti `p1` e `p2`
+
+    >>> point_to_point_distance(Point(1, 1), Point(2, 2))
+    1.4142135623730951
+
+    >>> point_to_point_distance(Point(0, 3), Point(0, -1))
+    4.0
+    """
+    dx = p1.x - p2.x
+    dy = p1.y - p2.y
+    return math.sqrt(dx**2 + dy**2)
+
 def segment_slope(edge):
     """
     Restituisce il coefficiente angolare del segmento "edge"

@@ -106,10 +106,28 @@ def perpendicular_bisector(edge):
     Restituisce la linea retta bisettrice di "edge"
 
     >>> pb = perpendicular_bisector(Edge(Point(0, 2), Point(2, 0)))
-    >>> pb.m
-    1.0
-    >>> pb.q
-    0.0
+    >>> pb.a
+    -1.0
+    >>> pb.b
+    1
+    >>> pb.c
+    -0.0
+
+    >>> pb = perpendicular_bisector(Edge(Point(5, -3), Point(5, 2)))
+    >>> pb.a
+    0
+    >>> pb.b
+    1
+    >>> pb.c
+    0.5
+
+    >>> pb = perpendicular_bisector(Edge(Point(-15, 2), Point(-15, -3)))
+    >>> pb.a
+    0
+    >>> pb.b
+    1
+    >>> pb.c
+    0.5
     """
     p = midpoint(edge)
     m1 = segment_slope(edge)

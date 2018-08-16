@@ -131,74 +131,139 @@ def perpendicular_bisector(edge):
     """
     p = midpoint(edge)
     m1 = segment_slope(edge)
-    m2 = -1/m1
-    q = - m2 * p.x + p.y
-    return Line(m2, q)
+    if not m1: # edge è verticale
+        # a·x + b·y + c = 0
+        neg_c = (edge.start.y + edge.end.y)/2
+        return Line_abc(0, 1, -neg_c)
+    else: # edge non è verticale
+        m2 = -1/m1
+        q = - m2 * p.x + p.y
+        return Line_abc(-m2, 1, -q)
 
-def y_intercept_of_segment(edge):
+def from_line_to_segment(line):
     """
-    Restituisce il termine noto del segmento `edge`,
-    oppure `-9999999` nel caso in cui il segmento sia verticale
+    Restituisce un segmento che giace sulla retta `line`
 
-    >>> y_intercept_of_segment(Edge(Point(1, 1), Point(2, 2)))
-    0.0
-    >>> y_intercept_of_segment(Edge(Point(0, 1), Point(1, 2)))
+    >>> edge = from_line_to_segment(Line_abc(1, 3, -2))
+    >>> print(edge.start)
+    Point(-1000, 334.0)
+    >>> print(edge.end)
+    Point(1000, -332.66666666666663)
+    """
+    big = 1000
+
+    a, b, c = line.a, line.b, line.c
+
+    # Caso in cui la retta sia verticale
+    if b == 0 and a != 0:
+        raise Exception("[TODO] retta verticale non gestita")
+
+    m = -a/b
+    q = -c/b
+
+    f = lambda x: m*x + q
+
+    p1 = Point(-big, f(-big))
+    p2 = Point(+big, f(+big))
+
+    return Edge(p1, p2)
+
+def segment_intersection(edge1, edge2):
+    """
+    Calcola il punto di intersezione tra il segmento `edge1` e `edge2`
+
+    Restituisce None nel caso in cui non esista un punto di intersezione,
+    oppure un oggetto di tipo `Point`
+
+    Adattato dal codice presente su https://www.cs.hmc.edu/ACM/lectures/intersections.html
+
+    >>> i = segment_intersection(Edge(Point(0, 0), Point(2, 2)), Edge(Point(0, 2), Point(2, 0)))
+    >>> i.x
     1.0
-    >>> y_intercept_of_segment(Edge(Point(2, 2), Point(2, 50)))
-    -9999999
-    >>> y_intercept_of_segment(Edge(Point(-2, -4), Point(-2, 22)))
-    -9999999
+    >>> i.y
+    1.0
+
+    >>> segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)))
+
+
+    >>> segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)))
+
+    >>> i = segment_intersection(Edge(Point(1, 1), Point(4, -5)), Edge(Point(2, -3), Point(3, -1)))
+    >>> i.x
+    2.5
+    >>> i.y
+    -2.0
+
+    # >>> p = segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)))
+    # >>> p.x # dovrebbe restituire None
+    # >>> p.y
     """
 
-    x1 = edge.start.x
-    x2 = edge.end.x
-    y1 = edge.start.y
-    y2 = edge.end.y
+    # TODO: la funzione dovrebbe restituire None nell'ultimo caso di test
+    # e invece restituisce un punto..
 
-    if x2 == x1:
-        # raise Exception("Unable to compute the y-intercept of a vertical segment")
-        # return float("NaN")
-        return -9999999
+    DET_TOLERANCE = 0.00000001
 
-    q = (x2 * y1 - x1 * y2)/(x2 - x1)
-    return q
+    pt1 = (edge1.start.x, edge1.start.y)
+    pt2 = (edge1.end.x,   edge1.end.y)
 
-def lines_intersection(line1, line2):
-    """
-    Se `line1` e `line2` hanno un punto di intersezione restituisce un oggetto di tipo Point, altrimenti None
+    ptA = (edge2.start.x, edge2.start.y)
+    ptB = (edge2.end.x,   edge2.end.y)
 
-    >>> p = lines_intersection(Line(1, 0), Line(-1, 1))
-    >>> p.x
-    0.5
-    >>> p.y
-    0.5
-    """
-    # From https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_the_equations_of_the_lines
-    a = line1.m
-    c = line1.q
-    b = line2.m
-    d = line2.q
+    # the first line is pt1 + r*(pt2-pt1)
+    # in component form:
+    x1, y1 = pt1;   x2, y2 = pt2
+    dx1 = x2 - x1;  dy1 = y2 - y1
 
-    if (a - b) == 0:
+    # the second line is ptA + s*(ptB-ptA)
+    x, y = ptA;   xB, yB = ptB;
+    dx = xB - x;  dy = yB - y;
+
+    # we need to find the (typically unique) values of r and s
+    # that will satisfy
+    #
+    # (x1, y1) + r(dx1, dy1) = (x, y) + s(dx, dy)
+    #
+    # which is the same as
+    #
+    #    [ dx1  -dx ][ r ] = [ x-x1 ]
+    #    [ dy1  -dy ][ s ] = [ y-y1 ]
+    #
+    # whose solution is
+    #
+    #    [ r ] = _1_  [  -dy   dx ] [ x-x1 ]
+    #    [ s ] = DET  [ -dy1  dx1 ] [ y-y1 ]
+    #
+    # where DET = (-dx1 * dy + dy1 * dx)
+    #
+    # if DET is too small, they're parallel
+    #
+    DET = (-dx1 * dy + dy1 * dx)
+
+    if math.fabs(DET) < DET_TOLERANCE:
+        # return (0,0,0,0,0)
         return None
 
-    x = (d - c)/(a - b)
-    y = a * x + c
-    return Point(x, y)
+    # now, the determinant should be OK
+    DETinv = 1.0/DET
 
-def from_segment_to_line(edge):
-    """
-    Restituisce la retta associata al segmento `edge`
-    """
-    m = segment_slope(edge)
-    q = y_intercept_of_segment(edge)
-    return Line(m, q)
+    # find the scalar amount along the "self" segment
+    r = DETinv * (-dy  * (x-x1) +  dx * (y-y1))
 
-def lines_distance(line1, line2):
-    if line1.m != line2.m:
-        return 0
+    # find the scalar amount along the input line
+    s = DETinv * (-dy1 * (x-x1) + dx1 * (y-y1))
+
+    # return the average of the two descriptions
+    xi = (x1 + r*dx1 + x + s*dx)/2.0
+    yi = (y1 + r*dy1 + y + s*dy)/2.0
+    # return ( xi, yi, 1, r, s )
+
+    # print(f"r = {r}, s = {s}, xi = {xi}, yi = {yi}")
+
+    if 0 < r < 1 and 0 < s < 1:
+        return Point(xi, yi)
     else:
-        return abs(line1.q - line2.q)
+        return None
 
 class Draw:
     @staticmethod
@@ -233,6 +298,8 @@ def compute_voronoi(S, width, height):
     """
     for site in S:
         assert type(site) == Point
+        Draw.point(site)
+
 
     # Step 1
     E = [] # lista di bordi, "edges"
@@ -307,22 +374,32 @@ def compute_voronoi(S, width, height):
 
                 # Step 9
                 # Calcola la distanza tra il segmento `e` e la linea retta `pb`
-                e_to_pb_distance = lines_distance(
-                    from_segment_to_line(e),
-                    pb
-                )
+                # e_to_pb_distance = lines_distance(
+                #     from_segment_to_line(e),
+                #     pb
+                # )
 
                 # Step 10
-                pass
+                # Se il segmento `e` è sul lato vicino della retta bisettrice `pb` (ovvero se è più vicino al punto `site` rispetto che al punto `c.site`), contrassegna `e` per la cancellazione (oppure cancellalo subito se questo non va a danneggiare l'enumerazione)
+                e_site_distance = point_to_point_distance(
+                    midpoint(e),
+                    site
+                )
+                e_c_site_distance = point_to_point_distance(
+                    midpoint(e),
+                    c.site
+                )
+                if e_site_distance < e_c_site_distance:
+                    e.to_be_deleted = True
 
                 # Step 11
                 # Se il segmento `e` interseca la retta `pb`, taglia e nel lato più lontano di `pb`, e memorizza il punto di intersezione in X
-                X.append(
-                    lines_intersection(
-                        from_segment_to_line(e),
-                        pb
-                    )
+                e_pb_intersection = segment_intersection(
+                    e,
+                    from_line_to_segment(pb)
                 )
+                if e_pb_intersection:
+                    X.append(e_pb_intersection)
 
             # Step 12
             # In questo momento X dovrebbe contenere 0 o 2 punti; se ne ha 2, crea un nuovo Edge che li connetta, e aggiungi questo nuovo `new_edge` a `c`, `cell` e `E`
@@ -334,21 +411,21 @@ def compute_voronoi(S, width, height):
             elif len(X) == 0:
                 pass
             else:
-                raise Exception("X should contain 0 or 2 elements. X: " + ", ".join([str(x) for x in X]))
+                warn("X should contain 0 or 2 elements. X: " + ", ".join([str(x) for x in X]))
 
             # Step 13
             # Se necessario, cancella ogni segmento marcato nello step 10 sia da `c` che da `E`
+            E = list(filter(lambda e: not e.to_be_deleted, E))
 
-    screen.fill((255, 255, 255))
     for edge in E:
         Draw.edge(edge)
     for cell in C:
         Draw.cell(cell)
 
-
 screen_size = 800, 600
 pygame.init()
 screen = pygame.display.set_mode(screen_size)
+screen.fill((255, 255, 255))
 
 if __name__ == "__main__":
     import doctest

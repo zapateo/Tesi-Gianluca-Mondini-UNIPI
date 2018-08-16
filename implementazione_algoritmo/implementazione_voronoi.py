@@ -354,7 +354,7 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
-    compute_voronoi([Point(-3, -4), Point(0, 2), Point(1, 3), Point(-3, 3)], int(screen_size[0]/4-40), int(screen_size[1]/4-40))
+    compute_voronoi([Point(-20, -40), Point(0, 20), Point(100, 3), Point(-3, 3)], int(screen_size[0]/4-40), int(screen_size[1]/4-40))
 
     while True:
         for event in pygame.event.get():

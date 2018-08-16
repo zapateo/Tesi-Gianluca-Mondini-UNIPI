@@ -58,6 +58,12 @@ def midpoint(edge):
     1.0
     >>> p.y
     1.0
+
+    >>> p = midpoint(Edge(Point(1, 1), Point(4, -5)))
+    >>> p.x
+    2.5
+    >>> p.y
+    -2.0
     """
     xm = (edge.start.x + edge.end.x)/2
     ym = (edge.start.y + edge.end.y)/2

@@ -3,6 +3,12 @@ import sys
 import math
 from warnings import warn
 
+ENABLED_DEBUG = True
+
+def debug(msg):
+    if ENABLED_DEBUG:
+        print(f"[DEBUG] {msg}")
+
 # Può essere utile: https://www.cs.hmc.edu/ACM/lectures/convex_hull.html
 
 class Point:

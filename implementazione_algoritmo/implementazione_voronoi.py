@@ -423,6 +423,7 @@ def compute_voronoi(S, width, height):
             # Step 6
             # Trova la bisettrice del segmento che unisce `site` e `c.site` e chiamala `pb`
             pb = perpendicular_bisector(Edge(site, c.site))
+            assert any([pb.a != 0, pb.b != 0, pb.c != 0])
 
             # Step 7
             # Crea una struttura dati X che andrà a contenere i punti critici dell'algoritmo

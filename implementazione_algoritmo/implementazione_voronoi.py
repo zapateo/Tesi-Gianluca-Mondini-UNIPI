@@ -63,26 +63,6 @@ class Line_abc:
         self.b = b
         self.c = c
 
-def midpoint(edge):
-    """
-    Restituisce il punto medio del segmento "edge"
-
-    >>> p = midpoint(Edge(Point(0, 0), Point(2, 2)))
-    >>> p.x
-    1.0
-    >>> p.y
-    1.0
-
-    >>> p = midpoint(Edge(Point(1, 1), Point(4, -5)))
-    >>> p.x
-    2.5
-    >>> p.y
-    -2.0
-    """
-    xm = (edge.start.x + edge.end.x)/2
-    ym = (edge.start.y + edge.end.y)/2
-    return Point(xm, ym)
-
 def point_to_point_distance(p1, p2):
     """
     Restituisce la distanza tra i punti `p1` e `p2`
@@ -97,23 +77,7 @@ def point_to_point_distance(p1, p2):
     dy = p1.y - p2.y
     return math.sqrt(dx**2 + dy**2)
 
-def segment_slope(edge):
-    """
-    Restituisce il coefficiente angolare del segmento "edge",
-    oppure `None` nel caso in cui `edge` sia verticale
 
-    >>> segment_slope(Edge(Point(0, 0), Point(10, 10)))
-    1.0
-    >>> segment_slope(Edge(Point(0, 2), Point(2, 0)))
-    -1.0
-    >>> segment_slope(Edge(Point(1, 10), Point(1, -2)))
-    """
-    dy = edge.end.y - edge.start.y
-    dx = edge.end.x - edge.start.x
-    if dx == 0:
-        return None
-    else:
-        return dy/dx
 
 def perpendicular_bisector(edge):
     """
@@ -153,6 +117,47 @@ def perpendicular_bisector(edge):
         m2 = -1/m1
         q = - m2 * p.x + p.y
         return Line_abc(-m2, 1, -q)
+
+def segment_slope(edge):
+    """
+    Restituisce il coefficiente angolare del segmento `edge`:
+
+    >>> segment_slope(Edge(Point(0, 0), Point(10, 10)))
+    1.0
+    >>> segment_slope(Edge(Point(0, 2), Point(2, 0)))
+    -1.0
+
+    ..oppure `None` nel caso in cui il segmento sia verticale:
+
+    >>> segment_slope(Edge(Point(1, 10), Point(1, -2)))
+    >>> segment_slope(Edge(Point(-5, 10), Point(-5, -2)))
+    """
+    dy = edge.end.y - edge.start.y
+    dx = edge.end.x - edge.start.x
+    if dx == 0:
+        return None
+    else:
+        return dy/dx
+
+def midpoint(edge):
+    """
+    Restituisce il punto medio del segmento "edge"
+
+    >>> p = midpoint(Edge(Point(0, 0), Point(2, 2)))
+    >>> p.x
+    1.0
+    >>> p.y
+    1.0
+
+    >>> p = midpoint(Edge(Point(1, 1), Point(4, -5)))
+    >>> p.x
+    2.5
+    >>> p.y
+    -2.0
+    """
+    xm = (edge.start.x + edge.end.x)/2
+    ym = (edge.start.y + edge.end.y)/2
+    return Point(xm, ym)
 
 def from_line_to_segment(line):
     """

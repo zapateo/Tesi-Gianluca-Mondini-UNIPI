@@ -428,7 +428,13 @@ def compute_voronoi(S, width, height):
 
             # Step 13
             # Se necessario, cancella ogni segmento marcato nello step 10 sia da `c` che da `E`
-            E = list(filter(lambda e: not e.to_be_deleted, E))
+
+            for cell in C:
+                cell.edges = list(filter(lambda e: not e.to_be_deleted, cell.edges))
+
+            # prev_E_len = len(E)
+            # E = list(filter(lambda e: not e.to_be_deleted, E))
+            # assert len(E) < prev_E_len, "No edges have been deleted from E"
 
     for edge in E:
         Draw.edge(edge)

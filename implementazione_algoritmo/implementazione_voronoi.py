@@ -29,6 +29,7 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
     def __str__(self):
         return f"Point({self.x}, {self.y})"
 
@@ -42,6 +43,10 @@ class Edge:
         self.start = start
         self.end = end
         self.to_be_deleted = False # Usato nell'algoritmo di Voronoi
+
+    def mark_to_be_deleted(self):
+        self.to_be_deleted = True
+
     def __str__(self):
         return f"Edge_from:{self.start}to:{self.end}"
 
@@ -191,7 +196,7 @@ def segment_intersection(edge1, edge2):
     """
     Calcola il punto di intersezione tra il segmento `edge1` e `edge2`
 
-    Restituisce None nel caso in cui non esista un punto di intersezione,
+    Restituisce `None` nel caso in cui non esista un punto di intersezione,
     oppure un oggetto di tipo `Point`
 
     Adattato dal codice presente su https://www.cs.hmc.edu/ACM/lectures/intersections.html
@@ -208,13 +213,8 @@ def segment_intersection(edge1, edge2):
     >>> i.y
     -2.0
 
-    # >>> p = segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)))
-    # >>> p.x # dovrebbe restituire None
-    # >>> p.y
-    """
+    Nel caso in cui non è presente alcun punto di intersezione, viene restituito `None`
 
-    # TODO: la funzione dovrebbe restituire None nell'ultimo caso di test
-    # e invece restituisce un punto..
     >>> segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)))
     >>> segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)))
     >>> segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)))

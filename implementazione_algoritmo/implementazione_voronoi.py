@@ -278,6 +278,48 @@ def segment_intersection(edge1, edge2):
     else:
         return None
 
+def point_segment_distance(point, edge):
+    """
+    Restituisce la distanza minima tra il punto `point` ed il segmento `edge`
+
+    >>> point_segment_distance(Point(5, 3), Edge(Point(0, 1), Point(5, 1)))
+    2.0
+    >>> point_segment_distance(Point(8, 1), Edge(Point(0, 1), Point(5, 1)))
+    3.0
+    >>> point_segment_distance(Point(0, 1), Edge(Point(0, 1), Point(5, 1)))
+    0.0
+    >>> point_segment_distance(Point(-1, 2), Edge(Point(0, 1), Point(5, 1)))
+    1.4142135623730951
+
+    Nel caso in cui il segmento abbia una lunghezza nulla, restituisce 0.0
+    >>> point_segment_distance(Point(-43, 33.3), Edge(Point(34, -3), Point(34, -3)))
+    0.0
+    """
+
+    # Codice adattato da https://stackoverflow.com/a/49504330
+
+    dx = edge.end.x - edge.start.x
+    dy = edge.end.y - edge.start.y
+    dr2 = float(dx ** 2 + dy ** 2)
+
+    if dr2 == 0:
+        return 0.0
+
+    lerp = ((point.x - edge.start.x) * dx + (point.y - edge.start.y) * dy) / dr2
+    if lerp < 0:
+        lerp = 0
+    elif lerp > 1:
+        lerp = 1
+
+    x = lerp * dx + edge.start.x
+    y = lerp * dy + edge.start.y
+
+    _dx = x - point.x
+    _dy = y - point.y
+    square_dist = _dx ** 2 + _dy ** 2
+
+    return math.sqrt(square_dist)
+
 class Draw:
     @staticmethod
     def edge(e):
@@ -394,16 +436,10 @@ def compute_voronoi(S, width, height):
 
                 # Step 10
                 # Se il segmento `e` è sul lato vicino della retta bisettrice `pb` (ovvero se è più vicino al punto `site` rispetto che al punto `c.site`), contrassegna `e` per la cancellazione (oppure cancellalo subito se questo non va a danneggiare l'enumerazione)
-                e_site_distance = point_to_point_distance(
-                    midpoint(e),
-                    site
-                )
-                e_c_site_distance = point_to_point_distance(
-                    midpoint(e),
-                    c.site
-                )
+                e_site_distance = point_segment_distance(site, e)
+                e_c_site_distance = point_segment_distance(c.site, e)
                 if e_site_distance < e_c_site_distance:
-                    e.to_be_deleted = True
+                    e.mark_to_be_deleted()
 
                 # Step 11
                 # Se il segmento `e` interseca la retta `pb`, taglia e nel lato più lontano di `pb`, e memorizza il punto di intersezione in X

@@ -17,6 +17,14 @@ class Point:
 
     Un sito è un particolare tipo di punto che definisce
     il diagramma di Voronoi
+
+    Utilizzo:
+
+    >>> p1 = Point(43.3, -11.89)
+    >>> p1.x
+    43.3
+    >>> p1.y
+    -11.89
     """
     def __init__(self, x, y):
         self.x = x
@@ -189,11 +197,6 @@ def segment_intersection(edge1, edge2):
     >>> i.y
     1.0
 
-    >>> segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)))
-
-
-    >>> segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)))
-
     >>> i = segment_intersection(Edge(Point(1, 1), Point(4, -5)), Edge(Point(2, -3), Point(3, -1)))
     >>> i.x
     2.5
@@ -207,6 +210,10 @@ def segment_intersection(edge1, edge2):
 
     # TODO: la funzione dovrebbe restituire None nell'ultimo caso di test
     # e invece restituisce un punto..
+    >>> segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)))
+    >>> segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)))
+    >>> segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)))
+    """
 
     DET_TOLERANCE = 0.00000001
 

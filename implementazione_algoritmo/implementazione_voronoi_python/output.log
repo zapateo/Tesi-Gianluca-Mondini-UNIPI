@@ -1,0 +1,24 @@
+pygame 1.9.4
+Hello from the pygame community. https://www.pygame.org/contribute.html
+[DEBUG] 'for site in S' is going to iterate 4 times
+[DEBUG] 'for c in C' is going to iterate 4 times
+[DEBUG] 'for e in c.edges' is going to iterate 3 times
+[DEBUG] 'for e in c.edges' is going to iterate 3 times
+[DEBUG] 'for e in c.edges' is going to iterate 3 times
+[DEBUG] 'for e in c.edges' is going to iterate 5 times
+[DEBUG] X should contain 0 or 2 elements, but it contains 3 items. X: Point(0.0, 179.28571428571422), Point(-188.25, -5.684341886080802e-14), Point(0.0, 179.28571428571422)
+[DEBUG] 'for c in C' is going to iterate 4 times
+[DEBUG] 'for e in c.edges' is going to iterate 2 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for c in C' is going to iterate 4 times
+[DEBUG] 'for e in c.edges' is going to iterate 2 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for c in C' is going to iterate 4 times
+[DEBUG] 'for e in c.edges' is going to iterate 2 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times
+[DEBUG] 'for e in c.edges' is going to iterate 1 times

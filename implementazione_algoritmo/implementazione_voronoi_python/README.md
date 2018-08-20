@@ -13,3 +13,5 @@ Viene utilizzata la libreria _pygame_ per mostrare a schermo il funzionamento de
 **Attenzione**: la seguente immagine è generata automaticamente ogni volta viene eseguito l'algoritmo, di conseguenza potrebbe non essere corretta o aggiornata
 
 ![output.png](output.png)
+
+Per l'output testuale consulta il file [output.log](output.log)

@@ -24,6 +24,24 @@ class Point:
     def __str__(self):
         return f"Point({self.x}, {self.y})"
 
+def points_are_close(p1, p2):
+    """
+    >>> points_are_close(Point(1, 0), Point(1, 0))
+    True
+    >>> points_are_close(Point(1, 0), Point(1.5, -1))
+    False
+    >>> points_are_close(Point(43, -3), Point(42.99999, -3.00001))
+    True
+    """
+    tolerance = 0.001
+    if abs(p1.x - p2.x) < tolerance:
+        if abs(p1.y - p2.y) < tolerance:
+            return True
+    return False
+
+def edges_are_close(e1, e2):
+    return points_are_close(e1.start, e2.start) and points_are_close(e1.end, e2.end)
+
 class Edge:
     """
     Un bordo, composto da un punto iniziale e da un punto finale

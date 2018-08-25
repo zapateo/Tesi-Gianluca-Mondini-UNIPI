@@ -209,6 +209,14 @@ def segment_intersection(edge1, edge2):
     >>> segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)))
     >>> segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)))
     >>> segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)))
+
+    Caso in cui siano gli estremi del segmento ad intersecarsi:
+
+    >>> p = segment_intersection(E(2, 5, 2, -1), E(2, -1, 10, -1))
+    >>> p.x
+    2.0
+    >>> p.y
+    -1.0
     """
 
     DET_TOLERANCE = 0.00000001
@@ -269,7 +277,7 @@ def segment_intersection(edge1, edge2):
 
     # print(f"r = {r}, s = {s}, xi = {xi}, yi = {yi}")
 
-    if 0 < r < 1 and 0 < s < 1:
+    if 0 <= r <= 1 and 0 <= s <= 1:
         return Point(xi, yi)
     else:
         return None

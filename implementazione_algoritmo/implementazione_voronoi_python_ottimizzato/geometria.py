@@ -59,6 +59,9 @@ class Edge:
     def __str__(self):
         return f"Edge_from:{self.start}to:{self.end}"
 
+def E(x1, y1, x2, y2):
+    return Edge(Point(x1, y1), Point(x2, y2))
+
 class Cell:
     """
     Una cella di Voronoi, composta da un sito (= punto caratterizzante il diagramma di Voronoi) e da una lista di bordi

@@ -22,7 +22,7 @@ class Point:
         self.y = y
 
     def __str__(self):
-        return f"Point({self.x}, {self.y})"
+        return f"Point({round(self.x, 1)}, {round(self.y, 1)})"
 
 def points_are_close(p1, p2):
     """

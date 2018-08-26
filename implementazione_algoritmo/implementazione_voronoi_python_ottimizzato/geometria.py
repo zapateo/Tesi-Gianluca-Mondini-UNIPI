@@ -123,14 +123,40 @@ def perpendicular_bisector(edge):
     1
     >>> pb.c
     0.5
+
+    Caso in cui `edge` sia orizzontale (e quindi la bisettrice è verticale)
+    >>> pb = perpendicular_bisector(E(2, 3, 4, 3))
+    >>> pb.a
+    1
+    >>> pb.b
+    0
+    >>> pb.c
+    -3.0
+
+    Caso in cui `edge` sia verticale (e quindi la bisettrice è orizzontale)
+    >>> pb = perpendicular_bisector(E(10, 5, 10, 35))
+    >>> pb.a
+    0
+    >>> pb.b
+    1
+    >>> pb.c
+    -20.0
+
+
     """
     p = midpoint(edge)
     m1 = segment_slope(edge)
-    if not m1: # edge è verticale
+    if m1 == None: # edge è verticale
         # a·x + b·y + c = 0
         neg_c = (edge.start.y + edge.end.y)/2
+        # raise Exception("qui c'è un problema..")
         return Line_abc(0, 1, -neg_c)
-    else: # edge non è verticale
+    elif m1 == 0: # edge è orizzontale
+        a = 1
+        b = 0
+        c = -(edge.start.x + edge.end.x)/2
+        return Line_abc(a, b, c)
+    else: # edge è "obliquo", caso più frequente
         m2 = -1/m1
         q = - m2 * p.x + p.y
         return Line_abc(-m2, 1, -q)
@@ -186,16 +212,19 @@ def from_line_to_segment(line):
     >>> print(edge.end)
     Point(1000, -332.66666666666663)
     """
-    big = 1000
+    big = 10000
 
     a, b, c = line.a, line.b, line.c
 
     # Caso in cui la retta sia verticale
     if b == 0 and a != 0:
-        raise Exception("[TODO] retta verticale non gestita")
-
-    m = -a/b
-    q = -c/b
+        # raise Exception("[TODO] retta verticale non gestita")
+        p1 = Point(-c, big)
+        p2 = Point(-c, -big)
+        return Edge(p1, p2)
+    else:
+        m = -a/b
+        q = -c/b
 
     f = lambda x: m*x + q
 

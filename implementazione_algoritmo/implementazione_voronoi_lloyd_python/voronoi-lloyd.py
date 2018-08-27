@@ -70,19 +70,12 @@ def voronoj_cell(edges, primary_site, other_sites):
     Edge_from:Point(250.0, 150.0)to:Point(300.0, 125.0)
     Edge_from:Point(100.0, 300.0)to:Point(250.0, 150.0)
     """
-    #---------------------------------------------------------------------------
     for site in other_sites:
-        #-----------------------------------------------------------------------
         union_edge = Edge(primary_site, site)
-        #-----------------------------------------------------------------------
         perp_bisect = perpendicular_bisector(union_edge)
-        #-----------------------------------------------------------------------
         intersections = []
-        #-----------------------------------------------------------------------
         new_edges = []
-        #-----------------------------------------------------------------------
         edges = mark_unwanted_edges(edges, primary_site)
-        #-----------------------------------------------------------------------
         for i in range(len(edges)):
             if edges[i].to_be_deleted:
                 continue
@@ -90,10 +83,10 @@ def voronoj_cell(edges, primary_site, other_sites):
                 from_line_to_segment(perp_bisect),
                 edges[i]
             )
-            #-------------------------------------------------------------------
             if intersect:
-                #---------------------------------------------------------------
                 edges[i].to_be_deleted = True
+                #---------------------------------------------------------------
+                # Decido quale estremo del segmento salvare
                 #---------------------------------------------------------------
                 p1 = edges[i].start
                 p2 = edges[i].end
@@ -128,14 +121,10 @@ def voronoj_cell(edges, primary_site, other_sites):
                         add_to_intersections = False
                 if add_to_intersections:
                     intersections.append(intersect)
-                #---------------------------------------------------------------
             # end if intersect
-            #-------------------------------------------------------------------
             edges = mark_unwanted_edges(edges, primary_site)
-            #---------------------------------------------------------------------------
         # end for edge in edges
         edges = edges + new_edges
-        #-----------------------------------------------------------------------
         if len(intersections) == 2:
             edges.append(
                 Edge(intersections[0], intersections[1])
@@ -152,17 +141,11 @@ def voronoj_cell(edges, primary_site, other_sites):
             drawer.title("EXCEPTION!!!")
             drawer.wait()
             raise Exception(f"intersections contains {len(intersections)} elements, but it should contain 0 or 2")
-        #-----------------------------------------------------------------------
         edges = remove_marked_edges(edges)
-        #-----------------------------------------------------------------------
     # end for site in other_sites
     edges = mark_unwanted_edges(edges, primary_site)
-    #---------------------------------------------------------------------------
     edges = remove_marked_edges(edges)
-    #---------------------------------------------------------------------------
-    # Rimozione dei bordi duplicati da `edges`
     edges = remove_duplicated_edges(edges)
-    #---------------------------------------------------------------------------
     return edges
 
 def vertices_from_edges(edges):

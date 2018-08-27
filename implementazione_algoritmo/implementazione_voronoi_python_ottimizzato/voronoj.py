@@ -83,7 +83,6 @@ def voronoj_cell(edges, primary_site, other_sites):
         #-----------------------------------------------------------------------
         edges = mark_unwanted_edges(edges, primary_site)
         #-----------------------------------------------------------------------
-        # for edge in edges:
         for i in range(len(edges)):
             if edges[i].to_be_deleted:
                 continue
@@ -119,7 +118,6 @@ def voronoj_cell(edges, primary_site, other_sites):
                 else:
                     raise Exception()
                 #---------------------------------------------------------------
-
                 new_edge = Edge(intersect, keep)
                 new_edges.append(new_edge)
                 #---------------------------------------------------------------
@@ -132,7 +130,7 @@ def voronoj_cell(edges, primary_site, other_sites):
                     intersections.append(intersect)
                 #---------------------------------------------------------------
             # end if intersect
-            #-----------------------------------------------------------------------
+            #-------------------------------------------------------------------
             edges = mark_unwanted_edges(edges, primary_site)
             #---------------------------------------------------------------------------
         # end for edge in edges
@@ -143,7 +141,6 @@ def voronoj_cell(edges, primary_site, other_sites):
                 Edge(intersections[0], intersections[1])
             )
         elif len(intersections) == 0:
-            # raise Exception("no intersections..")
             pass
         else:
             drawer.clear()
@@ -231,7 +228,6 @@ def center_of_mass(points):
 
     area = math.fabs(area)
 
-    # return ([x_cent, y_cent], area)
     return Point(x_cent, y_cent), area
 
 def mov(target_pos, actual_pos):
@@ -239,9 +235,9 @@ def mov(target_pos, actual_pos):
     if dpos == 0:
         return 0
     elif dpos > 0:
-        return min(1, dpos)
+        return min(4, dpos)
     elif dpos < 0:
-        return max(-1, dpos)
+        return max(-4, dpos)
     else:
         assert False
 
@@ -262,26 +258,23 @@ if __name__ == "__main__":
 
         drawer.clear()
 
-        areas = []
+        edges_to_draw = []
 
         for primary_site in sites:
             edges = [E(100, -200, 300, 0), E(300, 0, 300, 200), E(300, 200, 200, 400), E(200, 400, 0, 200), E(0, 200, 100, -200)]
             other_sites = sites[:]
             other_sites.remove(primary_site)
             cell = voronoj_cell(edges, primary_site, other_sites)
+            edges_to_draw += cell
             com, area = center_of_mass(vertices_from_edges(cell))
-            areas.append(area)
             primary_site.new_x = com.x
             primary_site.new_y = com.y
 
-            drawer.draw_all(cell)
-            drawer.draw_all(sites)
-            drawer.draw(primary_site)
-            drawer.flip()
-            # pygame.time.wait(3)
+        drawer.draw_all(edges_to_draw)
+        drawer.draw_all(sites)
+        drawer.flip()
+        # drawer.wait()
 
         for site in sites:
             site.x += mov(site.new_x, site.x)
             site.y += mov(site.new_y, site.y)
-
-        print(" - ".join([str(round(a, 1)) for a in areas]))

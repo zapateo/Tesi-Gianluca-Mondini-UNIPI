@@ -71,7 +71,8 @@ class Drawer:
                 self.screen,
                 line_color,
                 self._cart_to_screen((shape.start.x, shape.start.y)),
-                self._cart_to_screen((shape.end.x, shape.end.y))
+                self._cart_to_screen((shape.end.x, shape.end.y)),
+                2
             )
             pygame.draw.circle(
                 self.screen,

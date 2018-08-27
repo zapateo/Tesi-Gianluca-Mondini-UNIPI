@@ -18,6 +18,23 @@ def mark_unwanted_edges(edges, primary_site):
                     edges[outer_i].to_be_deleted = True
     return edges
 
+def remove_marked_edges(edges):
+    edges = edges[:]
+    return list(filter(lambda e: not e.to_be_deleted, edges))
+
+def remove_duplicated_edges(edges):
+    edges = edges[:]
+    temp_edges = []
+    for edge in edges:
+        insert = True
+        for temp_edge in temp_edges:
+            if edges_are_close(edge, temp_edge):
+                insert = False
+        if insert:
+            temp_edges.append(edge)
+    edges = temp_edges
+    return edges
+
 def voronoj_cell(edges, primary_site, other_sites):
     """
     In un diagramma di Voronoj delimitato da `edges` e con un insieme di siti
@@ -139,23 +156,15 @@ def voronoj_cell(edges, primary_site, other_sites):
             drawer.wait()
             raise Exception(f"intersections contains {len(intersections)} elements, but it should contain 0 or 2")
         #-----------------------------------------------------------------------
-        edges = list(filter(lambda e: not e.to_be_deleted, edges))
+        edges = remove_marked_edges(edges)
         #-----------------------------------------------------------------------
     # end for site in other_sites
-
     edges = mark_unwanted_edges(edges, primary_site)
     #---------------------------------------------------------------------------
-    edges = list(filter(lambda e: not e.to_be_deleted, edges))
+    edges = remove_marked_edges(edges)
     #---------------------------------------------------------------------------
-    temp_edges = []
-    for edge in edges:
-        insert = True
-        for temp_edge in temp_edges:
-            if edges_are_close(edge, temp_edge):
-                insert = False
-        if insert:
-            temp_edges.append(edge)
-    edges = temp_edges
+    # Rimozione dei bordi duplicati da `edges`
+    edges = remove_duplicated_edges(edges)
     #---------------------------------------------------------------------------
     return edges
 

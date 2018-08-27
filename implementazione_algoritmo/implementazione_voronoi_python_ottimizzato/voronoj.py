@@ -268,15 +268,32 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod()
 
-    sites = [Point(200, 300), Point(100, 100), Point(100, 200), Point(150, 200)]
-    for i in range(1):
+    sites = [Point(200, 300), Point(100, 100), Point(100, 200), Point(150, 200), Point(160, 203)]
+
+    while True:
+
+        drawer.clear()
+
+        areas = []
+
         for primary_site in sites:
-            edges = [E(100, 0, 300, 0), E(300, 0, 300, 200), E(300, 200, 200, 400), E(200, 400, 0, 200), E(0, 200, 100, 0)]
+            edges = [E(100, -200, 300, 0), E(300, 0, 300, 200), E(300, 200, 200, 400), E(200, 400, 0, 200), E(0, 200, 100, -200)]
             other_sites = sites[:]
             other_sites.remove(primary_site)
             cell = voronoj_cell(edges, primary_site, other_sites)
-            # drawer.clear()
+            com, area = center_of_mass(vertices_from_edges(cell))
+            areas.append(area)
+            primary_site.new_x = com.x
+            primary_site.new_y = com.y
+
             drawer.draw_all(cell)
             drawer.draw_all(sites)
-            drawer.draw(primary_site, "ps")
-            drawer.wait()
+            drawer.draw(primary_site)
+            drawer.flip()
+            # pygame.time.wait(3)
+
+        for site in sites:
+            site.x += mov(site.new_x, site.x)
+            site.y += mov(site.new_y, site.y)
+
+        print(" - ".join([str(round(a, 1)) for a in areas]))

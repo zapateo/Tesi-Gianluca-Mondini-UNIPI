@@ -1,27 +1,6 @@
-# Implementazione algoritmo di Voronoi in Python
-## Versione ottimizzata
+# Implementazione algoritmo di Lloyd - Voronoi in Python
 
-A differenza della versione "completa" dell'algoritmo di Voronoi, questa restituisce soltanto la cella a cui appartiene il sito passato come argomento
-
-### Input
-
-- lista di segmenti rappresentanti il perimetro dell'area
-- punto rappresentate il sito primario, ovvero la posizione del sito che effettua la computazione
-- lista di punti rappresentanti i vari _siti_ (= droni), ad eccezione del sito primario
-
-### Output
-
-- lista di segmenti rappresentanti la cella di Voronoi del sito primario
-
-### Algoritmo
-
-Inizializzazione
-
-- `edges` = perimetro dell'area
-- `primary_site` = sito primario
-- `other_sites` = lista degli altri siti
-
-Procedimento
+Procedimento (da aggiornare)
 
 ```
 - per ogni `site` in `other_sites`:

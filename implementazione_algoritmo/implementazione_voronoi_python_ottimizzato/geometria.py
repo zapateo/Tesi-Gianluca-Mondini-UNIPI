@@ -208,9 +208,9 @@ def from_line_to_segment(line):
 
     >>> edge = from_line_to_segment(Line_abc(1, 3, -2))
     >>> print(edge.start)
-    Point(-1000, 334.0)
+    Point(-10000, 3334.0)
     >>> print(edge.end)
-    Point(1000, -332.7)
+    Point(10000, -3332.7)
     """
     big = 10000
 

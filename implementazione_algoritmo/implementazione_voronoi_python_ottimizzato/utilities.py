@@ -26,6 +26,8 @@ class Drawer:
         """
         surface = self.font.render(text, True, (0, 0, 0))
         self.screen.blit(surface, self._cart_to_screen(pos))
+
+    def flip(self):
         pygame.display.flip()
 
     def clear(self):

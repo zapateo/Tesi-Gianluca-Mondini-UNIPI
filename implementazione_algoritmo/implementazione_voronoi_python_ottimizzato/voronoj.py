@@ -126,7 +126,8 @@ def voronoj_cell(edges, primary_site, other_sites):
                 Edge(intersections[0], intersections[1])
             )
         elif len(intersections) == 0:
-            raise Exception("no intersections..")
+            # raise Exception("no intersections..")
+            pass
         else:
             drawer.clear()
             drawer.draw(from_line_to_segment(perp_bisect), "pb")

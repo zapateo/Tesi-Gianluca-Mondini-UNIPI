@@ -6,6 +6,17 @@
 
 ![running.gif](running.gif)
 
+## Esecuzione
+
+È necessario aver installato:
+
+- Python 3+
+- Pygame
+
+````bash
+python3 voronoi-lloyd.py
+````
+
 ## Procedimento (da aggiornare)
 
 ```

@@ -1,6 +1,12 @@
 # Implementazione algoritmo di Lloyd - Voronoi in Python
 
-Procedimento (da aggiornare)
+## Output grafico dell'algoritmo
+
+(i frame con i bordi assenti sono determinati da problemi durante la registrazione)
+
+![running.gif](running.gif)
+
+## Procedimento (da aggiornare)
 
 ```
 - per ogni `site` in `other_sites`:

@@ -159,27 +159,103 @@ def voronoj_cell(edges, primary_site, other_sites):
     #---------------------------------------------------------------------------
     return edges
 
-def center_of_mass(edges):
+def vertices_from_edges(edges):
     """
-    Restituisce le coordinate del centro di massa del poligono `edges`
+    Restituisce la lista di vertici definiti dalla lista di segmenti `edges`
+
+    >>> points = vertices_from_edges([E(0, 0, 1, 1)])
+    >>> for point in points:
+    ...     print(point)
+    Point(0, 0)
+    Point(1, 1)
+
+    >>> points = vertices_from_edges([E(0, 0, 0, 1), E(0, 1, 1, 1), E(1, 1, 1, 0), E(1, 0, 0, 0)])
+    >>> for point in points:
+    ...     print(point)
+    Point(0, 0)
+    Point(0, 1)
+    Point(1, 1)
+    Point(1, 0)
+    """
+    points = []
+    for e in edges:
+        for candidate in (e.start, e.end):
+            add = True
+            for point in points:
+                if points_are_close(candidate, point):
+                    add = False
+            if add:
+                points.append(candidate)
+    return points
+
+def center_of_mass(points):
+    """
+    Restituisce le coordinate del centro di massa del poligono `vertices`
 
     Il poligono deve essere convesso e i segmenti contenuti in `edges` devono
     delimitare un perimetro chiuso
 
-    >>> str(center_of_mass([E(0, 0, 1, 0), E(1, 0, 1, 1), E(1, 1, 0, 1), E(0, 1, 0, 0)]))
+    >>> point, area = center_of_mass([Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)])
+    >>> str(point)
     'Point(0.5, 0.5)'
-    """
-    x_sum = 0
-    y_sum = 0
-    for e in edges:
-        # Aggiungo solo il punto e.start perchè
-        # il punto e.end è aggiunto automaticamente dal segmente
-        # successivo
-        x_sum += e.start.x
-        y_sum += e.start.y
-    n = len(edges)
-    return Point(x_sum/n, y_sum/n)
+    >>> area
+    1.0
 
+    """
+    # Adattato da https://stackoverflow.com/a/46937541
+    vertices = []
+    for point in points:
+        vertices.append((point.x, point.y))
+
+    x_cent = y_cent = area = 0
+    v_local = vertices + [vertices[0]]
+
+    for i in range(len(v_local) - 1):
+        factor = v_local[i][0] * v_local[i+1][1] - v_local[i+1][0] * v_local[i][1]
+        area += factor
+        x_cent += (v_local[i][0] + v_local[i+1][0]) * factor
+        y_cent += (v_local[i][1] + v_local[i+1][1]) * factor
+
+    area /= 2.0
+    x_cent /= (6 * area)
+    y_cent /= (6 * area)
+
+    area = math.fabs(area)
+
+    # return ([x_cent, y_cent], area)
+    return Point(x_cent, y_cent), area
+
+# def center_of_mass(edges):
+#     """
+#     Restituisce le coordinate del centro di massa del poligono `edges`
+#
+#     Il poligono deve essere convesso e i segmenti contenuti in `edges` devono
+#     delimitare un perimetro chiuso
+#
+#     >>> str(center_of_mass([E(0, 0, 1, 0), E(1, 0, 1, 1), E(1, 1, 0, 1), E(0, 1, 0, 0)]))
+#     'Point(0.5, 0.5)'
+#     """
+#     x_sum = 0
+#     y_sum = 0
+#     for e in edges:
+#         # Aggiungo solo il punto e.start perchè
+#         # il punto e.end è aggiunto automaticamente dal segmente
+#         # successivo
+#         x_sum += e.start.x
+#         y_sum += e.start.y
+#     n = len(edges)
+#     return Point(x_sum/n, y_sum/n)
+
+def mov(target_pos, actual_pos):
+    dpos = target_pos - actual_pos
+    if dpos == 0:
+        return 0
+    elif dpos > 0:
+        return min(1, dpos)
+    elif dpos < 0:
+        return max(-1, dpos)
+    else:
+        assert False
 
 if __name__ == "__main__":
 

@@ -234,27 +234,6 @@ def center_of_mass(points):
     # return ([x_cent, y_cent], area)
     return Point(x_cent, y_cent), area
 
-# def center_of_mass(edges):
-#     """
-#     Restituisce le coordinate del centro di massa del poligono `edges`
-#
-#     Il poligono deve essere convesso e i segmenti contenuti in `edges` devono
-#     delimitare un perimetro chiuso
-#
-#     >>> str(center_of_mass([E(0, 0, 1, 0), E(1, 0, 1, 1), E(1, 1, 0, 1), E(0, 1, 0, 0)]))
-#     'Point(0.5, 0.5)'
-#     """
-#     x_sum = 0
-#     y_sum = 0
-#     for e in edges:
-#         # Aggiungo solo il punto e.start perchè
-#         # il punto e.end è aggiunto automaticamente dal segmente
-#         # successivo
-#         x_sum += e.start.x
-#         y_sum += e.start.y
-#     n = len(edges)
-#     return Point(x_sum/n, y_sum/n)
-
 def mov(target_pos, actual_pos):
     dpos = target_pos - actual_pos
     if dpos == 0:

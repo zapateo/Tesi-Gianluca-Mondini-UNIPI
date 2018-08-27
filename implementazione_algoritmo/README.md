@@ -1,7 +1,5 @@
 # Implementazione algoritmo
 
-### ATTENZIONE: Non funzionante, consultare la directory [implementazione_voronoi_lloyd_python](../implementazione_voronoi_lloyd_python)
-
 ### Ingressi
 
 Nome|Descrizione

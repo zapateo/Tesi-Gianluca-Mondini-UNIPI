@@ -213,14 +213,17 @@ def center_of_mass(points):
 
     return Point(x_cent, y_cent), area
 
-def mov(target_pos, actual_pos):
-    dpos = target_pos - actual_pos
+def mov(target_pos, current_pos):
+    """
+    """
+    threshold = 4
+    dpos = target_pos - current_pos
     if dpos == 0:
         return 0
     elif dpos > 0:
-        return min(4, dpos)
+        return min(threshold, dpos)
     elif dpos < 0:
-        return max(-4, dpos)
+        return max(-threshold, dpos)
     else:
         assert False
 

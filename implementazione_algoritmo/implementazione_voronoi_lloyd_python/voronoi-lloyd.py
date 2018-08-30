@@ -227,6 +227,14 @@ def mov(target_pos, current_pos):
     else:
         assert False
 
+def sign(x):
+    if x > 0:
+        return 1.
+    elif x < 0:
+        return -1.
+    elif x == 0:
+        return 0.
+
 if __name__ == "__main__":
 
     screen_width, screen_height = 1300, 900

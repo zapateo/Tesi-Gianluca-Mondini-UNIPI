@@ -248,7 +248,12 @@ if __name__ == "__main__":
 
     sites = [Point(200, 300), Point(100, 100), Point(100, 200), Point(150, 200), Point(160, 203)]
 
-    while True:
+    for site in sites:
+            site.average_dx = 10
+            site.average_dy = 10
+
+    keep_iterating = True
+    while keep_iterating:
 
         drawer.clear()
 
@@ -267,8 +272,15 @@ if __name__ == "__main__":
         drawer.draw_all(edges_to_draw)
         drawer.draw_all(sites)
         drawer.flip()
-        # drawer.wait()
-
+        keep_iterating = False
         for site in sites:
-            site.x += mov(site.new_x, site.x)
-            site.y += mov(site.new_y, site.y)
+            dx = mov(site.new_x, site.x)
+            dy = mov(site.new_y, site.y)
+            site.x += dx
+            site.y += dy
+            site.average_dx = (site.average_dx + dx)/2
+            site.average_dy = (site.average_dy + dy)/2
+            if abs(site.average_dx) > 2 or abs(site.average_dy) > 2:
+                keep_iterating = True
+
+    drawer.wait()

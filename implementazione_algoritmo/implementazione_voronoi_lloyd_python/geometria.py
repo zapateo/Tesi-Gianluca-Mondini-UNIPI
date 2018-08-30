@@ -6,9 +6,6 @@ class Point:
     """
     Un generico punto nello spazio bidimensionale
 
-    Un sito è un particolare tipo di punto che definisce
-    il diagramma di Voronoi
-
     Utilizzo:
 
     >>> p1 = Point(43.3, -11.89)
@@ -64,10 +61,10 @@ def E(x1, y1, x2, y2):
 
 class Cell:
     """
-    Una cella di Voronoi, composta da un sito (= punto caratterizzante il diagramma di Voronoi) e da una lista di bordi
+    Una cella di Voronoi, composta da un drone e da una lista di bordi
     """
-    def __init__(self, site, edges):
-        self.site = site
+    def __init__(self, drone, edges):
+        self.drone = drone
         self.edges = edges
 
 class Line_abc:

@@ -1,0 +1,2 @@
+loadFile("Geometria.mo"); getErrorString();
+simulate(test_points_are_close); getErrorString();

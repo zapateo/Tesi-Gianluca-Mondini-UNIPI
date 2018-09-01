@@ -3,12 +3,4 @@ documento_tesi/Tesi\ Gianluca\ Mondini.aux
 documento_tesi/Tesi\ Gianluca\ Mondini.synctex.gz
 documento_tesi/Tesi\ Gianluca\ Mondini.toc
 *__pycache__*
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.c
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.o
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.h
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.log
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.json
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.mat
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.xml
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.makefile
-implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/*.libs
+implementazione_algoritmo/implementazione_voronoi_lloyd_openmodelica/tmp_simulate.mos

@@ -19,6 +19,7 @@ for i in identifiers:
 
 with open("tmp_simulate.mos", mode="w+") as f:
     f.write(f'loadFile("{FILENAME}"); getErrorString();\n')
+    f.write('cd("/tmp");')
     for i in identifiers:
         f.write(f"simulate({i}); getErrorString();\n")
 

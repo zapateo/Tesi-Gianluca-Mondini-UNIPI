@@ -1,4 +1,7 @@
 loadFile("Geometria.mo"); getErrorString();
-cd("/tmp");simulate(test_edges_are_close); getErrorString();
+cd("/tmp");simulate(test_point_to_point_distance); getErrorString();
+simulate(test_from_line_to_segment); getErrorString();
+simulate(test_edges_are_close); getErrorString();
 simulate(test_points_are_close); getErrorString();
-simulate(test_point_to_point_distance); getErrorString();
+simulate(test_segment_slope); getErrorString();
+simulate(test_midpoint); getErrorString();

@@ -36,9 +36,6 @@ def points_are_close(p1, p2):
             return True
     return False
 
-def edges_are_close(e1, e2):
-    return points_are_close(e1.start, e2.start) and points_are_close(e1.end, e2.end)
-
 class Edge:
     """
     Un bordo, composto da un punto iniziale e da un punto finale
@@ -55,6 +52,9 @@ class Edge:
 
     def __str__(self):
         return f"Edge_from:{self.start}to:{self.end}"
+
+def edges_are_close(e1, e2):
+    return points_are_close(e1.start, e2.start) and points_are_close(e1.end, e2.end)
 
 def E(x1, y1, x2, y2):
     return Edge(Point(x1, y1), Point(x2, y2))
@@ -91,7 +91,46 @@ class Line_abc:
 #     dy = p1.y - p2.y
 #     return math.sqrt(dx**2 + dy**2)
 
+def segment_slope(edge):
+    """
+    Restituisce il coefficiente angolare del segmento `edge`:
 
+    >>> segment_slope(Edge(Point(0, 0), Point(10, 10)))
+    1.0
+    >>> segment_slope(Edge(Point(0, 2), Point(2, 0)))
+    -1.0
+
+    ..oppure `None` nel caso in cui il segmento sia verticale:
+
+    >>> segment_slope(Edge(Point(1, 10), Point(1, -2)))
+    >>> segment_slope(Edge(Point(-5, 10), Point(-5, -2)))
+    """
+    dy = edge.end.y - edge.start.y
+    dx = edge.end.x - edge.start.x
+    if dx == 0:
+        return None
+    else:
+        return dy/dx
+
+def midpoint(edge):
+    """
+    Restituisce il punto medio del segmento "edge"
+
+    >>> p = midpoint(Edge(Point(0, 0), Point(2, 2)))
+    >>> p.x
+    1.0
+    >>> p.y
+    1.0
+
+    >>> p = midpoint(Edge(Point(1, 1), Point(4, -5)))
+    >>> p.x
+    2.5
+    >>> p.y
+    -2.0
+    """
+    xm = (edge.start.x + edge.end.x)/2
+    ym = (edge.start.y + edge.end.y)/2
+    return Point(xm, ym)
 
 def perpendicular_bisector(edge):
     """
@@ -157,47 +196,6 @@ def perpendicular_bisector(edge):
         m2 = -1/m1
         q = - m2 * p.x + p.y
         return Line_abc(-m2, 1, -q)
-
-def segment_slope(edge):
-    """
-    Restituisce il coefficiente angolare del segmento `edge`:
-
-    >>> segment_slope(Edge(Point(0, 0), Point(10, 10)))
-    1.0
-    >>> segment_slope(Edge(Point(0, 2), Point(2, 0)))
-    -1.0
-
-    ..oppure `None` nel caso in cui il segmento sia verticale:
-
-    >>> segment_slope(Edge(Point(1, 10), Point(1, -2)))
-    >>> segment_slope(Edge(Point(-5, 10), Point(-5, -2)))
-    """
-    dy = edge.end.y - edge.start.y
-    dx = edge.end.x - edge.start.x
-    if dx == 0:
-        return None
-    else:
-        return dy/dx
-
-def midpoint(edge):
-    """
-    Restituisce il punto medio del segmento "edge"
-
-    >>> p = midpoint(Edge(Point(0, 0), Point(2, 2)))
-    >>> p.x
-    1.0
-    >>> p.y
-    1.0
-
-    >>> p = midpoint(Edge(Point(1, 1), Point(4, -5)))
-    >>> p.x
-    2.5
-    >>> p.y
-    -2.0
-    """
-    xm = (edge.start.x + edge.end.x)/2
-    ym = (edge.start.y + edge.end.y)/2
-    return Point(xm, ym)
 
 def from_line_to_segment(line):
     """

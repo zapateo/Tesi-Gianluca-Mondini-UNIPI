@@ -73,47 +73,21 @@ end Line_abc;
 
 //------------------------------------------------------------------------------
 
-function point_to_point_distance
-  input Point p1, p2;
-  output Real distance;
-algorithm
-  distance := sqrt((p1.x-p2.x)^2 + (p1.y-p2.y)^2);
-end point_to_point_distance;
-
-model test_point_to_point_distance
-  parameter Point p1 = Point(0, 0);
-  parameter Point p2 = Point(3, 4);
-equation
-  assert(point_to_point_distance(p1, p2) == 5, "distance from p1 to p2 should be 5");
-end test_point_to_point_distance;
-
-//------------------------------------------------------------------------------
-
-function perpendicular_bisector
-  input Edge edge;
-  output Line_abc out;
-algorithm
-  // TODO
-end perpendicular_bisector;
-
-//------------------------------------------------------------------------------
-
 function segment_slope
   input Edge edge;
   output Real out;
-  /* output Boolean valid; */
+  output Boolean valid;
 protected
   Real dx, dy;
 algorithm
   dx := edge.ending.y - edge.starting.y;
   dy := edge.ending.x - edge.starting.x;
   if dx == 0 then
-    // FIXME
-    out := 99999999;
+    valid := false;
+    out := 0;
     return;
-    /* valid := false; */
   else
-    /* valid := true; */
+    valid := true;
     out := dy/dx;
     return;
   end if;
@@ -126,12 +100,17 @@ model test_segment_slope
   // Segmenti verticali
   parameter Edge e3 = Edge(Point(1, 10), Point(1, -2));
   parameter Edge e4 = Edge(Point(-5, 10), Point(-5, -2));
-  /* Boolean valid; */
+
+  Real ss;
+  Boolean valid;
 equation
-  assert(segment_slope(e1) == 1.0, "segment_slope #1");
-  assert(segment_slope(e2) == -1.0, "segment_slope #2");
+  /* assert(segment_slope(e1) == 1.0, "segment_slope #1");
+  assert(segment_slope(e2) == -1.0, "segment_slope #2"); */
   /* assert(segment_slope(e3) == 99999999, "segment_slope #3"); */
   /* assert(segment_slope(e4) == 99999999, "segment_slope #4"); */
+  (ss, valid) := segment_slope(e1);
+  assert(ss == 1.0, "segment_slope #1");
+  assert(valid == true, "segment_slope #1");
 end test_segment_slope;
 
 //------------------------------------------------------------------------------
@@ -157,6 +136,32 @@ equation
   assert(p1.x == 1 and p1.y == 1, "midpoint #1");
   assert(p2.x == 2.5 and p2.y == -2.0, "midpoint #2");
 end test_midpoint;
+
+//------------------------------------------------------------------------------
+
+function perpendicular_bisector
+  input Edge edge;
+  output Line_abc out;
+algorithm
+  p := midpoint(edge);
+  m1 := segment_slope(edge);
+  if m1 == 99999999 then // FIXME
+    neg_c = (edge.starting.y + edge.ending.y)/2;
+    out := Line_abc(0, 1, -neg_c);
+    return;
+  else if m1 == 0 then
+    a = 1;
+    b = 0;
+    c = -(edge.starting.x + edge.ending.x)/2;
+    out := Line_abc(a, b, c);
+    return;
+  else
+    m2 = -1/m1;
+    q = - m2 * p.x + p.y;
+    out := Line_abc(-m2, 1, -q);
+    return;
+  end if;
+end perpendicular_bisector;
 
 //------------------------------------------------------------------------------
 

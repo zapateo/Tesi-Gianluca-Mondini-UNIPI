@@ -77,19 +77,19 @@ class Line_abc:
         self.b = b
         self.c = c
 
-def point_to_point_distance(p1, p2):
-    """
-    Restituisce la distanza tra i punti `p1` e `p2`
-
-    >>> point_to_point_distance(Point(1, 1), Point(2, 2))
-    1.4142135623730951
-
-    >>> point_to_point_distance(Point(0, 3), Point(0, -1))
-    4.0
-    """
-    dx = p1.x - p2.x
-    dy = p1.y - p2.y
-    return math.sqrt(dx**2 + dy**2)
+# def point_to_point_distance(p1, p2):
+#     """
+#     Restituisce la distanza tra i punti `p1` e `p2`
+#
+#     >>> point_to_point_distance(Point(1, 1), Point(2, 2))
+#     1.4142135623730951
+#
+#     >>> point_to_point_distance(Point(0, 3), Point(0, -1))
+#     4.0
+#     """
+#     dx = p1.x - p2.x
+#     dy = p1.y - p2.y
+#     return math.sqrt(dx**2 + dy**2)
 
 
 
@@ -329,47 +329,47 @@ def segment_intersection(edge1, edge2):
     else:
         return None
 
-def point_segment_distance(point, edge):
-    """
-    Restituisce la distanza minima tra il punto `point` ed il segmento `edge`
-
-    >>> point_segment_distance(Point(5, 3), Edge(Point(0, 1), Point(5, 1)))
-    2.0
-    >>> point_segment_distance(Point(8, 1), Edge(Point(0, 1), Point(5, 1)))
-    3.0
-    >>> point_segment_distance(Point(0, 1), Edge(Point(0, 1), Point(5, 1)))
-    0.0
-    >>> point_segment_distance(Point(-1, 2), Edge(Point(0, 1), Point(5, 1)))
-    1.4142135623730951
-
-    Nel caso in cui il segmento abbia una lunghezza nulla, restituisce 0.0
-    >>> point_segment_distance(Point(-43, 33.3), Edge(Point(34, -3), Point(34, -3)))
-    0.0
-    """
-
-    # Codice adattato da https://stackoverflow.com/a/49504330
-
-    dx = edge.end.x - edge.start.x
-    dy = edge.end.y - edge.start.y
-    dr2 = float(dx ** 2 + dy ** 2)
-
-    if dr2 == 0:
-        return 0.0
-
-    lerp = ((point.x - edge.start.x) * dx + (point.y - edge.start.y) * dy) / dr2
-    if lerp < 0:
-        lerp = 0
-    elif lerp > 1:
-        lerp = 1
-
-    x = lerp * dx + edge.start.x
-    y = lerp * dy + edge.start.y
-
-    _dx = x - point.x
-    _dy = y - point.y
-    square_dist = _dx ** 2 + _dy ** 2
-
-    return math.sqrt(square_dist)
+# def point_segment_distance(point, edge):
+#     """
+#     Restituisce la distanza minima tra il punto `point` ed il segmento `edge`
+#
+#     >>> point_segment_distance(Point(5, 3), Edge(Point(0, 1), Point(5, 1)))
+#     2.0
+#     >>> point_segment_distance(Point(8, 1), Edge(Point(0, 1), Point(5, 1)))
+#     3.0
+#     >>> point_segment_distance(Point(0, 1), Edge(Point(0, 1), Point(5, 1)))
+#     0.0
+#     >>> point_segment_distance(Point(-1, 2), Edge(Point(0, 1), Point(5, 1)))
+#     1.4142135623730951
+#
+#     Nel caso in cui il segmento abbia una lunghezza nulla, restituisce 0.0
+#     >>> point_segment_distance(Point(-43, 33.3), Edge(Point(34, -3), Point(34, -3)))
+#     0.0
+#     """
+#
+#     # Codice adattato da https://stackoverflow.com/a/49504330
+#
+#     dx = edge.end.x - edge.start.x
+#     dy = edge.end.y - edge.start.y
+#     dr2 = float(dx ** 2 + dy ** 2)
+#
+#     if dr2 == 0:
+#         return 0.0
+#
+#     lerp = ((point.x - edge.start.x) * dx + (point.y - edge.start.y) * dy) / dr2
+#     if lerp < 0:
+#         lerp = 0
+#     elif lerp > 1:
+#         lerp = 1
+#
+#     x = lerp * dx + edge.start.x
+#     y = lerp * dy + edge.start.y
+#
+#     _dx = x - point.x
+#     _dy = y - point.y
+#     square_dist = _dx ** 2 + _dy ** 2
+#
+#     return math.sqrt(square_dist)
 
 if __name__ == "__main__":
     import doctest

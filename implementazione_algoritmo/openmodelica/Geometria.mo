@@ -1,3 +1,57 @@
+// From https://github.com/modelica/Modelica-Compliance/blob/master/ModelicaCompliance/Util.mo
+function compareReal
+    "Compares two Reals, and checks if they are close enough to be considered equal."
+    input Real a, b;
+    input Real absTol = 1e-10 "Absolute tolerance.";
+    input Real relTol = 1e-5 "Relative tolerance.";
+    output Boolean equal;
+  protected
+    Real diff;
+  algorithm
+    diff := abs(a - b);
+    equal := diff < absTol or diff <= max(abs(b), abs(a)) * relTol;
+end compareReal;
+
+function debug
+  input String message;
+algorithm
+  print("\n[DEBUG]: " + message + "\n\n");
+end debug;
+
+function assertRealEqual
+  input Real actual;
+  input Real expected;
+algorithm
+  if compareReal(actual, expected) then
+    return;
+  else
+    print("\nASSERTION ERROR [REAL EQUALITY]: expected " + String(expected) + " but have " + String(actual) + "\n\n");
+    return;
+  end if;
+end assertRealEqual;
+
+function is_included
+  input Real a;
+  input Real b;
+  input Real x;
+  output Boolean included;
+algorithm
+  if compareReal(a, x) then
+    included := true;
+    return;
+  elseif compareReal(b, x) then
+    included := true;
+    return;
+  elseif (a < x) and (x < b) then
+    included := true;
+    return;
+  else
+    included := false;
+  end if;
+end is_included;
+
+//------------------------------------------------------------------------------
+
 record Point
   Real x;
   Real y;
@@ -76,18 +130,18 @@ end Line_abc;
 function segment_slope
   input Edge edge;
   output Real out;
-  output Boolean valid;
+  output Boolean vertical;
 protected
   Real dx, dy;
 algorithm
-  dx := edge.ending.y - edge.starting.y;
-  dy := edge.ending.x - edge.starting.x;
-  if dx == 0 then
-    valid := false;
+  dx := edge.ending.x - edge.starting.x;
+  dy := edge.ending.y - edge.starting.y;
+  if compareReal(dx, 0.0) then
+    vertical := true;
     out := 0;
     return;
   else
-    valid := true;
+    vertical := false;
     out := dy/dx;
     return;
   end if;
@@ -102,15 +156,21 @@ model test_segment_slope
   parameter Edge e4 = Edge(Point(-5, 10), Point(-5, -2));
 
   Real ss;
-  Boolean valid;
-equation
-  /* assert(segment_slope(e1) == 1.0, "segment_slope #1");
-  assert(segment_slope(e2) == -1.0, "segment_slope #2"); */
-  /* assert(segment_slope(e3) == 99999999, "segment_slope #3"); */
-  /* assert(segment_slope(e4) == 99999999, "segment_slope #4"); */
-  (ss, valid) := segment_slope(e1);
-  assert(ss == 1.0, "segment_slope #1");
-  assert(valid == true, "segment_slope #1");
+  Boolean vertical;
+algorithm
+  (ss, vertical) := segment_slope(e1);
+  assert(compareReal(ss, 1.0), "segment_slope #1");
+  assert(vertical == false, "segment_slope #1");
+
+  (ss, vertical) := segment_slope(e2);
+  assert(compareReal(ss, -1.0), "segment_slope #2");
+  assert(vertical == false, "segment_slope #2");
+
+  (ss, vertical) := segment_slope(e3);
+  assert(vertical == true, "segment_slope #3");
+
+  (ss, vertical) := segment_slope(e4);
+  assert(vertical == true, "segment_slope #4");
 end test_segment_slope;
 
 //------------------------------------------------------------------------------
@@ -142,26 +202,59 @@ end test_midpoint;
 function perpendicular_bisector
   input Edge edge;
   output Line_abc out;
+protected
+  Boolean vertical;
+  Point p;
+  Real a, b, c, neg_c, m1, m2, q;
 algorithm
   p := midpoint(edge);
-  m1 := segment_slope(edge);
-  if m1 == 99999999 then // FIXME
-    neg_c = (edge.starting.y + edge.ending.y)/2;
+  (m1, vertical) := segment_slope(edge);
+  if vertical then
+    neg_c := (edge.starting.y + edge.ending.y)/2;
     out := Line_abc(0, 1, -neg_c);
     return;
-  else if m1 == 0 then
-    a = 1;
-    b = 0;
-    c = -(edge.starting.x + edge.ending.x)/2;
+  elseif m1 == 0 then
+    a := 1;
+    b := 0;
+    c := -(edge.starting.x + edge.ending.x)/2;
     out := Line_abc(a, b, c);
     return;
   else
-    m2 = -1/m1;
-    q = - m2 * p.x + p.y;
+    m2 := -1/m1;
+    q := - m2 * p.x + p.y;
     out := Line_abc(-m2, 1, -q);
     return;
   end if;
 end perpendicular_bisector;
+
+model test_perpendicular_bisector
+  parameter Line_abc line1 = perpendicular_bisector(Edge(Point(0, 2), Point(2, 0)));
+  parameter Line_abc line2 = perpendicular_bisector(Edge(Point(5, -3), Point(5, 2)));
+  parameter Line_abc line3 = perpendicular_bisector(Edge(Point(-15, 2), Point(-15, -3)));
+  parameter Line_abc line4 = perpendicular_bisector(Edge(Point(2, 3), Point(4, 3)));
+  parameter Line_abc line5 = perpendicular_bisector(Edge(Point(10, 5), Point(10, 35)));
+algorithm
+  assert(line1.a == -1, "perpendicular bisector");
+  assert(line1.b == 1, "perpendicular bisector");
+  assert(line1.c == 0, "perpendicular bisector");
+
+  assert(line2.a == 0, "perpendicular bisector");
+  assert(line2.b == 1, "perpendicular bisector");
+  assert(line2.c == 0.5, "perpendicular bisector");
+
+  assert(line3.a == 0, "perpendicular bisector");
+  assert(line3.b == 1, "perpendicular bisector");
+  assert(line3.c == 0.5, "perpendicular bisector");
+
+  assert(line4.a == 1, "perpendicular bisector");
+  assert(line4.b == 0, "perpendicular bisector");
+  assert(line4.c == -3, "perpendicular bisector");
+
+  assert(line5.a == 0, "perpendicular bisector");
+  assert(line5.b == 1, "perpendicular bisector");
+  assert(line5.c == -20, "perpendicular bisector");
+
+end test_perpendicular_bisector;
 
 //------------------------------------------------------------------------------
 
@@ -173,6 +266,7 @@ protected
   Real a, b, c;
   Point p1, p2;
   Real m, q;
+  Real y1, y2;
 algorithm
   a := line.a;
   b := line.b;
@@ -186,35 +280,38 @@ algorithm
   else
     m := -a/b;
     q := -c/b;
+    y1 := m * (-big) + q;
+    y2 := m * (+big) + q;
+    out := Edge(Point(-big, y1), Point(big, y2));
   end if;
 end from_line_to_segment;
 
 model test_from_line_to_segment
-  Line_abc line1 = Line_abc(1, 3, -2);
-  Edge e1;
-equation
-  e1 = from_line_to_segment(line1);
+  parameter Line_abc line1 = Line_abc(1, 3, -2);
+  parameter Edge e1 = from_line_to_segment(line1);
+algorithm
   assert(e1.starting.x == -10000, "from_line_to_segment #1");
   assert(e1.starting.y == 3334.0, "from_line_to_segment #2");
   assert(e1.ending.x == 10000, "from_line_to_segment #3");
-  assert(e1.ending.y == -3332.7, "from_line_to_segment #4");
+  assert(compareReal(e1.ending.y, -3332.67), "from_line_to_segment #4"); // FIXME
 end test_from_line_to_segment;
 
 //------------------------------------------------------------------------------
 
 function segment_intersection
   input Edge edge1, edge2;
-  output Point p1;
+  output Boolean valid;
+  output Point out;
 protected
-  parameter Real DET_TOLERANCE = 0.00000001;
   Point pt1, pt2, ptA, ptB;
-  Real x1, x2, y1, y2, dx1, dy1, x, y, xB, yB, dx, dy;
+  Real x1, x2, y1, y2, dx1, dy1, x, y, xB, yB, dx, dy, DET, DETinv, r, s, xi, yi;
+  parameter Real DET_TOLERANCE = 0.00000001;
 algorithm
-  pt1 := (edge1.starting.x, edge1.starting.y);
-  pt2 := (edge1.ending.x, edge1.ending.y);
+  pt1 := Point(edge1.starting.x, edge1.starting.y);
+  pt2 := Point(edge1.ending.x, edge1.ending.y);
 
-  ptA := (edge2.starting.x, edge2.starting.y);
-  ptB := (edge2.ending.x, edge2.ending.y);
+  ptA := Point(edge2.starting.x, edge2.starting.y);
+  ptB := Point(edge2.ending.x, edge2.ending.y);
 
   x1 := pt1.x;
   y1 := pt1.y;
@@ -235,17 +332,54 @@ algorithm
   dy := yB - y;
 
   DET := (-dx1 * dy + dy1 + dx);
-  if math.fabs(DET) < DET_TOLERANCE then
-    out := None; // FIXME
+  if abs(DET) < DET_TOLERANCE then
+    valid := false;
+    return;
   end if;
   DETinv := 1.0/DET;
   r := DETinv * (-dy  * (x-x1) +  dx * (y-y1));
   s := DETinv * (-dy1 * (x-x1) + dx1 * (y-y1));
   xi := (x1 + r*dx1 + x + s*dx)/2.0;
   yi := (y1 + r*dy1 + y + s*dy)/2.0;
-  if (0 <= r <= 1) and (0 <= s <= 1) then
+  /* if (0 <= r and r <= 1) and (0 <= s and s <= 1) then */
+  if (is_included(0, 1, r)) and (is_included(0, 1, s)) then
     out := Point(xi, yi);
+    valid := true;
+    return;
   else
-    out := None;
+    valid := false;
+    return;
   end if;
 end segment_intersection;
+
+
+model test_segment_intersection
+  Boolean valid;
+  Point p;
+algorithm
+
+  (valid, p) := segment_intersection(Edge(Point(0, 0), Point(2, 2)), Edge(Point(0, 2), Point(2, 0)));
+  assert(valid == true, "segment intersection #1");
+  assertRealEqual(p.x, 1);
+  assertRealEqual(p.y, 1);
+
+  (valid, p) := segment_intersection(Edge(Point(1, 1), Point(4, -5)),  Edge(Point(2, -3), Point(3, -1)));
+  assert(valid == true, "segment intersection #2");
+  assertRealEqual(p.x, 2.5);
+  assertRealEqual(p.y, -2.0);
+
+  (valid, p) := segment_intersection(Edge(Point(0, 0), Point(0, 10)), Edge(Point(2, 0), Point(2, -10)));
+  assert(valid == false, "segment intersection #3");
+
+  (valid, p) := segment_intersection(Edge(Point(-2, 3), Point(3, 3)), Edge(Point(9, 6), Point(9, 2)));
+  assert(valid == false, "segment intersection #4");
+
+  (valid, p) := segment_intersection(Edge(Point(0, 1), Point(1, 2)), Edge(Point(2, 2), Point(1, 3)));
+  assert(valid == false, "segment intersection #5");
+
+  (valid, p) := segment_intersection(Edge(Point(2, 5), Point(2, -1)), Edge(Point(2, -1), Point(10, -1)));
+  assert(valid == true, "segment intersection #6");
+  assertRealEqual(p.x, 2);
+  assertRealEqual(p.y, -1);
+
+end test_segment_intersection;

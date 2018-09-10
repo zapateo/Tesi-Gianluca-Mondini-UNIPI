@@ -5,10 +5,17 @@
 \usepackage{amsfonts}
 \usepackage{float}
 \usepackage{amssymb}
+\usepackage{xcolor}
 \usepackage{graphicx}
+
+% Per l'inserimento di codice OpenModelica
+\usepackage{listings}
+\input{listings-modelica.cfg}
+
 \graphicspath{ {./images/} }
 \author{Gianluca Mondini}
 \title{Tesi (titolo da definire)}
+
 \begin{document}
 
 \begin{center}
@@ -27,7 +34,17 @@
 
 Implementazione dell'algoritmo di Lloyd per l'equidistribuzione di uno sciame di droni su un'area specifica.
 
-È prevista la realizzazione di un modulo che ...
+È prevista la realizzazione di un modulo nell'ambiente \textit{OpenModelica} che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
+
+\section{Parole chiave}
+
+Prima di procedere con la trattazione, è necessario indicare alcune parole chiave presenti in questo documento e nel codice dell'implementazione
+
+\begin{description}
+	\item[Drone] Velivolo che, nel nostro caso di interesse, è rappresentato come un punto bidimensionale
+	\item[Area] Poligono convesso che delimita l'algoritmo;
+	\item[Cella] Porzione di spazio alla quale appartiene un drone; la cella relativa ad un drone è l'insieme di punti dell'area per i quali, tra tutti i vari droni, quello appartenente alla cella è il più vicino
+\end{description}
 
 \section{Il drone e sue componenti}
 
@@ -45,7 +62,9 @@ Il centro fisico è un astrazione che rappresenta il rapporto del drone con il m
 
 \subsection{Introduzione}
 
-L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di ...
+L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di suddividere un'area in celle convesse uniformemente dimensionate.
+
+L'algoritmo di Lloyd è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
 
 \subsection{Descrizione}
 
@@ -92,10 +111,75 @@ Le croci rappresentano i \textit{baricentri} delle varie partizioni.
 Intuitivamente, si può dire che l'algoritmo converga in quanto i punti che si trovano a minor distanza tra loro tendono a compiere un movimento più alto, mentre i punti che si trovano a distanze elevate tendono a muoversi meno.
 
 
+\section{Implementazione}
+
+\subsection{Introduzione}
+
+L'implementazione dell'algoritmo di Lloyd richiede una funzione che effettui la tassellazione di Voronoi, la quale a sua volta utilizza una serie di funzioni geometriche che operino nello spazio bidimensionale.
+
+Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio \textit{Python} per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica} 
+
+\subsection{Funzioni e classi geometriche}
+
+\subsubsection{Point}
+
+Per poter operare nello spazio bidimensionale, è necessario definire una classe \textit{Point} rappresentante una tupla \textit{x, y}
+
+\begin{lstlisting}[language=Modelica]
+record Point
+  Real x;
+  Real y;
+end Point;
+\end{lstlisting}
+
+\subsubsection{Verifica della sovrapposizione di due punti}
+
+Può verificarsi che, in seguito a ..., ci si trovi nella situazione in cui due punti sovrapposti non superino il test di equalità. Ad esempio:
+\[
+P_1 = (4.0, 2.0),
+P_2 = (4.00001, 1.999999)
+\]
+
+è chiaro come i due punti siano in realtà sovrapposti, ed è quindi necessario definire una funzione che si occupi di verificarlo
+
+\begin{lstlisting}[language=Modelica]
+function points_are_close
+  input Point p1;
+  input Point p2;
+  output Boolean out;
+protected
+  parameter Real tolerance = 0.001;
+algorithm
+  if abs(p1.x - p2.x) < tolerance then
+    if abs(p1.y - p2.y) < tolerance then
+      out := true;
+    else
+      out := false;
+    end if;
+  else
+    out := false;
+  end if;
+end points_are_close;
+\end{lstlisting}
+
+Il valore \textit{tolerance} può essere variato dipendentemente dalla precisione richiesta e dalla scala di applicazione. Nel caso in cui si operi in una scala metrica, ovvero nel caso in cui \textit{1.0} corrisponda ad \textit{1 metro}, una tolleranza di $0.001$ corrisponde ad \textit{1 millimetro}, ed è quindi considerato un valore accettabile dal momento che i droni hanno delle dimensioni nell'ordine di grandezza delle decine di centrimetri.
+
+\subsubsection{Edge}
+
+Per rappresentare un segmento, viene implementata la classe \textit{Edge}. Ogni Edge è definito come una coppia di punti.
+
+\begin{lstlisting}[language=Modelica]
+record Edge
+  parameter Point starting;
+  parameter Point ending;
+end Edge;
+\end{lstlisting}
+
 \section*{Bibliografia}
 
 \begin{itemize}
 	\item https://en.wikipedia.org/wiki/Lloyd\%27s\_algorithm
+	\item github.com/zapateocallisto
 \end{itemize}
 
 \end{document}

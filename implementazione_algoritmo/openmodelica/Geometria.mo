@@ -12,11 +12,15 @@ function compareReal
     equal := diff < absTol or diff <= max(abs(b), abs(a)) * relTol;
 end compareReal;
 
+//------------------------------------------------------------------------------
+
 function debug
   input String message;
 algorithm
   print("\n[DEBUG]: " + message + "\n\n");
 end debug;
+
+//------------------------------------------------------------------------------
 
 function assertRealEqual
   input Real actual;
@@ -29,6 +33,8 @@ algorithm
     return;
   end if;
 end assertRealEqual;
+
+//------------------------------------------------------------------------------
 
 function is_included
   input Real a;
@@ -49,6 +55,36 @@ algorithm
     included := false;
   end if;
 end is_included;
+
+model test_is_included
+algorithm
+    assert(is_included(0, 1, 0.5) == true, "");
+    assert(is_included(0, 1, 1.5) == false, "");
+    assert(is_included(-10, 10, 1.5) == true, "");
+    assert(is_included(-10, 10, -15) == false, "");
+    assert(is_included(-10, 10, 0) == true, "");
+end test_is_included;
+
+//------------------------------------------------------------------------------
+
+function close_value
+    input Real a, b;
+    output Boolean close;
+algorithm
+    close := (abs(a - b) < 0.001);
+end close_value;
+
+model test_close_value
+algorithm
+    assert(close_value(0.00001, 0) == true, "");
+    assert(close_value(431.00001, 431) == true, "");
+    assert(close_value(-0.00001, 0) == true, "");
+    assert(close_value(4320.00001, 4319.9999) == true, "");
+
+    assert(close_value(0.00001, 1) == false, "");
+    assert(close_value(-9, -10) == false, "");
+    assert(close_value(33, 333) == false, "");
+end test_close_value;
 
 //------------------------------------------------------------------------------
 
@@ -97,13 +133,6 @@ equation
   assert(edges_are_close(e1, e2), "e1 and e2 should be close");
   assert(not edges_are_close(e1, e3), "e1 and e3 should not be close");
 end test_edges_are_close;
-
-//------------------------------------------------------------------------------
-
-record Cell
-  parameter Point drone;
-  parameter Edge edges[99];
-end Cell;
 
 //------------------------------------------------------------------------------
 
@@ -311,7 +340,7 @@ algorithm
   dx := xB - x;
   dy := yB - y;
 
-  DET := (-dx1 * dy + dy1 + dx);
+  DET := ((-dx1 * dy) + (dy1 + dx));
   if abs(DET) < DET_TOLERANCE then
     valid := false;
     return;
@@ -362,4 +391,62 @@ algorithm
   assertRealEqual(p[1], 2);
   assertRealEqual(p[2], -1);
 
+//------------------------------------------------------------------------------
+
 end test_segment_intersection;
+
+function remove_duplicated_edges
+  input Real[:, 4] edges;
+  output Real[:, 4] unique_edges;
+protected
+  Boolean insert;
+algorithm
+  for i in 1:size(edges, 1) loop
+    insert := true;
+    for j in 1:size(unique_edges, 1) loop
+      if edges_are_close(edges[i], unique_edges[j]) then
+        insert := false;
+      end if;
+      insert := true;
+    end for;
+    if insert then
+      unique_edges := cat(1, unique_edges, edges[i:i]);
+    end if;
+  end for;
+end remove_duplicated_edges;
+
+model test_remove_duplicated_edges
+  Real [5, 4] input1;
+  Real[:, 4] out1;
+equation
+  input1 = {
+    {0, 0, 1, 1},
+    {0, 0, 1, 1},
+    {0, 0, 1, 3},
+    {-3, 0, 1, 1},
+    {-2, 0, 1, 1}
+  };
+  out1 = remove_duplicated_edges(input1);
+end test_remove_duplicated_edges;
+
+//------------------------------------------------------------------------------
+
+function vertices_from_edges
+  input Real [:, 4] edges;
+  output Real [:, 2] points;
+protected
+  Boolean add;
+algorithm
+  for i in 1:size(edges, 1) loop
+    point_start := {edges[i,1], edges[i,2]};
+    point_end := {edges[i,3], edges[i, 4]};
+    add := true;
+    for j in 1:size(points, 1) loop
+      if points_are_close(point_start, points[j]) then
+        add := false;
+      elseif points_are_close(point_end, points[j]) then
+        add := true;
+      end if;
+    end for;
+  end for;
+end vertices_from_edges;

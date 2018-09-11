@@ -33,6 +33,7 @@ with open("tmp_simulate.mos", mode="w+") as f:
     f.write('cd("/tmp");')
     for i in identifiers:
         f.write(f"simulate({i}); getErrorString();\n")
+        f.write('print("--------------------------------------------------------------------");')
 
 result = subprocess.run(['omc', './tmp_simulate.mos'], stdout=subprocess.PIPE)
 result = result.stdout.decode()
@@ -50,4 +51,6 @@ else:
         result = "\n".join(filter(func, result.split("\n")))
     result = result.replace("The simulation finished successfully.", bcolors.OKGREEN + "The simulation finished successfully!" + bcolors.ENDC)
     result = result.replace("assert", bcolors.FAIL + "assert" + bcolors.ENDC)
+    for i in identifiers:
+        result = result.replace(i, bcolors.BOLD + i + bcolors.ENDC)
     print(result)

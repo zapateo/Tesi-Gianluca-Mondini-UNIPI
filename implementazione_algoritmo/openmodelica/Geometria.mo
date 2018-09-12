@@ -438,8 +438,10 @@ function remove_duplicated_edges
     output Real[:, 4] unique_edges;
 protected
     
+    Real [0, 4] empty_unique_edges;
     Boolean insert;
 algorithm
+    unique_edges := empty_unique_edges;
     for i in 1:size(edges, 1) loop
         insert := true;
         for j in 1:size(unique_edges, 1) loop
@@ -477,7 +479,10 @@ function vertices_from_edges
     output Real [:, 2] points;
 protected
     Boolean add;
+    Real [0, 2] empty_points;
+    Real [2] point_start, point_end;
 algorithm
+    points := empty_points;
     for i in 1:size(edges, 1) loop
         point_start := {edges[i,1], edges[i,2]};
         point_end := {edges[i,3], edges[i, 4]};

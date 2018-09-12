@@ -491,3 +491,11 @@ algorithm
         end for;
     end for;
 end vertices_from_edges;
+
+model test_vertices_from_edges
+    Real [2,2] list1;
+algorithm
+    list1 := vertices_from_edges({{0,0,1,1}, {1,1,0,0}});
+    assert(compare_vectors(list1[1], {0, 0}), "");
+    assert(compare_vectors(list1[2], {1, 1}), "");
+end test_vertices_from_edges;

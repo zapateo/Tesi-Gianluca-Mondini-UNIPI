@@ -448,10 +448,9 @@ algorithm
             if edges_are_close(edges[i], unique_edges[j]) then
                 insert := false;
             end if;
-            insert := true;
         end for;
         if insert then
-            unique_edges := cat(1, unique_edges, edges[i:i]);
+            unique_edges := cat(1, unique_edges, {edges[i]});
         end if;
     end for;
 end remove_duplicated_edges;
@@ -491,7 +490,7 @@ algorithm
             if points_are_close(point_start, points[j]) then
                 add := false;
             elseif points_are_close(point_end, points[j]) then
-                add := true;
+                add := false;
             end if;
         end for;
     end for;

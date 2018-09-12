@@ -33,15 +33,15 @@ algorithm
                     edge_p2_primary_drone
                 );
                 if int1 and not int2 then
-                    keep = p2;
+                    keep := p2;
                 elseif not int1 and int2 then
-                    keep = p1;
+                    keep := p1;
                 end if;
                 //----------------------------------------------------------------------
                 new_edge := {intersect[1], intersect[2], keep[1], keep[2]};
                 new_edges := cat(1, new_edges, {new_edge});
                 //----------------------------------------------------------------------
-                add_to_intersections := true
+                add_to_intersections := true;
                 for intersections_index in 1:size(intersections, 1) loop
                     if close_value(intersections[intersections_index, 1], intersect[1]) and close_value(intersections[intersections_index, 2], intersect[2]) then
                         add_to_intersections := false;

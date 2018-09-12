@@ -1,5 +1,5 @@
 // From https://github.com/modelica/Modelica-Compliance/blob/master/ModelicaCompliance/Util.mo
-function compareReal
+function compare_real
     "Compares two Reals, and checks if they are close enough to be considered equal."
     input Real a, b;
     input Real absTol = 1e-10 "Absolute tolerance.";
@@ -10,7 +10,8 @@ protected
 algorithm
     diff := abs(a - b);
     equal := diff < absTol or diff <= max(abs(b), abs(a)) * relTol;
-end compareReal;
+end compare_real;
+
 //------------------------------------------------------------------------------
 
 function compare_vectors
@@ -54,7 +55,7 @@ function assertRealEqual
     input Real actual;
     input Real expected;
 algorithm
-    if compareReal(actual, expected) then
+    if compare_real(actual, expected) then
         return;
     else
         print("\nASSERTION ERROR [REAL EQUALITY]: expected " + String(expected) + " but have " + String(actual) + "\n\n");
@@ -70,10 +71,10 @@ function is_included
     input Real x;
     output Boolean included;
 algorithm
-    if compareReal(a, x) then
+    if compare_real(a, x) then
         included := true;
         return;
-    elseif compareReal(b, x) then
+    elseif compare_real(b, x) then
         included := true;
         return;
     elseif (a < x) and (x < b) then
@@ -173,7 +174,7 @@ protected
 algorithm
     dx := edge[3] - edge[1];
     dy := edge[4] - edge[2];
-    if compareReal(dx, 0.0) then
+    if compare_real(dx, 0.0) then
         vertical := true;
         out := 0;
         return;
@@ -196,11 +197,11 @@ model test_segment_slope
     Boolean vertical;
 algorithm
     (ss, vertical) := segment_slope(e1);
-    assert(compareReal(ss, 1.0), "segment_slope #1");
+    assert(compare_real(ss, 1.0), "segment_slope #1");
     assert(vertical == false, "segment_slope #1");
 
     (ss, vertical) := segment_slope(e2);
-    assert(compareReal(ss, -1.0), "segment_slope #2");
+    assert(compare_real(ss, -1.0), "segment_slope #2");
     assert(vertical == false, "segment_slope #2");
 
     (ss, vertical) := segment_slope(e3);
@@ -328,9 +329,9 @@ model test_from_line_to_segment
     parameter Real [4] e1 = from_line_to_segment(line1);
 algorithm
     assert(e1[1] == -10000, "from_line_to_segment #1");
-    assert(compareReal(e1[2], 3334), "from_line_to_segment #2");
+    assert(compare_real(e1[2], 3334), "from_line_to_segment #2");
     assert(e1[3] == 10000, "from_line_to_segment #3");
-    assert(compareReal(e1[4], -3332.67), "from_line_to_segment #4"); // FIXME
+    assert(compare_real(e1[4], -3332.67), "from_line_to_segment #4"); // FIXME
 end test_from_line_to_segment;
 
 //------------------------------------------------------------------------------
@@ -437,7 +438,6 @@ function remove_duplicated_edges
     input Real[:, 4] edges;
     output Real[:, 4] unique_edges;
 protected
-    
     Real [0, 4] empty_unique_edges;
     Boolean insert;
 algorithm

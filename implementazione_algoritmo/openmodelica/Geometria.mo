@@ -503,3 +503,18 @@ algorithm
     assert(compare_vectors(list1[1], {0, 0}), "");
     assert(compare_vectors(list1[2], {1, 1}), "");
 end test_vertices_from_edges;
+//------------------------------------------------------------------------------
+
+function remove_marked_edges
+    input Real[:,4] edges;
+    output Real [:,4] clean_edges;
+protected
+    Real [0,4] empty_clean_edges;
+algorithm
+    clean_edges := empty_clean_edges;
+    for i in 1:size(edges, 1) loop
+        if not compare_vectors(edges[i], {-1, -1, -1, -1}) then
+            clean_edges := cat(1, clean_edges, {edges[i]});
+        end if;
+    end for;
+end remove_marked_edges;

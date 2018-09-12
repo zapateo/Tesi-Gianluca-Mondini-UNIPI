@@ -59,3 +59,16 @@ algorithm
         end if;
     end for;
 end voronoi_cell;
+
+model test_voronoi_cell
+    Real [3, 4] edges1;
+algorithm
+    edges1 := voronoi_cell(
+        {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
+        {25, 25},
+        {{75, 75}}
+    );
+    assert(compare_vectors(edges1[1], {100, 0, 0, 0}), "edges1[1], {100, 0, 0, 0}");
+    assert(compare_vectors(edges1[2], {0, 100, 0, 0}), "edges1[2], {0, 100, 0, 0}");
+    assert(compare_vectors(edges1[3], {100, 0, 0, 100}), "edges1[3], {100, 0, 0, 100}");
+end test_voronoi_cell;

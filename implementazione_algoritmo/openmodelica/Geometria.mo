@@ -11,6 +11,34 @@ algorithm
     diff := abs(a - b);
     equal := diff < absTol or diff <= max(abs(b), abs(a)) * relTol;
 end compareReal;
+//------------------------------------------------------------------------------
+
+function compare_vectors
+    input Real [:] vector1, vector2;
+    output Boolean equal;
+algorithm
+    if not (size(vector1, 1) == size(vector2, 1)) then
+        equal := false;
+        return;
+    end if;
+
+    equal := true;
+    for i in 1:size(vector1, 1) loop
+        if not (vector1[i] == vector2[i]) then
+            equal := false;
+        end if;
+    end for;
+end compare_vectors;
+
+model test_compare_vectors
+algorithm
+    assert(compare_vectors({0,0,0}, {0,0,0,0}) == false, "");
+    assert(compare_vectors({1,1}, {1}) == false, "");
+    assert(compare_vectors({1,1,1}, {1,1,1}) == true, "");
+    assert(compare_vectors({1,1,1}, {1,1,0}) == false, "");
+    assert(compare_vectors({-43,0,-43}, {-43,-43,0}) == false, "");
+    assert(compare_vectors({-43,0,-43}, {-43,0,-43}) == true, "");
+end test_compare_vectors;
 
 //------------------------------------------------------------------------------
 

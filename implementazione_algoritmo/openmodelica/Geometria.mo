@@ -529,7 +529,9 @@ algorithm
                 join_edge := {primary_drone[1], primary_drone[2], point[1], point[2]};
                 (valid, intersection) := segment_intersection(inner_edge, join_edge);
                 if valid and (not points_are_close(intersection, point)) then
-                    edges[outer_i] := {-1, -1, -1, -1}; // Segnato per la cancellazione
+                    marked_edges[outer_i] := {-1, -1, -1, -1}; // Segnato per la cancellazione
+                else
+                    marked_edges[outer_i] := edges[inner_edge_index];
                 end if;
             end for;
         end for;

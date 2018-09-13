@@ -507,10 +507,17 @@ end vertices_from_edges;
 
 model test_vertices_from_edges
     Real [2,2] list1;
+    Real [4,2] list2;
 algorithm
     list1 := vertices_from_edges({{0,0,1,1}, {1,1,0,0}});
     assert(compare_vectors(list1[1], {0, 0}), "");
     assert(compare_vectors(list1[2], {1, 1}), "");
+
+    list2 := vertices_from_edges({{0,0,1,0}, {1,0,1,1}, {1,1,0,1}, {0,1,0,0}});
+    assert(compare_vectors(list2[1], {0, 0}), "");
+    assert(compare_vectors(list2[2], {1, 0}), "");
+    assert(compare_vectors(list2[3], {1, 1}), "");
+    assert(compare_vectors(list2[4], {0, 1}), "");
 end test_vertices_from_edges;
 
 //------------------------------------------------------------------------------

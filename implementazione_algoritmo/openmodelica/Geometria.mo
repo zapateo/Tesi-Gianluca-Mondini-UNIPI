@@ -512,6 +512,9 @@ function mark_unwanted_edges
     output Real [:,4] marked_edges;
 protected
     Real [0,4] empty_marked_edges;
+    Real [2] point, intersection;
+    Real [4] inner_edge, join_edge;
+    Boolean valid;
 algorithm
     marked_edges := empty_marked_edges;
     for outer_i in 1:size(edges, 1) loop

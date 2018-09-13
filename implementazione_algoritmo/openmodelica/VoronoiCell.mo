@@ -18,28 +18,28 @@ algorithm
         edges := mark_unwanted_edges(edges, primary_drone);
         for i in 1:size(edges, 1) loop
             if not compare_vectors(edges[i], {-1, -1, -1, -1}) then
-                intersect := segment_intersection(
+                (have_intersection, intersect) := segment_intersection(
                     from_line_to_segment(perp_bisect),
                     edges[i]
                 );
-                if intersect then
-                    edges[i] := {-1, -1, -1 -1};
+                if have_intersection then
+                    edges[i] := {-1, -1, -1, -1};
                     //----------------------------------------------------------------------
                     p1 := {edges[i, 1], edges[i, 2]};
                     p2 := {edges[i, 3], edges[i, 4]};
                     edge_p1_primary_drone := {p1[1], p1[2], primary_drone[1], primary_drone[2]};
                     edge_p2_primary_drone := {p2[1], p2[2], primary_drone[1], primary_drone[2]};
-                    int1 := segment_intersection(
+                    (have_intersection_1, int1) := segment_intersection(
                         from_line_to_segment(perp_bisect),
                         edge_p1_primary_drone
                     );
-                    int2 := segment_intersection(
+                    (have_intersection_2, int2) := segment_intersection(
                         from_line_to_segment(perp_bisect),
                         edge_p2_primary_drone
                     );
-                    if int1 and not int2 then
+                    if have_intersection_1 and not have_intersection_2 then
                         keep := p2;
-                    elseif not int1 and int2 then
+                    elseif not have_intersection_1 and have_intersection_2 then
                         keep := p1;
                     end if;
                     //----------------------------------------------------------------------

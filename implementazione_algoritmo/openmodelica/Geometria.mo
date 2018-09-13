@@ -51,7 +51,7 @@ end debug;
 
 //------------------------------------------------------------------------------
 
-function assertRealEqual
+function assert_real_equal
     input Real actual;
     input Real expected;
 algorithm
@@ -61,7 +61,7 @@ algorithm
         print("\nASSERTION ERROR [REAL EQUALITY]: expected " + String(expected) + " but have " + String(actual) + "\n\n");
         return;
     end if;
-end assertRealEqual;
+end assert_real_equal;
 
 //------------------------------------------------------------------------------
 
@@ -398,13 +398,13 @@ algorithm
 
     (valid, p) := segment_intersection({0, 0, 2, 2}, {0, 2, 2, 0});
     assert(valid == true, "segment intersection #1");
-    assertRealEqual(p[1], 1);
-    assertRealEqual(p[2], 1);
+    assert_real_equal(p[1], 1);
+    assert_real_equal(p[2], 1);
 
     (valid, p) := segment_intersection({1, 1, 4, -5},  {2, -3, 3, -1});
     assert(valid == true, "segment intersection #2");
-    assertRealEqual(p[1], 2.5);
-    assertRealEqual(p[2], -2.0);
+    assert_real_equal(p[1], 2.5);
+    assert_real_equal(p[2], -2.0);
 
     (valid, p) := segment_intersection({0, 0, 0, 10}, {2, 0, 2, -10});
     assert(valid == false, "segment intersection #3");
@@ -417,18 +417,18 @@ algorithm
 
     (valid, p) := segment_intersection({2, 5, 2, -1}, {2, -1, 10, -1});
     assert(valid == true, "segment intersection #6");
-    assertRealEqual(p[1], 2);
-    assertRealEqual(p[2], -1);
+    assert_real_equal(p[1], 2);
+    assert_real_equal(p[2], -1);
 
     (valid, p) := segment_intersection({-5, 7, -5, -3}, {-5, -3, 21, -3});
     assert(valid == true, "segment intersection #7");
-    assertRealEqual(p[1], -5);
-    assertRealEqual(p[2], -3);
+    assert_real_equal(p[1], -5);
+    assert_real_equal(p[2], -3);
 
     (valid, p) := segment_intersection({1, 1, 2, 2}, {1, 2, 2, 1});
     assert(valid == true, "segment intersection #8");
-    assertRealEqual(p[1], 1.5);
-    assertRealEqual(p[2], 1.5);
+    assert_real_equal(p[1], 1.5);
+    assert_real_equal(p[2], 1.5);
 
 end test_segment_intersection;
 

@@ -477,9 +477,9 @@ function vertices_from_edges
     input Real [:, 4] edges;
     output Real [:, 2] points;
 protected
-    Boolean add;
+    Boolean add_p1, add_p2;
     Real [0, 2] empty_points;
-    Real [2] point_start, point_end;
+    Real [2] p1, p2, point;
 algorithm
     points := empty_points;
     for i in 1:size(edges, 1) loop

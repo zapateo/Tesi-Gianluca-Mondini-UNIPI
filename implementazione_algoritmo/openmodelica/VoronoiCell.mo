@@ -44,6 +44,8 @@ algorithm
                         keep := p2;
                     elseif not have_intersection_1 and have_intersection_2 then
                         keep := p1;
+                    else
+                        assert(false, "non viene creata un intersezione nè con p1 nè con p2");
                     end if;
                     //----------------------------------------------------------------------
                     new_edge := {intersect[1], intersect[2], keep[1], keep[2]};
@@ -67,6 +69,7 @@ algorithm
             edges := cat(1, edges, {{intersections[1,1], intersections[1,2], intersections[2,1], intersections[2,2]}});
         end if;
     end for;
+    assert(size(edges, 1) > 1, "edges deve contenere almeno un elemento");
     edges := mark_unwanted_edges(edges, primary_drone);
     edges := remove_marked_edges(edges);
     edges := remove_duplicated_edges(edges);

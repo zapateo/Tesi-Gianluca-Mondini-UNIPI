@@ -1,14 +1,16 @@
 function voronoi_cell
-    input  Real   [:, 4]  edges;
+    input  Real   [:, 4]  input_edges;
     input  Real   [2]     primary_drone;
     input  Real   [:, 2]  other_drones;
     output Real   [:, 4]  output_edges;
 protected
-    Real [2]    drone;
-    Real [4]    union_edge;
-    Real [3]    perp_bisect;
-    Real [:,2]  intersections;  Real [0,2] empty_intersections;
-    Real [:,4]  new_edges;      Real [0,4] empty_new_edges;
+    Real   [:, 4]  edges;
+    Real   [2]     drone, point, intersect, p1, p2, int1, int2, keep;
+    Real   [4]     union_edge, edge_p1_primary_drone, edge_p2_primary_drone, new_edge;
+    Real   [3]     perp_bisect;
+    Real   [:,2]   intersections;    Real [0,2] empty_intersections;
+    Real   [:,4]   new_edges;        Real [0,4] empty_new_edges;
+    Boolean have_intersection, have_intersection_1, have_intersection_2, add_to_intersections;
 algorithm
     for other_drones_index in 1:size(other_drones, 1) loop drone := other_drones[other_drones_index];
         union_edge := {primary_drone[1], primary_drone[2], drone[1], drone[2]};

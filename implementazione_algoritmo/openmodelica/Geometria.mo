@@ -483,16 +483,25 @@ protected
 algorithm
     points := empty_points;
     for i in 1:size(edges, 1) loop
-        point_start := {edges[i,1], edges[i,2]};
-        point_end := {edges[i,3], edges[i, 4]};
-        add := true;
-        for j in 1:size(points, 1) loop
-            if points_are_close(point_start, points[j]) then
-                add := false;
-            elseif points_are_close(point_end, points[j]) then
-                add := false;
+        p1 := {edges[i, 1], edges[i, 2]};
+        p2 := {edges[i, 3], edges[i, 4]};
+        add_p1 := true;
+        add_p2 := true;
+        for points_index in 1:size(points, 1) loop
+            point := points[points_index];
+            if points_are_close(p1, point) then
+                add_p1 := false;
+            end if;
+            if points_are_close(p2, point) then
+                add_p2 := false;
             end if;
         end for;
+        if add_p1 then
+            points := cat(1, points, {p1});
+        end if;
+        if add_p2 then
+            points := cat(1, points, {p2});
+        end if;
     end for;
 end vertices_from_edges;
 

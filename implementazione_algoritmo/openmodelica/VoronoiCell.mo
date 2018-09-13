@@ -12,6 +12,7 @@ protected
     Real   [:,4]   new_edges;        Real [0,4] empty_new_edges;
     Boolean have_intersection, have_intersection_1, have_intersection_2, add_to_intersections;
 algorithm
+    edges := input_edges;
     for other_drones_index in 1:size(other_drones, 1) loop drone := other_drones[other_drones_index];
         union_edge := {primary_drone[1], primary_drone[2], drone[1], drone[2]};
         perp_bisect := perpendicular_bisector(union_edge);

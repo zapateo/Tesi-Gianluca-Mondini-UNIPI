@@ -61,7 +61,7 @@ algorithm
         end for; // i in 1:size(edges, 1)
         edges := cat(1, edges, new_edges);
         if size(intersections, 1) == 2 then
-            edges := cat(1, edges, {intersections[1,1], intersections[1,2], intersections[2,1], intersections[2,2]});
+            edges := cat(1, edges, {{intersections[1,1], intersections[1,2], intersections[2,1], intersections[2,2]}});
         end if;
     end for;
     edges := mark_unwanted_edges(edges, primary_drone);

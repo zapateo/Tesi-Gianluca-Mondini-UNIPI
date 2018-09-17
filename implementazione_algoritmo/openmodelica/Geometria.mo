@@ -43,6 +43,19 @@ end test_compare_vectors;
 
 //------------------------------------------------------------------------------
 
+function vector_to_string
+    input Real [:] vect;
+    output String out;
+algorithm
+    out := "{";
+    for i in 1:size(vect, 1) loop
+        out := out + ", " + String(out);
+    end for;
+    out := out + "}";
+end vector_to_string;
+
+//------------------------------------------------------------------------------
+
 function debug
     input String message;
 algorithm

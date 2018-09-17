@@ -1,5 +1,5 @@
-// From https://github.com/modelica/Modelica-Compliance/blob/master/ModelicaCompliance/Util.mo
 function compare_real
+    // From https://github.com/modelica/Modelica-Compliance/blob/master/ModelicaCompliance/Util.mo
     "Compares two Reals, and checks if they are close enough to be considered equal."
     input Real a, b;
     input Real absTol = 1e-10 "Absolute tolerance.";

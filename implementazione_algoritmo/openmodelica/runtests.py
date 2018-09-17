@@ -30,10 +30,11 @@ identifiers = list(set(identifiers))
 with open("tmp_simulate.mos", mode="w+") as f:
     for filename in FILENAMES:
         f.write(f'loadFile("{filename}"); getErrorString();\n')
-    f.write('cd("/tmp");')
+    f.write('cd("/tmp");\n')
     for i in identifiers:
         f.write(f"simulate({i}); getErrorString();\n")
-        f.write('print("--------------------------------------------------------------------");')
+        # f.write(f"{i}(); getErrorString();\n")
+        f.write('print("--------------------------------------------------------------------");\n')
 
 result = subprocess.run(['omc', './tmp_simulate.mos'], stdout=subprocess.PIPE)
 result = result.stdout.decode()

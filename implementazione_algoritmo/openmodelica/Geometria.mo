@@ -149,6 +149,7 @@ algorithm
 end points_are_close;
 
 model test_points_are_close
+protected
     parameter Real [2] p1 = {0.0, 0.0};
     parameter Real [2] p2 = {0.0001, 0.0};
     parameter Real [2] p3 = {0.0, 0.0};
@@ -168,6 +169,7 @@ algorithm
 end edges_are_close;
 
 model test_edges_are_close
+protected
     parameter Real [4] e1 = {4.0, 5.0, 1.0, -3.0};
     parameter Real [4] e2 = {4.0, 5.0, 1.0001, -3.0};
     parameter Real [4] e3 = {-4.0, -5.0, 1.0001, -3.0};
@@ -199,6 +201,7 @@ algorithm
 end segment_slope;
 
 model test_segment_slope
+protected
     // Segmenti non verticali
     parameter Real [4] e1 = {0, 0, 10, 10};
     parameter Real [4] e2 = {0, 2, 2, 0};
@@ -239,6 +242,7 @@ algorithm
 end midpoint;
 
 model test_midpoint
+protected
     parameter Real [4] e1 = {0, 0, 2, 2};
     parameter Real [4] e2 = {1, 1, 4, -5};
     parameter Real [2] p1 = midpoint(e1);
@@ -279,6 +283,7 @@ algorithm
 end perpendicular_bisector;
 
 model test_perpendicular_bisector
+protected
     parameter Real [3] line1 = perpendicular_bisector({0, 2, 2, 0});
     parameter Real [3] line2 = perpendicular_bisector({5, -3, 5, 2});
     parameter Real [3] line3 = perpendicular_bisector({-15, 2, -15, -3});
@@ -338,6 +343,7 @@ algorithm
 end from_line_to_segment;
 
 model test_from_line_to_segment
+protected
     parameter Real [3] line1 = {1, 3, -2};
     parameter Real [4] e1 = from_line_to_segment(line1);
 algorithm

@@ -59,7 +59,7 @@ end vector_to_string;
 function debug
     input String message;
 algorithm
-    print("\n[DEBUG]: " + message + "\n\n");
+    print("[DEBUG]: " + message + "\n");
 end debug;
 
 //------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ protected
     Real   [3]     perp_bisect;
     Real   [:,2]   intersections;    Real [0,2] empty_intersections;
     Real   [:,4]   new_edges;        Real [0,4] empty_new_edges;
-    Boolean have_intersection, have_intersection_1, have_intersection_2, add_to_intersections;
+    Boolean have_intersection, int1_valid, int2_valid, add_to_intersections;
 algorithm
     edges := input_edges;
     for other_drones_index in 1:size(other_drones, 1) loop drone := other_drones[other_drones_index];
@@ -26,26 +26,30 @@ algorithm
                     edges[i]
                 );
                 if have_intersection then
-                    edges[i] := {-1, -1, -1, -1};
-                    //----------------------------------------------------------------------
+                    //----------------------------------------------------------
+                    // Decido quale estremo del segmento salvare
+                    //----------------------------------------------------------
                     p1 := {edges[i, 1], edges[i, 2]};
                     p2 := {edges[i, 3], edges[i, 4]};
+                    edges[i] := {-1, -1, -1, -1};
                     edge_p1_primary_drone := {p1[1], p1[2], primary_drone[1], primary_drone[2]};
                     edge_p2_primary_drone := {p2[1], p2[2], primary_drone[1], primary_drone[2]};
-                    (have_intersection_1, int1) := segment_intersection(
+                    (int1_valid, int1) := segment_intersection(
                         from_line_to_segment(perp_bisect),
                         edge_p1_primary_drone
                     );
-                    (have_intersection_2, int2) := segment_intersection(
+                    (int2_valid, int2) := segment_intersection(
                         from_line_to_segment(perp_bisect),
                         edge_p2_primary_drone
                     );
-                    if have_intersection_1 and not have_intersection_2 then
+                    assert(int1_valid or int2_valid, "non viene creata un intersezione nè con p1 nè con p2. p1 = " + vector_to_string(p1) + ", p2 = " + vector_to_string(p2) + ", primary_drone = " + vector_to_string(primary_drone));
+                    if int1_valid and not int2_valid then
                         keep := p2;
-                    elseif not have_intersection_1 and have_intersection_2 then
+                    elseif not int1_valid and int2_valid then
                         keep := p1;
+                    elseif int1_valid and int2_valid then
                     else
-                        assert(false, "non viene creata un intersezione nè con p1 nè con p2");
+                        assert(false, "errore logico");
                     end if;
                     //----------------------------------------------------------------------
                     new_edge := {intersect[1], intersect[2], keep[1], keep[2]};
@@ -74,11 +78,11 @@ algorithm
     edges := remove_marked_edges(edges);
     edges := remove_duplicated_edges(edges);
     output_edges := edges;
-    return;
 end voronoi_cell;
 
 model test_voronoi_cell
     Real [3, 4] edges1;
+    Real [5, 4] edges2;
 algorithm
     edges1 := voronoi_cell(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},

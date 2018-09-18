@@ -215,10 +215,8 @@ end segment_slope;
 
 model test_segment_slope
 protected
-    // Segmenti non verticali
     parameter Real [4] e1 = {0, 0, 10, 10};
     parameter Real [4] e2 = {0, 2, 2, 0};
-    // Segmenti verticali
     parameter Real [4] e3 = {1, 10, 1, -2};
     parameter Real [4] e4 = {-5, 10, -5, -2};
 
@@ -373,7 +371,6 @@ function segment_intersection
     output Boolean valid;
     output Real [2] out;
 protected
-    //Real [2] pt1, pt2, ptA, ptB;
     Real x1, x2, y1, y2, dx1, dy1, x, y, xB, yB, dx, dy, DET, DETinv, r, s, xi, yi;
     parameter Real DET_TOLERANCE = 0.00000001;
 algorithm

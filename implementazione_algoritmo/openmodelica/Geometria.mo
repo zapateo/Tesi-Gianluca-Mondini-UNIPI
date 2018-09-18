@@ -51,7 +51,7 @@ function vector_to_string
 algorithm
     out := "{";
     for i in 1:size(vect, 1) loop
-        out := out + ", " + String(out);
+        out := out + String(vect[i]) + ", ";
     end for;
     out := out + "}";
 end vector_to_string;

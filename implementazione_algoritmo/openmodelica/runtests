@@ -5,18 +5,35 @@ import subprocess
 import os
 import sys
 
-FILENAMES = list(
+CLASSES_FILENAMES = list(
     filter(
         lambda name: name.endswith(".mo"),
         os.listdir("classes")
     )
 )
-FILENAMES = list(
+CLASSES_FILENAMES = list(
     map(
         lambda name: "classes/" + name,
-        FILENAMES
+        CLASSES_FILENAMES
     )
 )
+
+TEST_FILENAMES = list(
+    filter(
+        lambda name: name.endswith(".mo"),
+        os.listdir("test")
+    )
+)
+TEST_FILENAMES = list(
+    map(
+        lambda name: "test/" + name,
+        TEST_FILENAMES
+    )
+)
+
+FILENAMES = CLASSES_FILENAMES + TEST_FILENAMES
+
+print(FILENAMES)
 
 class bcolors:
     HEADER = '\033[95m'

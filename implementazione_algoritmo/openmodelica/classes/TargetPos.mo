@@ -4,9 +4,9 @@ function TargetPos
     input   Real  [:,4]  area_boundaries;
     output  Real  [2]    target_position;
 algorithm
-    target_position := center_of_mass(
-        vertices_from_edges(
-            voronoi_cell(
+    target_position := CenterOfMass(
+        EdgesToVertices(
+            VoronoiCell(
                 area_boundaries
             )
         )

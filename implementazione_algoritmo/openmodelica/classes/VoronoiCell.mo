@@ -1,4 +1,4 @@
-function voronoi_cell
+function VoronoiCell
     input  Real   [:, 4]  input_edges;
     input  Real   [2]     primary_drone;
     input  Real   [:, 2]  other_drones;
@@ -15,14 +15,14 @@ algorithm
     edges := input_edges;
     for other_drones_index in 1:size(other_drones, 1) loop drone := other_drones[other_drones_index];
         union_edge := {primary_drone[1], primary_drone[2], drone[1], drone[2]};
-        perp_bisect := perpendicular_bisector(union_edge);
+        perp_bisect := PerpendicularBisector(union_edge);
         intersections := empty_intersections;
         new_edges := empty_new_edges;
-        edges := mark_unwanted_edges(edges, primary_drone);
+        edges := MarkUnwantedEdges(edges, primary_drone);
         for i in 1:size(edges, 1) loop
-            if not compare_vectors(edges[i], {-1, -1, -1, -1}) then
-                (have_intersection, intersect) := segment_intersection(
-                    from_line_to_segment(perp_bisect),
+            if not CompareVectors(edges[i], {-1, -1, -1, -1}) then
+                (have_intersection, intersect) := SegmentsIntersection(
+                    LineToSegment(perp_bisect),
                     edges[i]
                 );
                 if have_intersection then
@@ -34,15 +34,15 @@ algorithm
                     edges[i] := {-1, -1, -1, -1};
                     edge_p1_primary_drone := {p1[1], p1[2], primary_drone[1], primary_drone[2]};
                     edge_p2_primary_drone := {p2[1], p2[2], primary_drone[1], primary_drone[2]};
-                    (int1_valid, int1) := segment_intersection(
-                        from_line_to_segment(perp_bisect),
+                    (int1_valid, int1) := SegmentsIntersection(
+                        LineToSegment(perp_bisect),
                         edge_p1_primary_drone
                     );
-                    (int2_valid, int2) := segment_intersection(
-                        from_line_to_segment(perp_bisect),
+                    (int2_valid, int2) := SegmentsIntersection(
+                        LineToSegment(perp_bisect),
                         edge_p2_primary_drone
                     );
-                    assert(int1_valid or int2_valid, "non viene creata un intersezione nè con p1 nè con p2. p1 = " + vector_to_string(p1) + ", p2 = " + vector_to_string(p2) + ", primary_drone = " + vector_to_string(primary_drone));
+                    assert(int1_valid or int2_valid, "non viene creata un intersezione nè con p1 nè con p2. p1 = " + VectorToString(p1) + ", p2 = " + VectorToString(p2) + ", primary_drone = " + VectorToString(primary_drone));
                     if int1_valid and not int2_valid then
                         keep := p2;
                     elseif not int1_valid and int2_valid then
@@ -57,7 +57,7 @@ algorithm
                     //----------------------------------------------------------------------
                     add_to_intersections := true;
                     for intersections_index in 1:size(intersections, 1) loop
-                        if close_value(intersections[intersections_index, 1], intersect[1]) and close_value(intersections[intersections_index, 2], intersect[2]) then
+                        if ValuesAreClose(intersections[intersections_index, 1], intersect[1]) and ValuesAreClose(intersections[intersections_index, 2], intersect[2]) then
                             add_to_intersections := false;
                         end if;
                     end for;
@@ -65,8 +65,8 @@ algorithm
                         intersections := cat(1, intersections, {intersect});
                     end if;
                 end if;
-                edges := mark_unwanted_edges(edges, primary_drone);
-            end if; // compare_vectors(edges[i], {-1, -1, -1, -1})
+                edges := MarkUnwantedEdges(edges, primary_drone);
+            end if; // CompareVectors(edges[i], {-1, -1, -1, -1})
         end for; // i in 1:size(edges, 1)
         edges := cat(1, edges, new_edges);
         if size(intersections, 1) == 2 then
@@ -74,33 +74,33 @@ algorithm
         end if;
     end for;
     assert(size(edges, 1) > 1, "edges deve contenere almeno un elemento");
-    edges := mark_unwanted_edges(edges, primary_drone);
-    edges := remove_marked_edges(edges);
-    edges := remove_duplicated_edges(edges);
+    edges := MarkUnwantedEdges(edges, primary_drone);
+    edges := RemoveMarkedEdges(edges);
+    edges := RemoveDuplicatedEdges(edges);
     output_edges := edges;
-end voronoi_cell;
+end VoronoiCell;
 
-model test_voronoi_cell
+model test_VoronoiCell
     Real [3, 4] edges1;
     Real [5, 4] edges2;
 algorithm
-    edges1 := voronoi_cell(
+    edges1 := VoronoiCell(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
         {25, 25},
         {{75, 75}}
     );
-    assert_vector_equal(edges1[1], {100, 0, 0, 0});
-    assert_vector_equal(edges1[2], {0, 100, 0, 0});
-    assert_vector_equal(edges1[3], {100, 0, 0, 100});
+    AssertVectorEquality(edges1[1], {100, 0, 0, 0});
+    AssertVectorEquality(edges1[2], {0, 100, 0, 0});
+    AssertVectorEquality(edges1[3], {100, 0, 0, 100});
     //--------------------------------------------------------------------------
-    edges2 := voronoi_cell(
+    edges2 := VoronoiCell(
         {{100, 0, 300, 0}, {300, 0, 300, 200}, {300, 200, 200, 400}, {200, 400, 0, 200}, {0, 200, 100, 0}},
         {200, 300},
         {{100, 100}, {100, 200}}
     );
-    assert_vector_equal(edges2[1], {300,200,200,400});
-    assert_vector_equal(edges2[2], {300,125,300,200});
-    assert_vector_equal(edges2[3], {100,300,200,400});
-    assert_vector_equal(edges2[4], {250,150,300,125});
-    assert_vector_equal(edges2[5], {100,300,250,150});
-end test_voronoi_cell;
+    AssertVectorEquality(edges2[1], {300,200,200,400});
+    AssertVectorEquality(edges2[2], {300,125,300,200});
+    AssertVectorEquality(edges2[3], {100,300,200,400});
+    AssertVectorEquality(edges2[4], {250,150,300,125});
+    AssertVectorEquality(edges2[5], {100,300,250,150});
+end test_VoronoiCell;

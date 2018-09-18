@@ -1,3 +1,11 @@
+/*
+ *    Gianluca Mondini - 2018
+ *
+ *    Tesi Ing. Informatica - Università di Pisa
+ *
+ *    https://github.com/zapateo/Tesi_GianlucaMondini
+ */
+
 model test_ValuesAreClose
 algorithm
     assert(ValuesAreClose(0.00001, 0) == true, "");

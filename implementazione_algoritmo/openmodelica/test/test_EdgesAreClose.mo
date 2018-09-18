@@ -1,3 +1,11 @@
+/*
+ *    Gianluca Mondini - 2018
+ *
+ *    Tesi Ing. Informatica - Università di Pisa
+ *
+ *    https://github.com/zapateo/Tesi_GianlucaMondini
+ */
+
 model test_EdgesAreClose
 protected
     parameter Real [4] e1 = {4.0, 5.0, 1.0, -3.0};

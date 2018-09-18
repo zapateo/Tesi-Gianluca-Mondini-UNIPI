@@ -1,3 +1,11 @@
+/*
+ *    Gianluca Mondini - 2018
+ *
+ *    Tesi Ing. Informatica - Università di Pisa
+ *
+ *    https://github.com/zapateo/Tesi_GianlucaMondini
+ */
+
 function RemoveMarkedEdges
     input Real[:,4] edges;
     output Real [:,4] clean_edges;

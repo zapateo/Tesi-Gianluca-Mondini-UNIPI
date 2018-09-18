@@ -1,3 +1,11 @@
+/*
+ *    Gianluca Mondini - 2018
+ *
+ *    Tesi Ing. Informatica - Università di Pisa
+ *
+ *    https://github.com/zapateo/Tesi_GianlucaMondini
+ */
+
 model test_MarkUnwantedEdges
     Real [2, 4] out1;
 algorithm

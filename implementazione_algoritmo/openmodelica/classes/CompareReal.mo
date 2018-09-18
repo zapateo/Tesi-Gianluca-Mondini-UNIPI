@@ -1,3 +1,11 @@
+/*
+ *    Gianluca Mondini - 2018
+ *
+ *    Tesi Ing. Informatica - Università di Pisa
+ *
+ *    https://github.com/zapateo/Tesi_GianlucaMondini
+ */
+
 function CompareReal
     // From https://github.com/modelica/Modelica-Compliance/blob/master/ModelicaCompliance/Util.mo
     "Compares two Reals, and checks if they are close enough to be considered equal."

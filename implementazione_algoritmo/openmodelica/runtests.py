@@ -19,6 +19,13 @@ class bcolors:
 
 os.system("clear")
 
+forced_tests = list(
+    filter(
+        lambda s: s.startswith("test_"),
+        sys.argv
+    )
+)
+
 content = ""
 for filename in FILENAMES:
     with open(filename) as f:
@@ -31,9 +38,12 @@ with open("tmp_simulate.mos", mode="w+") as f:
     for filename in FILENAMES:
         f.write(f'loadFile("{filename}"); getErrorString();\n')
     f.write('cd("/tmp");\n')
-    for i in identifiers:
-        f.write(f"simulate({i}); getErrorString();\n")
-        # f.write(f"{i}(); getErrorString();\n")
+    if forced_tests:
+        for t in forced_tests:
+            f.write(f"simulate({t}); getErrorString();\n")
+    else:
+        for i in identifiers:
+            f.write(f"simulate({i}); getErrorString();\n")
         f.write('print("--------------------------------------------------------------------");\n')
 
 result = subprocess.run(['omc', './tmp_simulate.mos'], stdout=subprocess.PIPE)

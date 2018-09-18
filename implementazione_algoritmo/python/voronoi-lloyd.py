@@ -84,12 +84,12 @@ def voronoj_cell(edges, primary_drone, other_drones):
                 edges[i]
             )
             if intersect:
-                edges[i].to_be_deleted = True
                 #---------------------------------------------------------------
                 # Decido quale estremo del segmento salvare
                 #---------------------------------------------------------------
                 p1 = edges[i].start
                 p2 = edges[i].end
+                edges[i].to_be_deleted = True
                 edge_p1_primary_drone = Edge(p1, primary_drone)
                 edge_p2_primary_drone = Edge(p2, primary_drone)
                 int1 = segment_intersection(

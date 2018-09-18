@@ -85,7 +85,18 @@ algorithm
         {25, 25},
         {{75, 75}}
     );
-    assert(compare_vectors(edges1[1], {100, 0, 0, 0}), "edges1[1], {100, 0, 0, 0}");
-    assert(compare_vectors(edges1[2], {0, 100, 0, 0}), "edges1[2], {0, 100, 0, 0}");
-    assert(compare_vectors(edges1[3], {100, 0, 0, 100}), "edges1[3], {100, 0, 0, 100}");
+    assert_vector_equal(edges1[1], {100, 0, 0, 0});
+    assert_vector_equal(edges1[2], {0, 100, 0, 0});
+    assert_vector_equal(edges1[3], {100, 0, 0, 100});
+    //--------------------------------------------------------------------------
+    edges2 := voronoi_cell(
+        {{100, 0, 300, 0}, {300, 0, 300, 200}, {300, 200, 200, 400}, {200, 400, 0, 200}, {0, 200, 100, 0}},
+        {200, 300},
+        {{100, 100}, {100, 200}}
+    );
+    assert_vector_equal(edges2[1], {300,200,200,400});
+    assert_vector_equal(edges2[2], {300,125,300,200});
+    assert_vector_equal(edges2[3], {100,300,200,400});
+    assert_vector_equal(edges2[4], {250,150,300,125});
+    assert_vector_equal(edges2[5], {100,300,250,150});
 end test_voronoi_cell;

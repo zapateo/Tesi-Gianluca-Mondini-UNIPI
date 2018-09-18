@@ -360,35 +360,27 @@ function segment_intersection
     output Boolean valid;
     output Real [2] out;
 protected
-    Real [2] pt1, pt2, ptA, ptB;
+    //Real [2] pt1, pt2, ptA, ptB;
     Real x1, x2, y1, y2, dx1, dy1, x, y, xB, yB, dx, dy, DET, DETinv, r, s, xi, yi;
     parameter Real DET_TOLERANCE = 0.00000001;
 algorithm
-    pt1 := {edge1[1], edge1[2]};
-    pt2 := {edge1[3], edge1[4]};
+    x1 := edge1[1];
+    y1 := edge1[2];
+    x2 := edge1[3];
+    y2 := edge1[4];
 
-    ptA := {edge2[1], edge2[2]};
-    ptB := {edge2[3], edge2[4]};
-
-    x1 := pt1[1];
-    y1 := pt1[2];
-
-    x2 := pt2[1];
-    y2 := pt2[2];
+    x := edge2[1];
+    y := edge2[2];
+    xB := edge2[3];
+    yB := edge2[4];
 
     dx1 := x2 - x1;
     dy1 := y2 - y1;
 
-    x := ptA[1];
-    y := ptA[2];
-
-    xB := ptB[1];
-    yB := ptB[2];
-
     dx := xB - x;
     dy := yB - y;
 
-    DET := ((-dx1 * dy) + (dy1 + dx));
+    DET := ((-dx1 * dy) + (dy1 * dx));
     if abs(DET) < DET_TOLERANCE then
         valid := false;
         return;

@@ -5,7 +5,18 @@ import subprocess
 import os
 import sys
 
-FILENAMES = ["Geometria.mo", "VoronoiCell.mo"]
+FILENAMES = list(
+    filter(
+        lambda name: name.endswith(".mo"),
+        os.listdir("classes")
+    )
+)
+FILENAMES = list(
+    map(
+        lambda name: "classes/" + name,
+        FILENAMES
+    )
+)
 
 class bcolors:
     HEADER = '\033[95m'
@@ -41,10 +52,11 @@ with open("tmp_simulate.mos", mode="w+") as f:
     if forced_tests:
         for t in forced_tests:
             f.write(f"simulate({t}); getErrorString();\n")
+            f.write('print("--------------------------------------------------------------------");\n')
     else:
         for i in identifiers:
             f.write(f"simulate({i}); getErrorString();\n")
-        f.write('print("--------------------------------------------------------------------");\n')
+            f.write('print("--------------------------------------------------------------------");\n')
 
 result = subprocess.run(['omc', './tmp_simulate.mos'], stdout=subprocess.PIPE)
 result = result.stdout.decode()

@@ -565,6 +565,17 @@ algorithm
     end for;
 end mark_unwanted_edges;
 
+model test_mark_unwanted_edges
+    Real [2, 4] out1;
+algorithm
+    out1 := mark_unwanted_edges(
+        {{-1, 1, 1, 1}, {-0.5, 3, 0.5, 3}},
+        {0,0}
+    );
+    assert(compare_vectors(out1[1], {-1,1,1,1}), "");
+    assert(compare_vectors(out1[2], {-1,-1,-1,-1}), "");
+end test_mark_unwanted_edges;
+
 //------------------------------------------------------------------------------
 
 function remove_marked_edges

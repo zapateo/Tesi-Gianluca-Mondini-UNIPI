@@ -25,7 +25,7 @@ algorithm
 
     equal := true;
     for i in 1:size(vector1, 1) loop
-        if not (vector1[i] == vector2[i]) then
+        if not compare_real(vector1[i], vector2[i]) then
             equal := false;
         end if;
     end for;
@@ -39,6 +39,8 @@ algorithm
     assert(compare_vectors({1,1,1}, {1,1,0}) == false, "");
     assert(compare_vectors({-43,0,-43}, {-43,-43,0}) == false, "");
     assert(compare_vectors({-43,0,-43}, {-43,0,-43}) == true, "");
+    assert(compare_vectors({-43,0,-42.9999999}, {-43,0,-43}) == true, "");
+    assert(compare_vectors({100, 0}, {99.9999999, 0}) == true, "");
 end test_compare_vectors;
 
 //------------------------------------------------------------------------------

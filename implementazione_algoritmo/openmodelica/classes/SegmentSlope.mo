@@ -8,7 +8,7 @@
 
 function SegmentSlope
     input Real [4] edge;
-    output Real out;
+    output Real segment_slope;
     output Boolean vertical;
 protected
     Real dx, dy;
@@ -17,11 +17,11 @@ algorithm
     dy := edge[4] - edge[2];
     if CompareReal(dx, 0.0) then
         vertical := true;
-        out := 0;
+        segment_slope := 0;
         return;
     else
         vertical := false;
-        out := dy/dx;
+        segment_slope := dy/dx;
         return;
     end if;
 end SegmentSlope;

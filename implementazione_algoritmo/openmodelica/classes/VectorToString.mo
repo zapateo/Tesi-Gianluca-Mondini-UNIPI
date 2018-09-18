@@ -8,11 +8,11 @@
 
 function VectorToString
     input Real [:] vect;
-    output String out;
+    output String string;
 algorithm
-    out := "{";
+    string := "{";
     for i in 1:size(vect, 1) loop
-        out := out + String(vect[i]) + ", ";
+        string := string + String(vect[i]) + ", ";
     end for;
-    out := out + "}";
+    string := string + "}";
 end VectorToString;

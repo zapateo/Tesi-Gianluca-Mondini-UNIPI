@@ -9,7 +9,7 @@
 function SegmentsIntersection
     input Real [4] edge1, edge2;
     output Boolean valid;
-    output Real [2] out;
+    output Real [2] intersection;
 protected
     Real x1, x2, y1, y2, dx1, dy1, x, y, xB, yB, dx, dy, DET, DETinv, r, s, xi, yi;
     parameter Real DET_TOLERANCE = 0.00000001;
@@ -31,18 +31,21 @@ algorithm
     dy := yB - y;
 
     DET := ((-dx1 * dy) + (dy1 * dx));
+
     if abs(DET) < DET_TOLERANCE then
         valid := false;
         return;
     end if;
+
     DETinv := 1.0/DET;
+    
     r := DETinv * (-dy  * (x-x1) +  dx * (y-y1));
     s := DETinv * (-dy1 * (x-x1) + dx1 * (y-y1));
     xi := (x1 + r*dx1 + x + s*dx)/2.0;
     yi := (y1 + r*dy1 + y + s*dy)/2.0;
-    /* if (0 <= r and r <= 1) and (0 <= s and s <= 1) then */
+
     if (IsIncluded(0, 1, r)) and (IsIncluded(0, 1, s)) then
-        out := {xi, yi};
+        intersection := {xi, yi};
         valid := true;
         return;
     else

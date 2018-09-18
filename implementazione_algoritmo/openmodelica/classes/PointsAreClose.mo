@@ -9,17 +9,17 @@
 function PointsAreClose
     input Real [2] p1;
     input Real [2] p2;
-    output Boolean out;
+    output Boolean are_close;
 protected
     parameter Real tolerance = 0.001;
 algorithm
     if abs(p1[1] - p2[1]) < tolerance then
         if abs(p1[2] - p2[2]) < tolerance then
-            out := true;
+            are_close := true;
         else
-            out := false;
+            are_close := false;
         end if;
     else
-        out := false;
+        are_close := false;
     end if;
 end PointsAreClose;

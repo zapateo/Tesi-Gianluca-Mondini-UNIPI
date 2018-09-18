@@ -8,7 +8,7 @@
 
 function LineToSegment
     input Real [3] line;
-    output Real [4] out;
+    output Real [4] segment;
 protected
     parameter Real big = 10000;
     Real a, b, c;
@@ -23,13 +23,13 @@ algorithm
     if b == 0 and (not (a == 0)) then // Retta verticale
         p1 := {-c, big};
         p2 := {-c, -big};
-        out := {p1[1], p1[2], p2[1], p2[2]};
+        segment := {p1[1], p1[2], p2[1], p2[2]};
         return;
     else
         m := -a/b;
         q := -c/b;
         y1 := m * (-big) + q;
         y2 := m * (+big) + q;
-        out := {-big, y1, big, y2};
+        segment := {-big, y1, big, y2};
     end if;
 end LineToSegment;

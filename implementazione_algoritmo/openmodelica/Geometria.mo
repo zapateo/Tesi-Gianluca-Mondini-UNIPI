@@ -80,6 +80,17 @@ end assert_real_equal;
 
 //------------------------------------------------------------------------------
 
+function assert_vector_equal
+    input Real [:] actual, expected;
+algorithm
+    if compare_vectors(actual, expected) then
+        return;
+    else
+        print("\nASSERTION ERROR [VECTOR EQUALITY]: expected " + vector_to_string(expected) + " but have " + vector_to_string(actual) + "\n\n");
+    end if;
+end assert_vector_equal;
+//------------------------------------------------------------------------------
+
 function is_included
     input Real a;
     input Real b;

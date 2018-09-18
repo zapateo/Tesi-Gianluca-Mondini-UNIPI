@@ -363,7 +363,7 @@ algorithm
     assert(e1[1] == -10000, "from_line_to_segment #1");
     assert(compare_real(e1[2], 3334), "from_line_to_segment #2");
     assert(e1[3] == 10000, "from_line_to_segment #3");
-    assert(compare_real(e1[4], -3332.67), "from_line_to_segment #4"); // FIXME
+    assert(compare_real(e1[4], -3332.67), "from_line_to_segment #4");
 end test_from_line_to_segment;
 
 //------------------------------------------------------------------------------

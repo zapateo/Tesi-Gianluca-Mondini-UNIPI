@@ -34,9 +34,6 @@ algorithm
                     edges[i]
                 );
                 if have_intersection then
-                    //----------------------------------------------------------
-                    // Decido quale estremo del segmento salvare
-                    //----------------------------------------------------------
                     p1 := {edges[i, 1], edges[i, 2]};
                     p2 := {edges[i, 3], edges[i, 4]};
                     edges[i] := {-1, -1, -1, -1};
@@ -50,7 +47,7 @@ algorithm
                         LineToSegment(perp_bisect),
                         edge_p2_primary_drone
                     );
-                    assert(int1_valid or int2_valid, "non viene creata un intersezione nè con p1 nè con p2. p1 = " + VectorToString(p1) + ", p2 = " + VectorToString(p2) + ", primary_drone = " + VectorToString(primary_drone));
+                    assert(int1_valid or int2_valid, "non viene creata un intersezione ne con p1 ne con p2. p1 = " + VectorToString(p1) + ", p2 = " + VectorToString(p2) + ", primary_drone = " + VectorToString(primary_drone));
                     if int1_valid and not int2_valid then
                         keep := p2;
                     elseif not int1_valid and int2_valid then
@@ -59,10 +56,8 @@ algorithm
                     else
                         assert(false, "errore logico");
                     end if;
-                    //----------------------------------------------------------------------
                     new_edge := {intersect[1], intersect[2], keep[1], keep[2]};
                     new_edges := cat(1, new_edges, {new_edge});
-                    //----------------------------------------------------------------------
                     add_to_intersections := true;
                     for intersections_index in 1:size(intersections, 1) loop
                         if ValuesAreClose(intersections[intersections_index, 1], intersect[1]) and ValuesAreClose(intersections[intersections_index, 2], intersect[2]) then
@@ -74,16 +69,21 @@ algorithm
                     end if;
                 end if;
                 edges := MarkUnwantedEdges(edges, primary_drone);
-            end if; // CompareVectors(edges[i], {-1, -1, -1, -1})
-        end for; // i in 1:size(edges, 1)
+            end if;
+        end for;
         edges := cat(1, edges, new_edges);
+
         if size(intersections, 1) == 2 then
             edges := cat(1, edges, {{intersections[1,1], intersections[1,2], intersections[2,1], intersections[2,2]}});
         end if;
+        
     end for;
+
     assert(size(edges, 1) > 1, "edges deve contenere almeno un elemento");
+
     edges := MarkUnwantedEdges(edges, primary_drone);
     edges := RemoveMarkedEdges(edges);
     edges := RemoveDuplicatedEdges(edges);
+
     output_edges := edges;
 end VoronoiCell;

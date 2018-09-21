@@ -1,5 +1,5 @@
 \documentclass[10pt,a4paper]{article}
-\usepackage[utf8]{inputenc}
+\usepackage[utf8x]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -7,10 +7,38 @@
 \usepackage{amssymb}
 \usepackage{xcolor}
 \usepackage{graphicx}
+\usepackage[inline]{asymptote}
+
+\usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
 
 % Per l'inserimento di codice OpenModelica
 \usepackage{listings}
 \input{listings-modelica.cfg}
+
+
+% \lstinputlisting[firstline=300,lastline=500]{file.cc}
+
+\lstset{
+numbers=left, 
+numberstyle=\small,
+%basicstyle=\tiny,
+numbersep=8pt, 
+frame=single, 
+language=Modelica,
+framexleftmargin=15pt,
+   %inputencoding=latin1,
+   basicstyle=\footnotesize\ttfamily,
+   keywordstyle=\color{purple},
+   %showtabs=false,
+   %showstringspaces=false,
+   numberstyle=\tiny\color{gray}
+}
+
+\newcommand{\modelicaclass}[1]{
+\lstinputlisting[firstline=9]{../implementazione_algoritmo/openmodelica/classes/#1}
+}
+
+\newcommand{\name}[1]{{\color{purple}#1}}
 
 \graphicspath{ {./images/} }
 \author{Gianluca Mondini}
@@ -24,17 +52,20 @@
 
 \maketitle
 
-%\pagebreak
+\pagebreak
 
-%\tableofcontents
+\tableofcontents
 
-%\pagebreak
+\pagebreak
+
 
 \section{Obiettivo}
 
 Implementazione dell'algoritmo di Lloyd per l'equidistribuzione di uno sciame di droni su un'area specifica.
 
 È prevista la realizzazione di un modulo nell'ambiente \textit{OpenModelica} che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
+
+\pagebreak
 
 \section{Parole chiave}
 
@@ -45,6 +76,8 @@ Prima di procedere con la trattazione, è necessario indicare alcune parole chia
 	\item[Area] Poligono convesso che delimita l'algoritmo;
 	\item[Cella] Porzione di spazio alla quale appartiene un drone; la cella relativa ad un drone è l'insieme di punti dell'area per i quali, tra tutti i vari droni, quello appartenente alla cella è il più vicino
 \end{description}
+
+\pagebreak
 
 \section{Il drone e sue componenti}
 
@@ -58,7 +91,19 @@ Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediant
 
 Il centro fisico è un astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono quindi qui considerati parametri la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza che viene fornita a questi.
 
-\section{Algoritmo di Lloyd}
+\subsection{Controllo di volo}
+
+Il centro di volo considera il drone come un velivolo, ed utilizzando i dati forniti dal centro fisico e dal controllo della traiettoria permette il controllo della direzione, della quota e della velocità.
+
+\subsection{Controllo della traiettoria}
+
+Il controllo della traiettoria ha la funzione di comunicare al centro di volo la posizione da raggiungere.
+
+Viene qui utilizza la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
+
+\pagebreak
+
+\section{Cenni teorici sull'algoritmo di Lloyd}
 
 \subsection{Introduzione}
 
@@ -85,7 +130,7 @@ Le croci rappresentano i \textit{baricentri} delle varie partizioni.
 \begin{figure}[H]
 \includegraphics[width=5cm]{lloyd_iterazione_1.png}
 \centering
-\caption{I iterazione}
+\caption{Iterazione n. 1; i droni, rappresentati dai punti rossi, non si trovano in corrispondenza del centro di massa della cella di appartenenza}
 \end{figure}
 
 \begin{figure}[H]
@@ -110,76 +155,385 @@ Le croci rappresentano i \textit{baricentri} delle varie partizioni.
 
 Intuitivamente, si può dire che l'algoritmo converga in quanto i punti che si trovano a minor distanza tra loro tendono a compiere un movimento più alto, mentre i punti che si trovano a distanze elevate tendono a muoversi meno.
 
+\pagebreak
 
-\section{Implementazione}
+\section{Implementazione in \textit{OpenModelica}}
 
 \subsection{Introduzione}
 
 L'implementazione dell'algoritmo di Lloyd richiede una funzione che effettui la tassellazione di Voronoi, la quale a sua volta utilizza una serie di funzioni geometriche che operino nello spazio bidimensionale.
 
-Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio \textit{Python} per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica} 
+Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio \textit{Python} per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica}
 
-\subsection{Funzioni e classi geometriche}
+\subsection{Diagramma delle dipendenze}
 
-\subsubsection{Point}
+Viene qui illustrato un diagramma contenenti le varie funzioni dell'implementazione \textit{OpenModelica}. Le frecce $\longrightarrow$ rappresentano una dipendenza; ad esempio $A \longrightarrow B$ indica che $A$ effettua una chiamata a $B$ durante la sua esecuzione, e di conseguenza $A$ \textit{dipende da} $B$.
 
-Per poter operare nello spazio bidimensionale, è necessario definire una classe \textit{Point} rappresentante una tupla \textit{x, y}
+Sono state omesse le funzioni di supporto al testing e al debugging in quanto non strettamente legate all'implementazione di per sè.
+
+In alto è presente la funzione \name{TargetPos}, la quale dipende da \name{CenterOfMass}, \name{VoronoiCell} e \name{EdgesToVertices}.
+
+In basso troviamo \name{CompareReal}, che dipende esclusivamente da funzioni integrate in \textit{OpenModelica}.
+
+\begin{figure}[H]
+\includegraphics[width=15cm]{uml_diagram/uml_diagram_lloyd.png}
+\centering
+\caption{Diagramma delle dipendenze delle varie funzioni}
+\end{figure}
+
+\subsection{Funzioni e strutture dati geometriche}
+
+Vengono qui descritte alcune delle funzioni implementate, seguendo l'approccio \textit{bottom-up}, ovvero viene seguito in ordine inverso il grafo delle dipendenze
+
+\subsubsection{Scelte implementative}
+
+Come si vedrà in seguito, anzichè definire \textit{tipi} personalizzati si è deciso di ricorrere alle strutture dati già presenti in \textit{OpenModelica}.
+
+Ad esempio, un punto dello spazio può essere rappresentato sia come \textit{record} tramite
 
 \begin{lstlisting}[language=Modelica]
 record Point
-  Real x;
-  Real y;
+	Real x, y;
 end Point;
 \end{lstlisting}
+
+sia come vettore
+
+\begin{lstlisting}[language=Modelica]
+Real [2] point;
+\end{lstlisting}
+
+La scelta è ricade su quest'ultima implementazione in quanto è possibile utilizzare una serie di funzioni primitive (principalmente per lavorare su liste) già definite in \textit{OpenModelica} che avrebbero richiesto altrimenti richiesto l'implementazione manuale tramite un linguaggio di più basso livello.
+
+I punti a sfavore dell'utilizzo di un vettore al posto di una struttura dati personalizzata sono:
+
+\begin{itemize}
+	\item L'impossibilità di accedere ai membri tramite il loro nome bensì tramite l'indice legato alla loro posizione. Ad esempio, per accedere alla coordinata $y$ di un punto non è possibile utilizzare \verb|point.y| ma \verb|point[2]|, perdendo quindi di leggibilità
+	\item L'impossibilità di aggiungere ulteriori campi contenenti informazioni. A questo riguardo si veda la sezione \ref{mark_unwanted_edges}
+\end{itemize}
+
+\subsubsection{Rappresentazione del punto geometrico}
+
+Per poter indicare un punto nello spazio bidimensionale, è necessario definire una struttura dati rappresentante una tupla \textit{x, y}. A questo fine viene utilizzato un vettore bidimensionale definito tramite
+
+\begin{lstlisting}[language=Modelica]
+Real [2] point;
+\end{lstlisting}
+
+Nel caso in cui debba essere dichiarato un vettore di punti, si dichiara una matrice tramite
+
+\begin{lstlisting}[language=Modelica]
+Real [:, 2] some_points;
+\end{lstlisting}
+
+Il carattere \verb|:| posto in prima posizione tra le parentesi quadre indica che la prima dimensione della matrice \verb|some_points| non è conosciuta a priori.
 
 \subsubsection{Verifica della sovrapposizione di due punti}
 
 Può verificarsi che, in seguito a ..., ci si trovi nella situazione in cui due punti sovrapposti non superino il test di equalità. Ad esempio:
 \[
-P_1 = (4.0, 2.0),
+P_1 = (4.0, 2.0)
+\]
+\[
 P_2 = (4.00001, 1.999999)
 \]
 
 è chiaro come i due punti siano in realtà sovrapposti, ed è quindi necessario definire una funzione che si occupi di verificarlo
 
-\begin{lstlisting}[language=Modelica]
-function points_are_close
-  input Point p1;
-  input Point p2;
-  output Boolean out;
-protected
-  parameter Real tolerance = 0.001;
-algorithm
-  if abs(p1.x - p2.x) < tolerance then
-    if abs(p1.y - p2.y) < tolerance then
-      out := true;
-    else
-      out := false;
-    end if;
-  else
-    out := false;
-  end if;
-end points_are_close;
-\end{lstlisting}
+% TODO riscrivere la funzione points are close in stile EdgesAreClose
 
-Il valore \textit{tolerance} può essere variato dipendentemente dalla precisione richiesta e dalla scala di applicazione. Nel caso in cui si operi in una scala metrica, ovvero nel caso in cui \textit{1.0} corrisponda ad \textit{1 metro}, una tolleranza di $0.001$ corrisponde ad \textit{1 millimetro}, ed è quindi considerato un valore accettabile dal momento che i droni hanno delle dimensioni nell'ordine di grandezza delle decine di centrimetri.
+\modelicaclass{PointsAreClose.mo}
 
-\subsubsection{Edge}
+\subsubsection{Rappresentazione del segmento geometrico}
 
-Per rappresentare un segmento, viene implementata la classe \textit{Edge}. Ogni Edge è definito come una coppia di punti.
+Per rappresentare un segmento, si considera un vettore di 4 elementi, nella forma
+
+\[
+(x_0, y_0, x_1, y_1)
+\]
+
+dove $(x_0, y_0)$ è il punto iniziale del segmento e $(x_1, y_1)$ è il punto finale.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{segmento.png}
+\end{figure}
+
+Questo si traduce, in ambiente \textit{OpenModelica}, in:
 
 \begin{lstlisting}[language=Modelica]
-record Edge
-  parameter Point starting;
-  parameter Point ending;
-end Edge;
+Real [4] edge;
+
+edge[1] := x_1;
+edge[2] := y_1;
+edge[3] := x_2;
+edge[4] := y_2;
 \end{lstlisting}
+
+\subsubsection{Verifica della sovrapposizione di due segmenti}
+
+La verifica della sovrapposizione di due segmenti viene effettuata in modo analogo a quella della sovrapposizione di due punti, e fa uso proprio di quest'ultima funzione.
+
+Formalmente, due segmenti sono considerati sovrapposti se il punto iniziale del primo si sovrappone al punto iniziale del secondo e contemporaneamente il punto finale del primo si sovrappone al punto finale del secondo.
+
+\modelicaclass{EdgesAreClose.mo}
+
+\subsubsection{Linea}
+
+Una \textit{linea} è matematicamente identificata da una tupla di 3 elementi $a$, $b$ e $c$ tali che
+
+\[
+a x + b y + c = 0
+\]
+
+In \textit{OpenModelica}, si rappresenterà quindi come un vettore di 3 elementi
+\begin{lstlisting}[language=Modelica]
+Real [3] line;
+
+line[1] := a;
+line[2] := b;
+line[3] := c;
+\end{lstlisting}
+
+\subsubsection{Conversione da linea a segmento}
+
+Può essere necessario convertire una linea, priva di un punto di inizio e fine, in un segmento, ben delimitato. Per fare ciò è stata implementata la funzione
+
+\[
+	\text{LineToSegment} : R[3] \longrightarrow R[4]
+\]
+
+\modelicaclass{LineToSegment.mo}
+
+\subsubsection{Intersezione tra segmenti}
+
+Una delle funzioni principalmente utilizzate dall'algoritmo di tassellazione di Voronoi è quella responsabile di determinare l'eventuale punto di intersezione tra due segmenti.
+
+È necessario notare che, avendo a che fare con segmenti di lunghezza finita e non con delle rette, è possibile che due segmenti non si intersechino tra loro pur non essendo paralleli.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{intersection.png}
+\end{figure}
+
+L'algoritmo implementato è il seguente \footnote{Il codice è un adattamento di https://www.cs.hmc.edu/ACM/lectures/intersections.html}
+
+\modelicaclass{SegmentsIntersection.mo}
+
+Oltre a restituire un vettore bidimensionale \verb|intersection| viene anche restituito un booleano \verb|valid|, che sta ad indicare se il valore contenuto in \verb|intersection| è valido o meno.
+
+\subsubsection{Asse di un segmento}
+
+La funzione \name{VoronoiCell} fa ampio uso della funzione \name{PerpendicularBisector}, che restituisce l'asse del segmento passato come argomento.
+
+\[
+\text{PerpendicularBisector} : \text{Segmento} \longrightarrow \text{Linea}
+\]
+
+
+Vengono discriminati i 3 casi in cui:
+
+\begin{itemize}
+	\item Il segmento sia verticale; in tal caso l'asse sarà orizzontale;
+	\item Il segmento sia orizzontale; in tal caso l'asse sarà verticale;
+	\item Il segmento non sia nè verticale nè orizzontale: caso più frequente
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{PerpendicularBisector.png}
+\end{figure}
+
+\modelicaclass{PerpendicularBisector.mo}
+
+\subsection{Centro di massa}
+
+Al fine di implementare l'algoritmo di Lloyd è necessario definire una funzione che, presa in ingresso una lista di vertici, ne calcoli il centro di massa.
+
+Dato un poligono di $n$ vertici $(x_0, y_0), (x_1, y_1), ..(x_{n-1},y_{n-1})$ il centro di massa ha coordinate $(C_X, C_Y)$ definite come
+
+\[
+C_x = \frac{1}{6 A} \sum_{i=0}^{n-1} (x_i + x_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
+\]
+
+\[
+C_y = \frac{1}{6 A} \sum_{i=0}^{n-1} (y_i + y_{i+1}) (x_i y_{i+1} - x_{i+1} y_i)
+\]
+
+dove $A$ è l'area del poligono \textit{con segno}
+
+\[
+A = \frac{1}{2} \sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1} y_i)
+\]
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{CenterOfMass.png}
+\caption{Il punto $p$ viene restituito dalla chiamata a \name{CenterOfMass} che ha come argomento la lista delle coordinate dei vari vertici del poligono}
+\end{figure}
+
+Ne deriva quindi la seguente codifica:
+
+\modelicaclass{CenterOfMass.mo}
+
+\subsection{Ricerca ed eliminazione dei segmenti in eccesso}
+
+Durante l'esecuzione dell'algoritmo di Voronoi si presenta la necessità di rimuovere dei segmenti che non fanno più parte del diagramma. Si presenta il problema di come effettuare questa operazione senza arrecare danno all'iterazione in corso proprio sulla lista dalla quale vanno rimossi gli elementi.
+
+Inoltre, come precedentemente detto, non è possibile aggiungere un campo ad ogni segmento indicando l'effettiva necessità di eliminazione.
+
+La scelta cade quindi sull'assegnare il valore $-1$ ad ogni componente del segmento, considerandolo quindi un segmento nullo, da eliminare.
+
+\begin{lstlisting}[language=Modelica]
+edge := {-1, -1, -1, -1};
+\end{lstlisting}
+
+Successivamente, utilizzando la funzione \verb|CompareVector| si controlla se il segmento è contrassegnato per l'eliminazione
+
+\begin{lstlisting}
+if CompareVector(edge, {-1, -1, -1, -1}) then
+	// Considera 'edge' come un segmento da eliminare
+else
+	// Considera 'edge' come un segmento valido
+end if;
+\end{lstlisting}
+
+La funzione \verb|MarkUnwantedEdges| contrassegna tutti i segmenti che devono essere rimossi dalla lista di segmenti. In particolare, se un segmento si trova dietro ad un altro quello "nascosto" deve essere eliminato in quanto non può più far parte dell'insieme.
+
+\label{mark_unwanted_edges}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{rimozione_segmento.png}
+\caption{Esempio nel quale il segmento $g$ deve essere rimosso, in quanto il segmento $f$ si pone tra esso e il \textit{PrimaryDrone}. La funzione \name{MarkUnwantedEdges} contrassegnerà $g$ per l'eliminazione, mentre \name{RemoveMarkedEdges} lo cancellerà definitivamente.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{rimozione_segmento2.png}
+\caption{I segmenti di unione tra \name{PrimaryDrone} e gli estremi di $g$ collidono con il segmento $f$; questo fa sì che $g$ venga contrassegnato per l'eliminazione.}
+\end{figure}
+
+\modelicaclass{MarkUnwantedEdges.mo}
+
+La funzione \verb|RemoveMarkedEdges| restituisce una lista di segmenti dalla quale sono stati rimossi tutti i segmenti contrassegnati per l'eliminazione.
+
+\modelicaclass{RemoveMarkedEdges.mo}
+
+\subsection{La funzione \name{VoronoiCell}}
+
+Come precedentemente detto, l'algoritmo di Lloyd è implementato tramite iterazioni successive dell'algoritmo di Voronoi.
+
+La funzione \name{VoronoiCell} restituisce esclusivamente la cella di appartenenza di un drone specificato, anziché la tassellazione dell'intera area; considerato che l'algoritmo è distribuito ogni drone necessita di conoscere esclusivamente la propria posizione \textit{target}, e soltanto la posizione attuale dei restanti droni.
+
+L'idea è quindi quella di implementare la seguente funzione:
+
+\[
+\text{VoronoiCell} : (\text{drone stesso}, \text{altri droni}, \text{bordi}) \longrightarrow \text{cella drone stesso}
+\]
+
+I passaggi fondamentali dell'algoritmo implementato sono i seguenti:
+
+% TODO mancano alcuni passaggi
+% TODO correggere maiuscole/minuscole
+
+\begin{enumerate}
+	\item Per ogni \name{drone} contenuto in \name{other drones} (ovvero la lista degli altri droni)
+	\begin{enumerate}
+		\item viene creato un segmento \name{union edge} che unisce il drone stesso (\name{primary drone}) con \name{drone}
+		\item viene determinato l'asse di \name{union edge}, che prende il nome di \name{perp bisect}
+		\item viene inizializzata una lista vuota \name{intersections} che andrà a contenere i punti di intersezione trovati
+		\item Per ogni bordo \name{edge} contenuto in \name{edges}
+		\begin{enumerate}
+			\item viene cercato l'eventuale punto di intersezione tra \name{perp bisect} ed \name{edge}
+			\item se il punto di intersezione esiste
+			\begin{enumerate}
+				\item contrassegno \name{edge} per la cancellazione, in quanto verrà sostituito da un nuovo bordo
+				\item determino quale estremo di \name{edge} conservare per la creazione del nuovo bordo
+				\item aggiunto il punto di intersezione trovato alla lista \name{intersections}
+			\end{enumerate}
+		\end{enumerate}
+		\item se \name{intersections} contiene 2 punti, creo un nuovo bordo che abbia come estremi i 2 punti
+	\end{enumerate}
+	\item tolgo da \name{edges} i bordi duplicati e quelli contrassegnati per l'eliminazione
+\end{enumerate}
+
+\subsubsection{Esempio grafico di applicazione dell'algoritmo di Voronoi}
+
+Vediamo adesso l'applicazione dell'algoritmo di Voronoi alla seguente situazione: l'area è delimitata da un poligono a 5 lati; in rosso è visibile quello che viene chiamato \name{PrimaryDrone}, ovvero il drone che effettua la chiamata a \name{VoronoiCell} e per il quale si intende calcolare la cella associata; i restanti 2 puntini neri rappresentano gli altri due droni.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{voronoi1.png}
+\end{figure}
+
+Si determina quindi il segmento che unisce \name{PrimaryDrone} con uno degli altri droni, in questo caso quello più in alto; si traccia l'asse del segmento trovato e si determinano i punti di intersezione con i bordi dell'area, che nella figura sono contrassegnati da croci rosse.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{voronoi2.png}
+\end{figure}
+
+Si crea un nuovo bordo che unisce i due punti di intersezione. Tutti i segmenti che si trovino "dietro" (si veda la sezione \ref{mark_unwanted_edges}) al nuovo segmento vengono contrassegnati per l'eliminazione.
+
+Si noti inoltre che i due bordi con i quali l'asse intersecava sono stati sostituiti da due nuovi bordi, di lunghezza inferiore.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{voronoi3.png}
+\end{figure}
+
+Si ripete il procedimento anche per l'altro drone, ed essendo in questo caso i droni totali in numero pari a 3 si conclude l'algoritmo.
+
+Il poligono contornato in nero è quindi la cella di Voronoi associata al \name{PrimaryDrone}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{voronoi4.png}
+\end{figure}
+
+Il codice che ne deriva è il seguente:
+
+\modelicaclass{VoronoiCell.mo}
+
+\subsection{La funzione \name{TargetPos}}
+
+La funzione \name{TargetPos} effettua una singola iterazione dell'algoritmo di Lloyd, ovvero:
+
+\begin{enumerate}
+	\item \label{TargetPos_step1} Determina la cella di Voronoi relativa al drone stesso
+	\item Calcola il centro di massa della cella determinata al punto \ref{TargetPos_step1}
+\end{enumerate}
+
+% note sulla chiamata più volte nel tempo che consente la convergenza
+
+\modelicaclass{TargetPos.mo}
+
+\subsection{Testing del codice}
+
+Attualmente \textit{OpenModelica} non fornisce un meccanismo di testing solido e standardizzato. Per questo motivo è stato necessario realizzare un sistema che automatizzasse la verifica della correttezza delle funzioni implementate.
+
+A questo proposito si è deciso di ricorrere ad uno script \textit{Python} che:
+
+\begin{enumerate}
+	\item Ottenga la lista delle classi implementate
+	\item Ottenga la lista dei test da effettuare
+	\item Compili le classi
+	\item Crei un file contenente le istruzioni per eseguire tutti i test
+	\item Esegua, uno dopo l'altro, i vari test
+	\item Restituisca a schermo un output indicante l'esito dei vari test
+\end{enumerate}
+
+\lstinputlisting[language=Python]{../implementazione_algoritmo/openmodelica/runtests}
+
+\pagebreak
 
 \section*{Bibliografia}
 
 \begin{itemize}
 	\item https://en.wikipedia.org/wiki/Lloyd\%27s\_algorithm
 	\item github.com/zapateocallisto
+	\item https://en.wikipedia.org/wiki/Centroid
 \end{itemize}
 
 \end{document}

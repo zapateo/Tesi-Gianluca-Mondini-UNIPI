@@ -1,7 +1,7 @@
 /*
  *    Gianluca Mondini - 2018
  *
- *    Tesi Ing. Informatica - Università di Pisa
+ *    Tesi Ing. Informatica - Universita di Pisa
  *
  *    https://github.com/zapateo/Tesi_GianlucaMondini
  */

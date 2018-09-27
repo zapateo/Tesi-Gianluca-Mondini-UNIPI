@@ -7,9 +7,13 @@
  */
 
 function CompareVectors
+
     input Real [:] vector1, vector2;
+
     output Boolean equal;
+
 algorithm
+
     if not (size(vector1, 1) == size(vector2, 1)) then
         equal := false;
         return;
@@ -21,4 +25,5 @@ algorithm
             equal := false;
         end if;
     end for;
+    
 end CompareVectors;

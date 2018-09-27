@@ -7,12 +7,18 @@
  */
 
 function CenterOfMass
+
     input Real [:, 2] points;
+
     output Real [2] out;
+
 protected
+
     Real [:, 2] vertices, v_local;
     Real x_cent, y_cent, area, factor;
+
 algorithm
+
     // Adattato da https://stackoverflow.com/a/46937541
     vertices := points;
 
@@ -34,4 +40,5 @@ algorithm
     y_cent := y_cent / (area * 6);
 
     out := {x_cent, y_cent};
+    
 end CenterOfMass;

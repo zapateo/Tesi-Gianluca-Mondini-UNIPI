@@ -7,13 +7,20 @@
  */
 
 function EdgesToVertices
+
     input Real [:, 4] edges;
+
     output Real [:, 2] points;
+
 protected
+
     Boolean add_p1, add_p2;
+
     Real [0, 2] empty_points;
     Real [2] p1, p2, point;
+
 algorithm
+
     points := empty_points;
     for i in 1:size(edges, 1) loop
         p1 := {edges[i, 1], edges[i, 2]};
@@ -36,4 +43,5 @@ algorithm
             points := cat(1, points, {p2});
         end if;
     end for;
+    
 end EdgesToVertices;

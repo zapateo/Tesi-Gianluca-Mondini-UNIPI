@@ -1,13 +1,16 @@
-\documentclass[10pt,a4paper]{article}
+%\documentclass[10pt,a4paper]{article}
+%\documentclass[a4paper,12pt]{final}
+\documentclass[11pt,a4paper]{report}
 \usepackage[utf8x]{inputenc}
 \usepackage[italian]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{float}
 \usepackage{amssymb}
+\usepackage{afterpage}
 \usepackage{xcolor}
 \usepackage{graphicx}
-\usepackage[inline]{asymptote}
+%TODO pulire l'intestazione del documento
 
 \usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
 
@@ -38,7 +41,10 @@ framexleftmargin=15pt,
 \lstinputlisting[firstline=9]{../implementazione_algoritmo/openmodelica/classes/#1}
 }
 
-\newcommand{\name}[1]{{\color{purple}#1}}
+\newcommand{\paginavuota}[0]{\afterpage{\null\newpage}}
+
+%\newcommand{\name}[1]{{\color{blue}#1}}
+\newcommand{\name}[1]{{\ttfamily #1}}
 
 \graphicspath{ {./images/} }
 \author{Gianluca Mondini}
@@ -46,72 +52,114 @@ framexleftmargin=15pt,
 
 \begin{document}
 
-\begin{center}
-\textbf{Attenzione: il seguente documento è ancora in fase di stesura, pertanto presenta sezioni abbozzate, incorrette ed incomplete.}
-\end{center}
+%TODO sistemare i pagebreak, in particolare quelli tra capitoli
+%TODO controllare che i codici non vengano spezzati tra più pagine, e nel caso usare \begin{figure} .. se necessario
+%TODO scegliere un tempo verbale e tenerlo costante per tutto il documento
+%TODO controllare i "punti" di fine frase
 
-\maketitle
+%\maketitle
 
+%\pagebreak
+
+\paginavuota
+
+\chapter*{Prefazione (bozza)}
+
+%TODO scrivere alla fine
+
+{\em \large
+L'obiettivo di questa trattazione è di illustrare l'implementazione di un insieme di classi \textit{OpenModelica} che abbiano la funzione di controllare un insieme di droni per permettere ad esso di disporsi in modo equo su una data superficie.
+
+In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver fornito cenni teorici riguardo ad esso) ...
+
+È prevista la realizzazione di un modulo nell'ambiente \textit{OpenModelica} che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
+}
 \pagebreak
+
+\paginavuota
 
 \tableofcontents
 
 \pagebreak
 
+%\chapter*{Parole chiave}
 
-\section{Obiettivo}
+%Prima di procedere con la trattazione, è necessario indicare alcune parole chiave presenti in questo documento e nel codice dell'implementazione
 
-Implementazione dell'algoritmo di Lloyd per l'equidistribuzione di uno sciame di droni su un'area specifica.
+%\begin{description}
+%	\item[Drone] Velivolo che, nel nostro caso di interesse, è rappresentato come un punto bidimensionale
+%	\item[Area] Poligono convesso che delimita l'algoritmo;
+%	\item[Cella] Porzione di spazio alla quale appartiene un drone; la cella relativa ad un drone è l'insieme di punti dell'area per i quali, tra tutti i vari droni, quello appartenente alla cella è il più vicino
+%\end{description}
 
-È prevista la realizzazione di un modulo nell'ambiente \textit{OpenModelica} che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
+%\pagebreak
 
-\pagebreak
+\paginavuota
 
-\section{Parole chiave}
+\chapter{Il drone e le sue componenti}
 
-Prima di procedere con la trattazione, è necessario indicare alcune parole chiave presenti in questo documento e nel codice dell'implementazione
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{drone.jpg}
+\end{figure}
 
-\begin{description}
-	\item[Drone] Velivolo che, nel nostro caso di interesse, è rappresentato come un punto bidimensionale
-	\item[Area] Poligono convesso che delimita l'algoritmo;
-	\item[Cella] Porzione di spazio alla quale appartiene un drone; la cella relativa ad un drone è l'insieme di punti dell'area per i quali, tra tutti i vari droni, quello appartenente alla cella è il più vicino
-\end{description}
+Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante 3 componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}
 
-\pagebreak
+%TODO rivedere i nomi delle 3 componenti
 
-\section{Il drone e sue componenti}
+%TODO inserire qui uno schemino che mostri i 3 componenti connessi tra loro
 
-Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante 3 componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}\footnote{da rivedere i nomi dei 3 componenti}
-
-\begin{center}
-\textbf{Inserire qui uno schemino che illustri i tre componenti del drone}
-\end{center}
-
-\subsection{Centro fisico}
+\paragraph{Centro fisico}
 
 Il centro fisico è un astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono quindi qui considerati parametri la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza che viene fornita a questi.
 
-\subsection{Controllo di volo}
+\paragraph{Controllo di volo}
 
 Il centro di volo considera il drone come un velivolo, ed utilizzando i dati forniti dal centro fisico e dal controllo della traiettoria permette il controllo della direzione, della quota e della velocità.
 
-\subsection{Controllo della traiettoria}
+\paragraph{Controllo della traiettoria}
 
-Il controllo della traiettoria ha la funzione di comunicare al centro di volo la posizione da raggiungere.
+Componente centrale della trattazione, il controllo della traiettoria ha la funzione di comunicare al centro di volo la posizione da raggiungere.
 
-Viene qui utilizza la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
+Utilizza la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
+
+\section{Ipotesi e semplificazioni}
+
+%TODO
+
+La trattazione e l'implementazione richiedono che vengano effettuate alcune impotesi semplificative in relazione al mondo esterno nel quale l'algoritmo andrà ad operare. In particolare, si suppone che:
+
+\begin{itemize}
+	\item l'area nella quale il drone opera sia un poligono convesso
+	\item non siano presenti degli ostacoli all'iterno dell'area, in quanto questi non verrebbero considerati dal controllo di traiettoria portando il drone ad una collisione
+	\item il mondo nel quale il drone opera sia bidimensionale, ovvero si suppone che non sia definita una componente $z$ per le tuple rappresentanti la posizione. Nell'implementazione pratica, quest'ipotesi può essere gestita mediante l'utilizzo di un valore costante per la coordinata $z$ (ad esempio ogni drone si trova a $650 m$ sul livello del mare) oppure questa può essere determinata in funzione della distanza dal suolo.
+\end{itemize}
 
 \pagebreak
 
-\section{Cenni teorici sull'algoritmo di Lloyd}
+\chapter{L'algoritmo di Lloyd}
 
-\subsection{Introduzione}
+L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di suddividere un'area in celle convesse uniformemente dimensionate, denominata \textit{tassellazione di Voronoi centroidale}, indicata con la sigla \textit{CVT}\footnote{Dall'inglese \textit{Centroidal Voronoi Tesselation}}.
 
-L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di suddividere un'area in celle convesse uniformemente dimensionate.
+\begin{figure}[H]
+\centering
+\includegraphics[width=4.5cm]{cvt1.png}
+\includegraphics[width=4.5cm]{cvt2.png}
+\includegraphics[width=4.5cm]{cvt3.png}
+\caption{Tre esempi di CVT a 5 punti su un area quadrata}
+\end{figure}
 
-L'algoritmo di Lloyd è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
+L'algoritmo, che prende il nome da Stuart P. Lloyd, il suo ideatore, è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
 
-\subsection{Descrizione}
+In natura troviamo diversi esempi di CVT, tra cui il Selciato del gigante oppure le celle della cornea dell'occhio umano.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=14cm]{selciato_del_gigante.jpg}
+\caption{Scala del gigante, Irlanda del Nord}
+\end{figure}
+
+\section{Descrizione}
 
 L'algoritmo esegue ripetutamente i seguenti \textit{step}:
 
@@ -121,51 +169,230 @@ L'algoritmo esegue ripetutamente i seguenti \textit{step}:
 	\item Ogni punto viene spostato in corrispondenza del \textit{baricentro} della propria \textit{cella di Voronoi}
 \end{enumerate}
 
-\subsection{Esempio di applicazione dell'algoritmo}
+\section{Esempio di applicazione dell'algoritmo}
 
 Viene qui presentata l'applicazione dell'algoritmo di Lloyd ad un'area quadrata nella quale sono presenti 5 partizioni.
 
-Le croci rappresentano i \textit{baricentri} delle varie partizioni.
+Le croci rappresentano i \textit{baricentri} delle varie partizioni; i punti rossi sono i droni, e le linee nere delimitano le varie celle dei singoli droni. Il quadrato che racchiude il tutto è l'area entro la quale i droni devono equidisporsi.
+
+\paragraph{Iterazione 1}
+
+I droni sono mediamente distanti dal centro di massa della propria cella.
 
 \begin{figure}[H]
 \includegraphics[width=5cm]{lloyd_iterazione_1.png}
 \centering
-\caption{Iterazione n. 1; i droni, rappresentati dai punti rossi, non si trovano in corrispondenza del centro di massa della cella di appartenenza}
 \end{figure}
+
+\paragraph{Iterazione 2}
+
+La distanza media tra i droni e il centro di massa delle rispettive celle è ridotta. Si noti come si è modificata la forma delle varie celle, in conseguenza del movimento dei vari droni.
 
 \begin{figure}[H]
 \includegraphics[width=5cm]{lloyd_iterazione_2.png}
 \centering
-\caption{II iterazione}
 \end{figure}
+
+\paragraph{Iterazione 3}
+
+La distanza media tra i droni ed il centro di massa è quasi nulla. L'algoritmo è prossimo alla convergenza.
 
 \begin{figure}[H]
 \includegraphics[width=5cm]{lloyd_iterazione_3.png}
 \centering
-\caption{III iterazione}
 \end{figure}
+
+\paragraph{Iterazione 4}
+
+Ogni drone si trova ora posizionato sopra il centro di massa della propria cella, di conseguenza l'algoritmo ha raggiunto la convergenza.
 
 \begin{figure}[H]
 \includegraphics[width=5cm]{lloyd_iterazione_4.png}
 \centering
-\caption{IV iterazione}
 \end{figure}
 
-\subsection{Convergenza dell'algoritmo}
+\section{Convergenza dell'algoritmo}
 
 Intuitivamente, si può dire che l'algoritmo converga in quanto i punti che si trovano a minor distanza tra loro tendono a compiere un movimento più alto, mentre i punti che si trovano a distanze elevate tendono a muoversi meno.
 
+\section{Esecuzione dell'algoritmo}
+
+L'algoritmo, anziché essere eseguito centralmente, viene distribuito tra i centri di calcolo dei vari droni.
+
+L'esecuzione, per ogni drone, diviene quindi:
+
+\begin{enumerate}
+	\item Fino al segnale di \textit{STOP}, ripeti:
+	\begin{enumerate}
+		\item Attendi le coordinate relative alla posizione degli altri droni, comunicate via radio
+		\item Ottieni dal \textit{controllo di volo} le proprie coordinate
+		\item Esegui la funzione \name{TargetPos}, che restituisce le coordinate del punto da raggiungere (vedi la sezione \ref{TargetPos} per i dettagli)
+		\item Comunica l'output al controllo di volo
+	\end{enumerate}
+\end{enumerate}
+
 \pagebreak
 
-\section{Implementazione in \textit{OpenModelica}}
+\chapter{Prototipazione}
 
-\subsection{Introduzione}
+Al fine di realizzare l'algoritmo, si è reso necessario attraversare una prima fase di \textit{prototipazione}.
+
+Le specifiche del linguaggio di prototipazione erano le seguenti: un linguaggio dinamico che permettesse una concisa scrittura del codice e una rapida compilazione; strumenti di \textit{testing} integrati per verificare l'effettiva correttezza delle funzioni implementate; la disponibilità di un framework grafico per effettuare simulazioni in modo rapido e dimanico.
+
+La scelta è ricaduta quindi sul linguaggio \textit{Python 3}\footnote{https://www.python.org/} e sul framework \textit{Pygame}\footnote{https://www.pygame.org/}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=5cm]{python.png}
+\includegraphics[width=5cm]{pygame.png}
+
+\end{figure}
+
+\section{Codifica}
+
+Il codice dell'implementazione \textit{Python 3} non viene qui riportato, in quanto viene successivamente illustrato e commentato il porting dei prototipi nel linguaggio \textit{OpenModelica}.
+
+È comunque possibile prendere visione del codice di prototipazione presso il repository Github del progetto\footnote{https://github.com/zapateo/Tesi\_GianlucaMondini/tree/master/implementazione\_algoritmo/python}.
+
+
+\section{Testing}
+
+Al fine di implementare un meccanismo di testing rapido e completo si è optato per il framework \textit{doctest}.
+
+\paragraph{Esempio di testing tramite \textit{doctest}}
+
+Prendiamo, ad esempio, l'implementazione di una funzione triviale \textit{somma} che, dati due numeri $a$ e $b$, restituisca la loro somma.
+
+La libreria \textit{doctest} ci permette di definire, all'interno della documentazione della funzione, alcuni test che fungono inoltre da codice di esempio.
+
+\begin{figure}[H]
+\begin{lstlisting}[language=Python]
+def somma(a, b):
+	"""
+	Restituisce la somma di a e b
+	
+	>>> somma(4, 5)
+	9
+	
+	>>> somma(0, -3)
+	-3
+	"""
+	return a + b
+\end{lstlisting}
+\end{figure}
+
+È adesso necessario richiamare all'interno \textit{main} del codice sorgente l'esecuzione dei vari test, tramite
+
+\begin{figure}[H]
+\begin{lstlisting}[language=Python]
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+\end{lstlisting}
+\end{figure}
+
+Eseguendo quindi il codice sorgente, verrano eseguiti i test presenti nella documentazione delle varie funzioni e l'output verrà confrontato con quello atteso. Nel caso in cui tutti i test vengano superati non verrà mostrato alcun output a schermo, in caso contrario un messaggio d'errore indicherà il test non superato, l'output atteso e l'output ottenuto.
+
+\pagebreak
+
+\chapter{Implementazione in \textit{OpenModelica}}
 
 L'implementazione dell'algoritmo di Lloyd richiede una funzione che effettui la tassellazione di Voronoi, la quale a sua volta utilizza una serie di funzioni geometriche che operino nello spazio bidimensionale.
 
 Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio \textit{Python} per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica}
 
-\subsection{Diagramma delle dipendenze}
+\section{OpenModelica}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{openmodelica.png}
+\end{figure}
+
+\textit{OpenModelica} è un implementazione \textit{open source} del linguaggio di modellazione \textit{Modelica}, che permette la modellazione, simulazione, ottimizzazione e analisi di complessi sistemi dinamici. \textit{OpenModelica} viene utilizzato sia in ambito accademico sia in ambito industriale.
+
+L'ambiente \textit{OpenModelica}, implementato nei linguaggi C e C++, fornisce una serie di strumenti di lavoro, tra cui:
+
+\begin{description}
+	\item[omc] compila un file sorgente \textit{OpenModelica} generando la rispettiva \textit{classe}
+	\item[OMEdit] software che permette, tra le varie cose, di "connettere" tramite un'interfaccia grafica le varie classi per comporre sistemi complessi
+	\item[OMShell] shell interattiva che esegue comandi impartiti singolarmente, utile per effettuare una rapida prototipazione
+\end{description}
+
+Per ulteriori informazioni si rimanda al sito ufficiale del progetto\footnote{https://openmodelica.org/} e al documento di specifica Modelica\footnote{https://www.modelica.org/documents/ModelicaSpec34.pdf}
+
+\section{Un approccio funzionale}
+
+Nell'implementazione del codice si è optato per un approccio funzionale. In pratica ogni "modulo" viene implementato tramite una funzione che abbia un determinato dominio di input e codominio di output e viene codificata in modo tale da evitare \textit{effetti collaterali} al di fuori di se stessa. Questo garantisce che, data una funzione e un insieme di input, si possa determinare univocamente l'output, indipendentemente dal valore di parametri esterni alla funzione. Il tutto può essere chiarito con un esempio:
+
+\begin{figure}[H]
+\begin{lstlisting}
+A = 0
+B = 20
+
+func F(C, D) {
+	A = A + 10
+	return C + D + A
+}
+
+output = F(30, 40)
+\end{lstlisting}
+\caption{Un implementazione non-funzionale di \name{F}}
+\end{figure}
+
+La funzione \name{F} restituisce la somma di \name{C}, \name{D} ed \name{A}. In questo caso il valore \name{output} sarà $30 + 40 + 10 = 80$.
+
+La funzione presenta però un problema: eseguendo nuovamente la funzione con gli stessi argomenti, l'output sarà $30 + 40 + 20 = 90$ in quanto il valore di \name{A} è variato, ovvero ha subito un \textit{effetto collaterale} dalla chiamata della funzione.
+
+Inoltre, variando \name{A} al di fuori della funzione il suo output cambierà di conseguenza
+
+\begin{figure}[H]
+\begin{lstlisting}
+A = 0
+B = 20
+
+func F(C, D) {
+	A = A + 10
+	return C + D + A
+}
+
+output = F(30, 40)
+
+A = 100
+
+output = F(30, 40)
+\end{lstlisting}
+\caption{La stessa funzione \name{F}, chiamata con gli stessi argomenti in momenti diversi, restituisce output diversi}
+\end{figure}
+
+Non è quindi possibile stabilire, a priori, l'output della funzione dati gli argomenti se non si conosce anche, per intero, l'ambiente nel quale la funzione viene eseguita.
+
+L'approccio funzionale prevede quindi di implementare la funzione \name{F} nel seguente modo:
+
+\begin{figure}[H]
+\begin{lstlisting}
+A = 0
+B = 20
+
+func F(C, D, A) {
+	A = A + 10
+	return C + D + A, A
+}
+
+output, A = F(30, 40)
+\end{lstlisting}
+\label{implementazione_funzionale_F}
+\caption{Un implementazione funzionale della funzione \name{F}}
+\end{figure}
+
+In questo caso la funzione non accetta più 2 argomenti, bensì 3, come era implicitamente codificato nella versione precedente. Si noti inoltre che la funzione non restituisce soltanto un valore di output ma 2, il risultato della somma (assegnato qui a \name{output}) e il nuovo valore di \name{A}, che ha subìto un incremento.
+
+Questo nuovo modello semplifica notevolemente lo sviluppo, in quanto la funzione \name{F} è ora svincolata dall'ambiente che la circonda ed è liberamente eseguibile all'interno di altro codice.
+
+Un altro aspetto da considerare è quello del \textit{testing}; come si vedrà più  avanti nella sezione \ref{testing}, è indispensabile realizzare un meccanismo di testing che garantisca l'effettiva correttezza delle funzioni implementate. A questo riguardo l'approccio funzionale scelto semplifica notevolemente questa fase di sviluppo, in quanto è sufficiente effettuare chiamate singole alle varie funzioni per ottenerne l'output da confrontare con un valore di riferimento.
+
+Nel nostro esempio la funzione \name{F} come mostrata nella figura \ref{implementazione_funzionale_F} chiamata con argomenti costanti restituirà sempre lo stesso valore di output.
+
+\section{Diagramma delle dipendenze}
 
 Viene qui illustrato un diagramma contenenti le varie funzioni dell'implementazione \textit{OpenModelica}. Le frecce $\longrightarrow$ rappresentano una dipendenza; ad esempio $A \longrightarrow B$ indica che $A$ effettua una chiamata a $B$ durante la sua esecuzione, e di conseguenza $A$ \textit{dipende da} $B$.
 
@@ -181,21 +408,19 @@ In basso troviamo \name{CompareReal}, che dipende esclusivamente da funzioni int
 \caption{Diagramma delle dipendenze delle varie funzioni}
 \end{figure}
 
-\subsection{Funzioni e strutture dati geometriche}
-
-Vengono qui descritte alcune delle funzioni implementate, seguendo l'approccio \textit{bottom-up}, ovvero viene seguito in ordine inverso il grafo delle dipendenze
-
-\subsubsection{Scelte implementative}
+\section{Scelte implementative}
 
 Come si vedrà in seguito, anzichè definire \textit{tipi} personalizzati si è deciso di ricorrere alle strutture dati già presenti in \textit{OpenModelica}.
 
 Ad esempio, un punto dello spazio può essere rappresentato sia come \textit{record} tramite
 
+\begin{figure}[H]
 \begin{lstlisting}[language=Modelica]
 record Point
 	Real x, y;
 end Point;
 \end{lstlisting}
+\end{figure}
 
 sia come vettore
 
@@ -212,7 +437,7 @@ I punti a sfavore dell'utilizzo di un vettore al posto di una struttura dati per
 	\item L'impossibilità di aggiungere ulteriori campi contenenti informazioni. A questo riguardo si veda la sezione \ref{mark_unwanted_edges}
 \end{itemize}
 
-\subsubsection{Rappresentazione del punto geometrico}
+\section{Rappresentazione del punto geometrico}
 
 Per poter indicare un punto nello spazio bidimensionale, è necessario definire una struttura dati rappresentante una tupla \textit{x, y}. A questo fine viene utilizzato un vettore bidimensionale definito tramite
 
@@ -228,7 +453,7 @@ Real [:, 2] some_points;
 
 Il carattere \verb|:| posto in prima posizione tra le parentesi quadre indica che la prima dimensione della matrice \verb|some_points| non è conosciuta a priori.
 
-\subsubsection{Verifica della sovrapposizione di due punti}
+\section{Verifica della sovrapposizione di due punti}
 
 Può verificarsi che, in seguito a ..., ci si trovi nella situazione in cui due punti sovrapposti non superino il test di equalità. Ad esempio:
 \[
@@ -238,13 +463,17 @@ P_1 = (4.0, 2.0)
 P_2 = (4.00001, 1.999999)
 \]
 
-è chiaro come i due punti siano in realtà sovrapposti, ed è quindi necessario definire una funzione che si occupi di verificarlo
+I punti $P_1$ e $P_2$, pur potendo essere considerati sovrapposti in relazione allo spazio metrico in cui si trovano, sono considerati diversi da loro per via di errori di approssimazione del calcolatore.
 
 % TODO riscrivere la funzione points are close in stile EdgesAreClose
 
-\modelicaclass{PointsAreClose.mo}
+Si è quindi implementata una funzione che discrimini i punti diversi tra loro da quelli "apparentemente diversi", ovvero una funzione che verifichi se due punti sono tra loro \textit{vicini}.
 
-\subsubsection{Rappresentazione del segmento geometrico}
+\begin{figure}[H]
+\modelicaclass{PointsAreClose.mo}
+\end{figure}
+
+\section{Rappresentazione del segmento geometrico}
 
 Per rappresentare un segmento, si considera un vettore di 4 elementi, nella forma
 
@@ -270,15 +499,17 @@ edge[3] := x_2;
 edge[4] := y_2;
 \end{lstlisting}
 
-\subsubsection{Verifica della sovrapposizione di due segmenti}
+\section{Verifica della sovrapposizione di due segmenti}
 
 La verifica della sovrapposizione di due segmenti viene effettuata in modo analogo a quella della sovrapposizione di due punti, e fa uso proprio di quest'ultima funzione.
 
 Formalmente, due segmenti sono considerati sovrapposti se il punto iniziale del primo si sovrappone al punto iniziale del secondo e contemporaneamente il punto finale del primo si sovrappone al punto finale del secondo.
 
+\begin{figure}[H]
 \modelicaclass{EdgesAreClose.mo}
+\end{figure}
 
-\subsubsection{Linea}
+\section{Linea}
 
 Una \textit{linea} è matematicamente identificata da una tupla di 3 elementi $a$, $b$ e $c$ tali che
 
@@ -295,7 +526,7 @@ line[2] := b;
 line[3] := c;
 \end{lstlisting}
 
-\subsubsection{Conversione da linea a segmento}
+\section{Conversione da linea a segmento}
 
 Può essere necessario convertire una linea, priva di un punto di inizio e fine, in un segmento, ben delimitato. Per fare ciò è stata implementata la funzione
 
@@ -305,7 +536,7 @@ Può essere necessario convertire una linea, priva di un punto di inizio e fine,
 
 \modelicaclass{LineToSegment.mo}
 
-\subsubsection{Intersezione tra segmenti}
+\section{Intersezione tra segmenti}
 
 Una delle funzioni principalmente utilizzate dall'algoritmo di tassellazione di Voronoi è quella responsabile di determinare l'eventuale punto di intersezione tra due segmenti.
 
@@ -322,7 +553,7 @@ L'algoritmo implementato è il seguente \footnote{Il codice è un adattamento di
 
 Oltre a restituire un vettore bidimensionale \verb|intersection| viene anche restituito un booleano \verb|valid|, che sta ad indicare se il valore contenuto in \verb|intersection| è valido o meno.
 
-\subsubsection{Asse di un segmento}
+\section{Asse di un segmento}
 
 La funzione \name{VoronoiCell} fa ampio uso della funzione \name{PerpendicularBisector}, che restituisce l'asse del segmento passato come argomento.
 
@@ -346,7 +577,7 @@ Vengono discriminati i 3 casi in cui:
 
 \modelicaclass{PerpendicularBisector.mo}
 
-\subsection{Centro di massa}
+\section{Centro di massa}
 
 Al fine di implementare l'algoritmo di Lloyd è necessario definire una funzione che, presa in ingresso una lista di vertici, ne calcoli il centro di massa.
 
@@ -376,7 +607,7 @@ Ne deriva quindi la seguente codifica:
 
 \modelicaclass{CenterOfMass.mo}
 
-\subsection{Ricerca ed eliminazione dei segmenti in eccesso}
+\section{Ricerca ed eliminazione dei segmenti in eccesso}
 
 Durante l'esecuzione dell'algoritmo di Voronoi si presenta la necessità di rimuovere dei segmenti che non fanno più parte del diagramma. Si presenta il problema di come effettuare questa operazione senza arrecare danno all'iterazione in corso proprio sulla lista dalla quale vanno rimossi gli elementi.
 
@@ -390,6 +621,7 @@ edge := {-1, -1, -1, -1};
 
 Successivamente, utilizzando la funzione \verb|CompareVector| si controlla se il segmento è contrassegnato per l'eliminazione
 
+\begin{figure}[H]
 \begin{lstlisting}
 if CompareVector(edge, {-1, -1, -1, -1}) then
 	// Considera 'edge' come un segmento da eliminare
@@ -397,6 +629,7 @@ else
 	// Considera 'edge' come un segmento valido
 end if;
 \end{lstlisting}
+\end{figure}
 
 La funzione \verb|MarkUnwantedEdges| contrassegna tutti i segmenti che devono essere rimossi dalla lista di segmenti. In particolare, se un segmento si trova dietro ad un altro quello "nascosto" deve essere eliminato in quanto non può più far parte dell'insieme.
 
@@ -420,7 +653,7 @@ La funzione \verb|RemoveMarkedEdges| restituisce una lista di segmenti dalla qua
 
 \modelicaclass{RemoveMarkedEdges.mo}
 
-\subsection{La funzione \name{VoronoiCell}}
+\section{La funzione \name{VoronoiCell}}
 
 Come precedentemente detto, l'algoritmo di Lloyd è implementato tramite iterazioni successive dell'algoritmo di Voronoi.
 
@@ -434,8 +667,8 @@ L'idea è quindi quella di implementare la seguente funzione:
 
 I passaggi fondamentali dell'algoritmo implementato sono i seguenti:
 
-% TODO mancano alcuni passaggi
-% TODO correggere maiuscole/minuscole
+%TODO mancano alcuni passaggi
+%TODO correggere maiuscole/minuscole
 
 \begin{enumerate}
 	\item Per ogni \name{drone} contenuto in \name{other drones} (ovvero la lista degli altri droni)
@@ -458,7 +691,7 @@ I passaggi fondamentali dell'algoritmo implementato sono i seguenti:
 	\item tolgo da \name{edges} i bordi duplicati e quelli contrassegnati per l'eliminazione
 \end{enumerate}
 
-\subsubsection{Esempio grafico di applicazione dell'algoritmo di Voronoi}
+\subsection{Esempio grafico di applicazione dell'algoritmo di Voronoi}
 
 Vediamo adesso l'applicazione dell'algoritmo di Voronoi alla seguente situazione: l'area è delimitata da un poligono a 5 lati; in rosso è visibile quello che viene chiamato \name{PrimaryDrone}, ovvero il drone che effettua la chiamata a \name{VoronoiCell} e per il quale si intende calcolare la cella associata; i restanti 2 puntini neri rappresentano gli altri due droni.
 
@@ -496,7 +729,9 @@ Il codice che ne deriva è il seguente:
 
 \modelicaclass{VoronoiCell.mo}
 
-\subsection{La funzione \name{TargetPos}}
+\section{La funzione \name{TargetPos}}
+
+\label{TargetPos}
 
 La funzione \name{TargetPos} effettua una singola iterazione dell'algoritmo di Lloyd, ovvero:
 
@@ -507,9 +742,13 @@ La funzione \name{TargetPos} effettua una singola iterazione dell'algoritmo di L
 
 % note sulla chiamata più volte nel tempo che consente la convergenza
 
+\begin{figure}[H]
 \modelicaclass{TargetPos.mo}
+\end{figure}
 
-\subsection{Testing del codice}
+\section{Testing del codice}
+
+\label{testing}
 
 Attualmente \textit{OpenModelica} non fornisce un meccanismo di testing solido e standardizzato. Per questo motivo è stato necessario realizzare un sistema che automatizzasse la verifica della correttezza delle funzioni implementate.
 
@@ -528,7 +767,9 @@ A questo proposito si è deciso di ricorrere ad uno script \textit{Python} che:
 
 \pagebreak
 
-\section*{Bibliografia}
+\chapter{Conclusioni}
+
+\chapter*{Bibliografia}
 
 \begin{itemize}
 	\item https://en.wikipedia.org/wiki/Lloyd\%27s\_algorithm

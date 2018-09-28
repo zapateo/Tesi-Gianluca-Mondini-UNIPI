@@ -9,6 +9,7 @@
 model test_RemoveDuplicatedEdges
     Real [2,4] out1;
     Real [3,4] out2;
+    Real [2,4] out3;
 algorithm
     out1 := RemoveDuplicatedEdges({{0,0,0,0}, {0,0,0,0}, {1,1,1,1}});
     assert(size(out1, 1) == 2, "");
@@ -20,4 +21,9 @@ algorithm
     assert(CompareVectors(out2[1], {1,2,3,4}), "");
     assert(CompareVectors(out2[2], {1,2,3,5}), "");
     assert(CompareVectors(out2[3], {0,1,2,3}), "");
+
+    out3 := RemoveDuplicatedEdges({{0,0,0,0}, {0,0,0,0}, {1,1,0,0}, {0,0,1,1}});
+    assert(size(out3, 1) == 2, "");
+    assert(CompareVectors(out3[1], {0,0,0,0}), "");
+    assert(CompareVectors(out3[2], {1,1,0,0}), "");
 end test_RemoveDuplicatedEdges;

@@ -7,11 +7,15 @@
  */
 
 model test_SegmentsIntersection
+
+    Real [4] in1_1 = {0,0,2,2};
+
     Boolean valid;
     Real [2] p;
+
 algorithm
 
-    (valid, p) := SegmentsIntersection({0, 0, 2, 2}, {0, 2, 2, 0});
+    (valid, p) := SegmentsIntersection(in1_1, {0, 2, 2, 0});
     assert(valid == true, "segment intersection #1");
     AssertRealEquality(p[1], 1);
     AssertRealEquality(p[2], 1);

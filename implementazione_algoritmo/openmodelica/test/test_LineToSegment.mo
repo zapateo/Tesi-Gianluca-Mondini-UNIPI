@@ -7,12 +7,11 @@
  */
 
 model test_LineToSegment
-protected
-    parameter Real [3] line1 = {1, 3, -2};
-    parameter Real [4] e1 = LineToSegment(line1);
+
+    Real [3] in1 = {1, 3, -2};
+
 algorithm
-    assert(e1[1] == -10000, "LineToSegment #1");
-    assert(CompareReal(e1[2], 3334), "LineToSegment #2");
-    assert(e1[3] == 10000, "LineToSegment #3");
-    assert(CompareReal(e1[4], -3332.67), "LineToSegment #4");
+
+    AssertVectorEquality(LineToSegment(in1), {-10000, 3334, 10000, -3332.67});
+
 end test_LineToSegment;

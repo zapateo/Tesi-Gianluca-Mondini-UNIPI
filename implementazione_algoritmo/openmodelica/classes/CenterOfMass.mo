@@ -19,6 +19,11 @@ protected
 
 algorithm
 
+    if size(points, 1) < 3 then
+        out := {-1,-1};
+    end if;
+
+
     // Adattato da https://stackoverflow.com/a/46937541
     vertices := points;
 
@@ -40,5 +45,5 @@ algorithm
     y_cent := y_cent / (area * 6);
 
     out := {x_cent, y_cent};
-    
+
 end CenterOfMass;

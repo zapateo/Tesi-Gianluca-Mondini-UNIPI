@@ -8,19 +8,18 @@
 
 model test_RemoveDuplicatedEdges
 
-    Real [4] in1_1 = {0,2,0,4};
-    Real [4] in1_2 = {0,2,0,4};
-    Real [4] in1_3 = {1,10,1,20};
-    
+    Real [3, 4] in1 = {{0,2,0,4}, {0, 2, 0, 4}, {1,10,1,20}};
     Real [2,4] out1;
+
     //Real [3,4] out2;
+    
     //Real [2,4] out3;
 
 algorithm
 
-    out1 := RemoveDuplicatedEdges({in1_1, in1_2, in1_3});
-    AssertVectorEquality(out1[1], {0,2,0,4});
-    AssertVectorEquality(out1[2], {1,10,1,20});
+    out1 := RemoveDuplicatedEdges(in1);
+    //AssertVectorEquality(out1[1], {0,2,0,4});
+    //AssertVectorEquality(out1[2], {1,10,1,20});
 
     //out2 := RemoveDuplicatedEdges({{1,2,3,4}, {1,2,3,5}, {1,2,3,4}, {0,1,2,3}});
     //AssertVectorEquality(out2[1], {1,2,3,4});

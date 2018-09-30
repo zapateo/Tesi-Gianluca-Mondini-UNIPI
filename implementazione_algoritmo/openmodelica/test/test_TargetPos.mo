@@ -12,6 +12,7 @@ model test_TargetPos
 
     Real [2] out2;
 
+    Real [2] test3_primary_drone = {10, 10};
     Real [2] out3;
 
 algorithm
@@ -34,7 +35,7 @@ algorithm
 
     out3 := TargetPos(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
-        {10, 10},
+        test3_primary_drone,
         {{20, 20}, {50, 50}}
     );
     AssertRealEquality(out3[1], 10);

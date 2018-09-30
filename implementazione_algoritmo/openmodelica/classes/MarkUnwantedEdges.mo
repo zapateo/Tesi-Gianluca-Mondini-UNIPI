@@ -11,7 +11,7 @@ function MarkUnwantedEdges
     input  Real [:,4] edges;
     input  Real [2]   primary_drone;
 
-    output Real [:,4] out;
+    output Real [size(edges, 1),4] out;
 
 protected
 

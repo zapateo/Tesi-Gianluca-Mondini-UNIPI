@@ -12,7 +12,7 @@ model test_Midpoint
 
     Real [4] in2 = {1, 1, 4, -5};
 
-equation
+algorithm
 
     AssertVectorEquality(Midpoint(in1), {1, 1});
 

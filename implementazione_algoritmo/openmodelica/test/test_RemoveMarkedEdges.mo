@@ -1,7 +1,7 @@
 model test_RemoveMarkedEdges
 
 	Real [3,4] input1 = {{0,0,2,2}, {-1,-1,-1,-1}, {1,1,-1,1}};
-	Real [2,4] out1;
+	Real [100,4] out1;
 
 algorithm
 

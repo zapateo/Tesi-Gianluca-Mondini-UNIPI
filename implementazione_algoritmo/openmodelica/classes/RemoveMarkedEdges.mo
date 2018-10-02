@@ -10,19 +10,22 @@ function RemoveMarkedEdges
 
     input Real[:,4] edges;
 
-    output Real [:,4] clean_edges;
+    output Real[100,4] clean_edges;
 
 protected
 
-    Real [0,4] empty_clean_edges;
+    Integer output_size;
 
 algorithm
 
-    clean_edges := empty_clean_edges;
+    output_size := 0;
+    clean_edges := fill({-2.0,-2.0,-2.0,-2.0},100);
+
     for i in 1:size(edges, 1) loop
         if not CompareVectors(edges[i], {-1, -1, -1, -1}) then
-            clean_edges := cat(1, clean_edges, {edges[i]});
+            output_size := output_size +1;
+            clean_edges[output_size] := edges[i];
         end if;
     end for;
-    
+
 end RemoveMarkedEdges;

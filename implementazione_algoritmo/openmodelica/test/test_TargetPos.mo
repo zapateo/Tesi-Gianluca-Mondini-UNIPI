@@ -10,6 +10,7 @@ model test_TargetPos
 
     Real [2] out1;
 
+    Real [4,4] test2_edges;
     Real [2] out2;
 
     Real [2] test3_primary_drone = {10, 10};
@@ -25,8 +26,9 @@ algorithm
     AssertRealEquality(out1[1], 10);
     AssertRealEquality(out1[2], 10);
 
+    test2_edges := {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}};
     out2 := TargetPos(
-        {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
+        test2_edges,
         {30, 30},
         {{10, 10}, {20, 20}}
     );

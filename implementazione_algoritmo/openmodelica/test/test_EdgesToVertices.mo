@@ -20,10 +20,10 @@ algorithm
     assert(CompareVectors(out1[1], {0, 0}), "");
     assert(CompareVectors(out1[2], {1, 1}), "");
 
-    out2 := EdgesToVertices({{0,0,1,0}, {1,0,1,1}, {1,1,0,1}, {0,1,0,0}});
+    out2 := EdgesToVertices({{0,0,1,0}, {1,0,1,1}, {1,1,0,1}, {0,1,0,0}, {-101010, -101010, -101010, -101010}, {-101010, -101010, -101010, -101010}});
     assert(CompareVectors(out2[1], {0, 0}), "");
     assert(CompareVectors(out2[2], {1, 0}), "");
     assert(CompareVectors(out2[3], {1, 1}), "");
     assert(CompareVectors(out2[4], {0, 1}), "");
-    
+
 end test_EdgesToVertices;

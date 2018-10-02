@@ -23,25 +23,27 @@ algorithm
 
     points := empty_points;
     for i in 1:size(edges, 1) loop
-        p1 := {edges[i, 1], edges[i, 2]};
-        p2 := {edges[i, 3], edges[i, 4]};
-        add_p1 := true;
-        add_p2 := true;
-        for points_index in 1:size(points, 1) loop
-            point := points[points_index];
-            if PointsAreClose(p1, point) then
-                add_p1 := false;
+        if not CompareVectors(edges[i], {-101010, -101010, -101010, -101010}) then
+            p1 := {edges[i, 1], edges[i, 2]};
+            p2 := {edges[i, 3], edges[i, 4]};
+            add_p1 := true;
+            add_p2 := true;
+            for points_index in 1:size(points, 1) loop
+                point := points[points_index];
+                if PointsAreClose(p1, point) then
+                    add_p1 := false;
+                end if;
+                if PointsAreClose(p2, point) then
+                    add_p2 := false;
+                end if;
+            end for;
+            if add_p1 then
+                points := cat(1, points, {p1});
             end if;
-            if PointsAreClose(p2, point) then
-                add_p2 := false;
+            if add_p2 then
+                points := cat(1, points, {p2});
             end if;
-        end for;
-        if add_p1 then
-            points := cat(1, points, {p1});
-        end if;
-        if add_p2 then
-            points := cat(1, points, {p2});
         end if;
     end for;
-    
+
 end EdgesToVertices;

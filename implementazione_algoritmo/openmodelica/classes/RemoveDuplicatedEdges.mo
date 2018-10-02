@@ -11,7 +11,7 @@ function RemoveDuplicatedEdges
     input Real[:, 4] edges;
 
     output Real[100, 4] unique_edges;
-    
+
 protected
 
     Boolean insert;
@@ -19,7 +19,7 @@ protected
 
 algorithm
 
-    unique_edges := fill({-2.0,-2.0,-2.0,-2.0},100);
+    unique_edges := fill({-101010,-101010,-101010,-101010},100);
     output_size := 0;
 
     for i in 1:size(edges, 1) loop

@@ -19,7 +19,7 @@ protected
 algorithm
 
     output_size := 0;
-    clean_edges := fill({-2.0,-2.0,-2.0,-2.0},100);
+    clean_edges := fill({-101010,-101010,-101010,-101010},100);
 
     for i in 1:size(edges, 1) loop
         if not CompareVectors(edges[i], {-1, -1, -1, -1}) then

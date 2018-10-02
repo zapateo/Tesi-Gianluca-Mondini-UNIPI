@@ -9,13 +9,13 @@
 model test_VoronoiCell
 
     Real [2] test1_primary_drone = {10, 10};
-    Real [3, 4] out1;
+    Real [100, 4] out1;
 
-    Real [3, 4] out2;
+    Real [100, 4] out2;
 
-    Real [5, 4] out3;
+    Real [100, 4] out3;
 
-    Real [5, 4] out4;
+    Real [100, 4] out4;
 
 algorithm
     out1 := VoronoiCell(

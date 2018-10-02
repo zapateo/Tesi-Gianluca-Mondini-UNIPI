@@ -8,17 +8,20 @@
 
 model test_MarkUnwantedEdges
 
-    Real [4] in1_1 = {-1, 1, 1, 1};
-    Real [4] in1_2 = {-0.5, 3, 0.5, 3};
-    Real [2, 4] out1;
+    EdgesArray in1;
+    EdgesArray out1;
 
 algorithm
 
+    in1.len := 0;
+    in1 := EdgesArrayAppend(in1, {-1, 1, 1, 1});
+    in1 := EdgesArrayAppend(in1, {-0.5, 3, 0.5, 3});
+
     out1 := MarkUnwantedEdges(
-        {in1_1, in1_2},
+        in1,
         {0,0}
     );
-    AssertVectorEquality(out1[1], {-1,1,1,1});
-    AssertVectorEquality(out1[2], {-1,-1,-1,-1});
+    AssertVectorEquality(out1.elements[1], {-1,1,1,1});
+    AssertVectorEquality(out1.elements[2], {-1,-1,-1,-1});
 
 end test_MarkUnwantedEdges;

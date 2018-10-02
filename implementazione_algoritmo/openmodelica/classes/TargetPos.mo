@@ -11,7 +11,6 @@ function TargetPos
     input   Real  [:,4]  area_boundaries;
     input   Real  [2]    self_position;
     input   Real  [:,2]  other_drones_positions;
-
     output  Real  [2]    target_position;
 
 algorithm

@@ -8,22 +8,30 @@
 
 model test_EdgesToVertices
 
-    Real [4] in1_1 = {0,0,1,1};
-    Real [4] in1_2 = {1,1,0,0};
-    Real [2,2] out1;
+    EdgesArray in1;
+    PointsArray out1;
 
-    Real [4,2] out2;
+    EdgesArray in2;
+    PointsArray out2;
 
 algorithm
 
-    out1 := EdgesToVertices({in1_1, in1_2});
-    assert(CompareVectors(out1[1], {0, 0}), "");
-    assert(CompareVectors(out1[2], {1, 1}), "");
+    in1.len := 0;
+    in1 := EdgesArrayAppend(in1, {0,0,1,1});
+    in1 := EdgesArrayAppend(in1, {1,1,0,0});
+    out1 := EdgesToVertices(in1);
+    assert(CompareVectors(out1.elements[1], {0, 0}), "");
+    assert(CompareVectors(out1.elements[2], {1, 1}), "");
 
-    out2 := EdgesToVertices({{0,0,1,0}, {1,0,1,1}, {1,1,0,1}, {0,1,0,0}, {-101010, -101010, -101010, -101010}, {-101010, -101010, -101010, -101010}});
-    assert(CompareVectors(out2[1], {0, 0}), "");
-    assert(CompareVectors(out2[2], {1, 0}), "");
-    assert(CompareVectors(out2[3], {1, 1}), "");
-    assert(CompareVectors(out2[4], {0, 1}), "");
+    in2.len := 0;
+    in2 := EdgesArrayAppend(in2, {0,0,1,0});
+    in2 := EdgesArrayAppend(in2, {1,0,1,1});
+    in2 := EdgesArrayAppend(in2, {1,1,0,1});
+    in2 := EdgesArrayAppend(in2, {0,1,0,0});
+    out2 := EdgesToVertices(in2);
+    assert(CompareVectors(out2.elements[1], {0, 0}), "");
+    assert(CompareVectors(out2.elements[2], {1, 0}), "");
+    assert(CompareVectors(out2.elements[3], {1, 1}), "");
+    assert(CompareVectors(out2.elements[4], {0, 1}), "");
 
 end test_EdgesToVertices;

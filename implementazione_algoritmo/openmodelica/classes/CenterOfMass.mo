@@ -8,24 +8,28 @@
 
 function CenterOfMass
 
-    input Real [:, 2] points;
+    input PointsArray points;
 
     output Real [2] out;
 
 protected
 
     Real [:, 2] vertices, v_local;
+    Real [0, 2] empty_vertices;
     Real x_cent, y_cent, area, factor;
 
 algorithm
 
-    if size(points, 1) < 3 then
+    if points.len < 3 then
         out := {-1,-1};
     end if;
 
 
     // Adattato da https://stackoverflow.com/a/46937541
-    vertices := points;
+    vertices := empty_vertices;
+    for i in 1:points.len loop
+        vertices := cat(1, vertices, {points.elements[i]});
+    end for;
 
     x_cent := 0;
     y_cent := 0;

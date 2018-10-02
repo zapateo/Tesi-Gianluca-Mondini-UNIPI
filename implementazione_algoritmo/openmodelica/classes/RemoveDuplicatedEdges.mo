@@ -8,32 +8,28 @@
 
 function RemoveDuplicatedEdges
 
-    input Real[:, 4] edges;
-
-    output Real[100, 4] unique_edges;
+    input EdgesArray edges;
+    output EdgesArray unique_edges;
 
 protected
 
     Boolean insert;
-    Integer output_size;
 
 algorithm
 
-    unique_edges := fill({-101010,-101010,-101010,-101010},100);
-    output_size := 0;
+    unique_edges.len := 0;
 
-    for i in 1:size(edges, 1) loop
+    for i in 1:edges.len loop
 
         insert := true;
-        for j in 1:output_size loop
-            if EdgesAreClose(edges[i], unique_edges[j]) then
+        for j in 1:unique_edges.len loop
+            if EdgesAreClose(edges.elements[i], unique_edges.elements[j]) then
                 insert := false;
             end if;
         end for;
 
         if insert then
-            output_size := output_size + 1;
-            unique_edges[output_size] := edges[i];
+            unique_edges := EdgesArrayAppend(unique_edges, edges.elements[i]);
         end if;
     end for;
 

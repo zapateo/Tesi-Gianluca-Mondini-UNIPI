@@ -3,6 +3,8 @@ model voronoi
   Real in1[2];
   Real in2[2];
   Real in3[2];
+  Real x_d1;
+  Real y_d1;
 algorithm
   in1[1] := 10;
   in1[2] := 10;

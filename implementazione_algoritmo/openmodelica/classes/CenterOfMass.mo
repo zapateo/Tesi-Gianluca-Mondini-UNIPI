@@ -14,7 +14,7 @@ function CenterOfMass
 
 protected
 
-    Real [:, 2] vertices, v_local;
+    PointsArray vertices, v_local;
     Real [0, 2] empty_vertices;
     Real x_cent, y_cent, area, factor;
 
@@ -24,24 +24,28 @@ algorithm
         out := {-1,-1};
     end if;
 
-
     // Adattato da https://stackoverflow.com/a/46937541
-    vertices := empty_vertices;
+
+    vertices.len := 0;
     for i in 1:points.len loop
-        vertices := cat(1, vertices, {points.elements[i]});
+        vertices := PointsArrayAppend(vertices, points.elements[i]);
     end for;
 
     x_cent := 0;
     y_cent := 0;
     area := 0;
 
-    v_local := cat(1, vertices, {vertices[1]});
+    v_local.len := 0;
+    for i in 1:vertices.len loop
+        v_local := PointsArrayAppend(v_local, vertices.elements[i]);
+    end for;
+    v_local := PointsArrayAppend(v_local, vertices.elements[1]);
 
-    for i in 1:(size(v_local, 1) - 1) loop
-        factor := v_local[i,1] * v_local[i+1, 2] - v_local[i+1,1] * v_local[i,2];
+    for i in 1:(v_local.len - 1) loop
+        factor := v_local.elements[i,1] * v_local.elements[i+1, 2] - v_local.elements[i+1,1] * v_local.elements[i,2];
         area := area + factor;
-        x_cent := x_cent + (v_local[i, 1] + v_local[i+1,1]) * factor;
-        y_cent := y_cent + (v_local[i, 2] + v_local[i+1, 2]) * factor;
+        x_cent := x_cent + (v_local.elements[i, 1] + v_local.elements[i+1,1]) * factor;
+        y_cent := y_cent + (v_local.elements[i, 2] + v_local.elements[i+1, 2]) * factor;
     end for;
 
     area := area / 2.0;

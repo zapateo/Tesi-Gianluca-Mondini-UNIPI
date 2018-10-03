@@ -56,6 +56,4 @@ algorithm
         end if;
     end for;
 
-    //out := cat(1, marked_edges, empty_marked_edges);
-
 end MarkUnwantedEdges;

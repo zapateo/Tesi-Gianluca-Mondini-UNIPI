@@ -8,8 +8,9 @@
 
 model test_RemoveDuplicatedEdges
 
-    EdgesArray in1;
-    EdgesArray out1;
+    EdgesArray in1, out1;
+    EdgesArray in2, out2;
+    EdgesArray in3, out3;
 
 algorithm
 
@@ -25,13 +26,25 @@ algorithm
     AssertVectorEquality(out1.elements[2], {1,10,1,20});
     AssertVectorEquality(out1.elements[3], {5,9,84,1});
 
-    //out2 := RemoveDuplicatedEdges({{1,2,3,4}, {1,2,3,5}, {1,2,3,4}, {0,1,2,3}});
-    //AssertVectorEquality(out2[1], {1,2,3,4});
-    //AssertVectorEquality(out2[2], {1,2,3,5});
-    //AssertVectorEquality(out2[3], {0,1,2,3});
+    in2.len := 0;
+    in2 := EdgesArrayAppend(in2, {1,2,3,4});
+    in2 := EdgesArrayAppend(in2, {1,2,3,5});
+    in2 := EdgesArrayAppend(in2, {1,2,3,4});
+    in2 := EdgesArrayAppend(in2, {0,1,2,3});
+    out2 := RemoveDuplicatedEdges(in2);
+    assert(out2.len == 3, "out2.len != 3");
+    AssertVectorEquality(out2.elements[1], {1,2,3,4});
+    AssertVectorEquality(out2.elements[2], {1,2,3,5});
+    AssertVectorEquality(out2.elements[3], {0,1,2,3});
 
-    //out3 := RemoveDuplicatedEdges({{45,10,8,-3}, {45,10,8,-3}, {1,1,0,0}, {0,0,1,1}});
-    //AssertVectorEquality(out3[1], {45,10,8,-3});
-    //AssertVectorEquality(out3[2], {1,1,0,0});
+    in3.len := 0;
+    in3 := EdgesArrayAppend(in3, {45,10,8,-3});
+    in3 := EdgesArrayAppend(in3, {45,10,8,-3});
+    in3 := EdgesArrayAppend(in3, {1,1,0,0});
+    in3 := EdgesArrayAppend(in3, {0,0,1,1});
+    out3 := RemoveDuplicatedEdges(in3);
+    assert(out3.len == 2, "out3.len != 2");
+    AssertVectorEquality(out3.elements[1], {45,10,8,-3});
+    AssertVectorEquality(out3.elements[2], {1,1,0,0});
 
 end test_RemoveDuplicatedEdges;

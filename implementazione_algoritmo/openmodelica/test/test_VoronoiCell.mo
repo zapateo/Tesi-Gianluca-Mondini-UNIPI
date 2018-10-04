@@ -17,6 +17,8 @@ model test_VoronoiCell
 
     EdgesArray out4;
 
+    EdgesArray out5;
+
 algorithm
     out1 := VoronoiCell(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
@@ -27,7 +29,7 @@ algorithm
     AssertVectorEquality(out1.elements[1], {30, 0, 0, 0});
     AssertVectorEquality(out1.elements[2], {0, 30, 0, 0});
     AssertVectorEquality(out1.elements[3], {30, 0, 0, 30});
-    //--------------------------------------------------------------------------
+    //----------------------------------------------------------------------
     out2 := VoronoiCell(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
         {25, 25},
@@ -37,7 +39,7 @@ algorithm
     AssertVectorEquality(out2.elements[1], {100, 0, 0, 0});
     AssertVectorEquality(out2.elements[2], {0, 100, 0, 0});
     AssertVectorEquality(out2.elements[3], {100, 0, 0, 100});
-    //--------------------------------------------------------------------------
+    //----------------------------------------------------------------------
     out3 := VoronoiCell(
         {{100, 0, 300, 0}, {300, 0, 300, 200}, {300, 200, 200, 400}, {200, 400, 0, 200}, {0, 200, 100, 0}},
         {200, 300},
@@ -49,7 +51,7 @@ algorithm
     AssertVectorEquality(out3.elements[3], {100,300,200,400});
     AssertVectorEquality(out3.elements[4], {250,150,300,125});
     AssertVectorEquality(out3.elements[5], {100,300,250,150});
-    //--------------------------------------------------------------------------
+    //----------------------------------------------------------------------
     out4 := VoronoiCell(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
         {30, 30},
@@ -61,4 +63,17 @@ algorithm
     AssertVectorEquality(out4.elements[3], {50, 0, 100, 0});
     AssertVectorEquality(out4.elements[4], {0, 50, 0, 100});
     AssertVectorEquality(out4.elements[5], {50, 0, 0, 50});
+    //----------------------------------------------------------------------
+    out5 := VoronoiCell(
+        {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},
+        {37, 37},
+        {{11, 11}, {64, 64}}
+    );
+    assert(out5.len == 6, "out5.len != 6");
+    AssertVectorEquality(out5.elements[1], {48, 0, 100, 0});
+    AssertVectorEquality(out5.elements[2], {0, 48, 0, 100});
+    AssertVectorEquality(out5.elements[3], {48, 0, 0, 48});
+    AssertVectorEquality(out5.elements[4], {100, 1, 100, 0});
+    AssertVectorEquality(out5.elements[5], {1, 100, 0, 100});
+    AssertVectorEquality(out5.elements[6], {100, 1, 1, 100});
 end test_VoronoiCell;

@@ -32,8 +32,8 @@ algorithm
         {30, 30},
         {{10, 10}, {20, 20}}
     );
-    AssertRealEquality(out2[1], 63.3333);
-    AssertRealEquality(out2[2], 63.3333);
+    AssertRealEquality(out2[1], 54.7619);
+    AssertRealEquality(out2[2], 54.7619);
 
     out3 := TargetPos(
         {{0, 0, 100, 0}, {100, 0, 100, 100}, {100, 100, 0, 100}, {0, 100, 0, 0}},

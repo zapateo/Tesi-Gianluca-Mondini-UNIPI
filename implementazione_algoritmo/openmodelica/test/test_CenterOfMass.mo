@@ -17,6 +17,9 @@ model test_CenterOfMass
     PointsArray in3;
     Real [2] out3;
 
+    PointsArray in4;
+    Real [2] out4;
+
 algorithm
 
     in1.len := 0;
@@ -43,5 +46,16 @@ algorithm
     out3 := CenterOfMass(in3);
     AssertRealEquality(out3[1], 100);
     AssertRealEquality(out3[2], 100);
+
+    in4.len := 0;
+    in4 := PointsArrayAppend(in4, {48, 0});
+    in4 := PointsArrayAppend(in4, {0, 48});
+    in4 := PointsArrayAppend(in4, {0, 100});
+    in4 := PointsArrayAppend(in4, {1, 100});
+    in4 := PointsArrayAppend(in4, {100, 1});
+    in4 := PointsArrayAppend(in4, {100, 0});
+    out4 := CenterOfMass(in4);
+    AssertRealEquality(out4[1], 38.8181);
+    AssertRealEquality(out4[2], 38.8181);
 
 end test_CenterOfMass;

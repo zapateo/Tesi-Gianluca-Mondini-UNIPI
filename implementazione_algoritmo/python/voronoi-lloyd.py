@@ -184,32 +184,50 @@ def center_of_mass(points):
     Il poligono deve essere convesso e i segmenti contenuti in `edges` devono
     delimitare un perimetro chiuso
 
-    >>> point, area = center_of_mass([Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)])
+    >>> point = center_of_mass([Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)])
     >>> str(point)
     'Point(0.5, 0.5)'
-    >>> area
-    1.0
-
+    
+    >>> point = center_of_mass([Point(48, 0), Point(100, 0), Point(0, 48), Point(0, 100), Point(100, 1), Point(1, 100)])
+    >>> str(point)
+    (??, ??)
     """
     # Adattato da https://stackoverflow.com/a/46937541
-    vertices = []
+    verts = []
     for point in points:
-        vertices.append((point.x, point.y))
+        verts.append((point.x, point.y))
 
-    x_cent = y_cent = area = 0
-    v_local = vertices + [vertices[0]]
+    sum = 0.0
+    vsum = Point(0, 0)
 
-    for i in range(len(v_local) - 1):
-        factor = v_local[i][0] * v_local[i+1][1] - v_local[i+1][0] * v_local[i][1]
-        area += factor
-        x_cent += (v_local[i][0] + v_local[i+1][0]) * factor
-        y_cent += (v_local[i][1] + v_local[i+1][1]) * factor
+    for i in range(len(verts)):
+        v1 = verts[i]
+        v2 = verts[(i + 1) % len(verts)]
+        cross = v1[0]*v2[1] - v1[1]*v2[0]
+        sum = sum + cross
+        vsum = Point(
+            ((v1[0] + v2[0]) * cross) + vsum.x,
+            ((v1[1] + v2[1]) * cross) + vsum.y
+        )
 
-    area /= 2.0
-    x_cent /= (6 * area)
-    y_cent /= (6 * area)
+    z = 1.0 / (3 * sum)
+    return Point(vsum.x * z, vsum.y * z)
 
-    area = math.fabs(area)
+
+    # x_cent = y_cent = area = 0
+    # v_local = vertices + [vertices[0]]
+    #
+    # for i in range(len(v_local) - 1):
+    #     factor = v_local[i][0] * v_local[i+1][1] - v_local[i+1][0] * v_local[i][1]
+    #     area += factor
+    #     x_cent += (v_local[i][0] + v_local[i+1][0]) * factor
+    #     y_cent += (v_local[i][1] + v_local[i+1][1]) * factor
+    #
+    # area /= 2.0
+    # x_cent /= (6 * area)
+    # y_cent /= (6 * area)
+    #
+    # area = math.fabs(area)
 
     return Point(x_cent, y_cent), area
 

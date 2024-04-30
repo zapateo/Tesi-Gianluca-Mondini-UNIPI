@@ -1,4 +1,4 @@
-# Varie prove OpenModelica
+# Varie prove con OpenModelica
 
 Questa directory contiene alcuni prototipi di modelli realizzati tramite *OpenModelica* al fine di "prendere dimestichezza" con il software.
 

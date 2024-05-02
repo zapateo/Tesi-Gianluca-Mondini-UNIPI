@@ -1,0 +1,19 @@
+in-latex-file := "Tesi Gianluca Mondini.tex"
+out-pdf-file := "Tesi Gianluca Mondini.pdf"
+texlive-packages := "texlive-scheme-basic texlive-babel-italian"
+
+# Build and view the PDF.
+view: build
+	xdg-open "{{out-pdf-file}}"
+
+# Build and view the PDF with Codium.
+view-codium: build
+	codium "{{out-pdf-file}}"
+
+# Build the PDF.
+build:
+	tex2pdf "{{in-latex-file}}" "{{out-pdf-file}}"
+
+# Install the necessary dependencies in the toolbox.
+install-toolbox:
+	toolbox run -c texlive sudo dnf install -y {{texlive-packages}}

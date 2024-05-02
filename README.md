@@ -4,6 +4,12 @@
 
 Questo repository contiene i file relativi alla mia tesi di laurea per il corso di Ingegneria Informatica dell'Università di Pisa.
 
+## Indirizzo repository su GitHub
+
+Questo repository si trova su GitHub presso l'indirizzo:
+
+https://github.com/zapateo/Tesi-Gianluca-Mondini-UNIPI/
+
 ## Contatti
 
 Email: Gianluca.Mondini [at] outlook.it

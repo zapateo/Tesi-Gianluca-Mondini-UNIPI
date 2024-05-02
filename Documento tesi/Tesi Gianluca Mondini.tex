@@ -1,5 +1,3 @@
-%\documentclass[10pt,a4paper]{article}
-%\documentclass[a4paper,12pt]{final}
 \documentclass[11pt,a4paper]{report}
 \usepackage[utf8x]{inputenc}
 \usepackage[italian]{babel}
@@ -10,40 +8,27 @@
 \usepackage{afterpage}
 \usepackage{xcolor}
 \usepackage{graphicx}
-%TODO pulire l'intestazione del documento
 
-\usepackage[top=1in, bottom=1.25in, left=1.25in, right=1.25in]{geometry}
-
-% Per l'inserimento di codice OpenModelica
 \usepackage{listings}
 \input{listings-modelica.cfg}
-
-
-% \lstinputlisting[firstline=300,lastline=500]{file.cc}
-
 \lstset{
-numbers=left, 
-numberstyle=\small,
-%basicstyle=\tiny,
-numbersep=8pt, 
-frame=single, 
-language=Modelica,
-framexleftmargin=15pt,
-   %inputencoding=latin1,
-   basicstyle=\footnotesize\ttfamily,
-   keywordstyle=\color{purple},
-   %showtabs=false,
-   %showstringspaces=false,
-   numberstyle=\tiny\color{gray}
+	numbers=left, 
+	numberstyle=\small,
+	numbersep=8pt, 
+	frame=single, 
+	language=Modelica,
+	framexleftmargin=15pt,
+	basicstyle=\footnotesize\ttfamily,
+	keywordstyle=\color{purple},
+	numberstyle=\tiny\color{gray}
 }
 
 \newcommand{\modelicaclass}[1]{
-\lstinputlisting[firstline=9]{../implementazione_algoritmo/openmodelica/classes/#1}
+	\lstinputlisting[firstline=9]{../Implementazioni algoritmo/openmodelica/classes/#1}
 }
 
-\newcommand{\paginavuota}[0]{\afterpage{\null\newpage}}
+\newcommand{\emptypage}[0]{\afterpage{\null\newpage}}
 
-%\newcommand{\name}[1]{{\color{blue}#1}}
 \newcommand{\name}[1]{{\ttfamily #1}}
 
 \graphicspath{ {./images/} }
@@ -61,22 +46,22 @@ framexleftmargin=15pt,
 
 %\pagebreak
 
-\paginavuota
+\emptypage
 
 \chapter*{Prefazione (bozza)}
 
 %TODO scrivere alla fine
 
 {\em \large
-L'obiettivo di questa trattazione è di illustrare l'implementazione di un insieme di classi \textit{OpenModelica} che abbiano la funzione di controllare un insieme di droni per permettere ad esso di disporsi in modo equo su una data superficie.
+L'obiettivo di questa trattazione è di illustrare l'implementazione di un insieme di classi OpenModelica con lo scopo di controllare un insieme di droni, per permettere ad esso di disporsi in modo equo su una data superficie.
 
 In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver fornito cenni teorici riguardo ad esso) ...
 
-È prevista la realizzazione di un modulo nell'ambiente \textit{OpenModelica} che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
+È prevista la realizzazione di un modulo nell'ambiente OpenModelica che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
 }
 \pagebreak
 
-\paginavuota
+\emptypage
 
 \tableofcontents
 
@@ -94,7 +79,7 @@ In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver f
 
 %\pagebreak
 
-\paginavuota
+\emptypage
 
 \chapter{Il drone e le sue componenti}
 
@@ -103,7 +88,7 @@ In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver f
 \includegraphics[scale=0.5]{drone.jpg}
 \end{figure}
 
-Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante 3 componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}
+Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante tre componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}
 
 %TODO rivedere i nomi delle 3 componenti
 
@@ -763,7 +748,7 @@ A questo proposito si è deciso di ricorrere ad uno script \textit{Python} che:
 	\item Restituisca a schermo un output indicante l'esito dei vari test
 \end{enumerate}
 
-\lstinputlisting[language=Python]{../implementazione_algoritmo/openmodelica/runtests}
+\lstinputlisting[language=Python]{../Implementazioni algoritmo/openmodelica/runtests}
 
 \pagebreak
 

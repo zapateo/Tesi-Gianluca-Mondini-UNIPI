@@ -12,4 +12,8 @@ https://github.com/zapateo/Tesi-Gianluca-Mondini-UNIPI/
 
 ## Contatti
 
-Email: Gianluca.Mondini [at] outlook.it
+Gianluca Mondini
+
+Ing. Informatica, Unipi
+
+Gianluca.Mondini [at] outlook.it

@@ -1,3 +1,5 @@
 # Documento tesi
 
-Questa cartella contiene il progetto _Latex_ del documento della tesi, e una versione esportata in formato _PDF_.
+Questa directory contiene il documento della tesi (ancora in fase di bozza) in formato Latex.
+
+È possibile prendere visione del [documento in formato PDF](Tesi Gianluca Mondini.pdf).

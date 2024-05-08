@@ -1,5 +1,5 @@
 in-latex-file := "Tesi Gianluca Mondini.tex"
-out-pdf-file := "Tesi Gianluca Mondini.pdf"
+out-pdf-file := "Tesi_Gianluca_Mondini.pdf"
 texlive-packages := "texlive-scheme-basic texlive-babel-italian"
 
 # Build and view the PDF.

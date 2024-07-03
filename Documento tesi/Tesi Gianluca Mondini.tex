@@ -55,7 +55,7 @@
 {\em \large
 L'obiettivo di questa trattazione è di illustrare l'implementazione di un insieme di classi OpenModelica con lo scopo di controllare un insieme di droni, per permettere ad esso di disporsi in modo equo su una data superficie.
 
-In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver fornito cenni teorici riguardo ad esso) ...
+In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd.
 
 È prevista la realizzazione di un modulo nell'ambiente OpenModelica che permetta di simulare il suddetto algoritmo; più avanti verranno illustrate parti di codice e verranno fornite informazioni relative alla sua implementazione.
 }
@@ -81,7 +81,7 @@ In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd (dopo aver f
 
 \emptypage
 
-\chapter{Il drone e le sue componenti}
+\chapter{Il drone e i suoi componenti}
 
 \begin{figure}[H]
 \centering
@@ -96,7 +96,7 @@ Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediant
 
 \paragraph{Centro fisico}
 
-Il centro fisico è un astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono quindi qui considerati parametri la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza che viene fornita a questi.
+Il centro fisico è un'astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono quindi qui considerati parametri la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza che viene fornita a questi.
 
 \paragraph{Controllo di volo}
 
@@ -106,19 +106,21 @@ Il centro di volo considera il drone come un velivolo, ed utilizzando i dati for
 
 Componente centrale della trattazione, il controllo della traiettoria ha la funzione di comunicare al centro di volo la posizione da raggiungere.
 
-Utilizza la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
+Nel nostro modello astratto, il controllo della traiettoria si orienta utilizzando la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
 
 \section{Ipotesi e semplificazioni}
 
 %TODO
 
-La trattazione e l'implementazione richiedono che vengano effettuate alcune impotesi semplificative in relazione al mondo esterno nel quale l'algoritmo andrà ad operare. In particolare, si suppone che:
+La trattazione e l'implementazione richiedono che vengano effettuate alcune ipotesi semplificative in relazione al mondo esterno nel quale l'algoritmo andrà ad operare. In particolare, si suppone che:
 
 \begin{itemize}
 	\item l'area nella quale il drone opera sia un poligono convesso
-	\item non siano presenti degli ostacoli all'iterno dell'area, in quanto questi non verrebbero considerati dal controllo di traiettoria portando il drone ad una collisione
-	\item il mondo nel quale il drone opera sia bidimensionale, ovvero si suppone che non sia definita una componente $z$ per le tuple rappresentanti la posizione. Nell'implementazione pratica, quest'ipotesi può essere gestita mediante l'utilizzo di un valore costante per la coordinata $z$ (ad esempio ogni drone si trova a $650 m$ sul livello del mare) oppure questa può essere determinata in funzione della distanza dal suolo.
+	\item non siano presenti degli ostacoli all'interno dell'area, in quanto questi non verrebbero considerati dal controllo di traiettoria portando il drone a una collisione
+	\item il mondo nel quale il drone opera sia bidimensionale, ovvero si suppone che non sia definita una componente $z$ per le tuple rappresentanti la posizione. Nell'implementazione pratica, quest'ipotesi può essere gestita mediante l'utilizzo di un valore costante per la coordinata $z$ (ad esempio ogni drone si trova a 650 m sul livello del mare) oppure tale coordinata può essere determinata in funzione della distanza dal suolo.
 \end{itemize}
+
+La trattazione per la funzione precedentemente discussa, a cui si è fatto precedentemente riferimento col nome \name{TargetPos}, richiede la conoscenza di aspetti teorici legati all'algoritmo di Lloyd.
 
 \pagebreak
 
@@ -134,9 +136,11 @@ L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voro
 \caption{Tre esempi di CVT a 5 punti su un area quadrata}
 \end{figure}
 
+% L'algoritmo, che prende il nome da Stuart P. Lloyd, il suo ideatore, è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
+
 L'algoritmo, che prende il nome da Stuart P. Lloyd, il suo ideatore, è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
 
-In natura troviamo diversi esempi di CVT, tra cui il Selciato del gigante oppure le celle della cornea dell'occhio umano.
+In natura sono riscontrabili diversi esempi di CVT, come la struttura macroscopica del \textit{selciato del gigante} oppure le celle della cornea dell'occhio umano.
 
 \begin{figure}[H]
 \centering
@@ -144,9 +148,9 @@ In natura troviamo diversi esempi di CVT, tra cui il Selciato del gigante oppure
 \caption{Scala del gigante, Irlanda del Nord}
 \end{figure}
 
-\section{Descrizione}
+\section{Descrizione dell'algoritmo}
 
-L'algoritmo esegue ripetutamente i seguenti \textit{step}:
+L'algoritmo esegue ripetutamente i seguenti passi:
 
 \begin{enumerate}
 	\item Viene generato il diagramma di Voronoi
@@ -196,9 +200,9 @@ Ogni drone si trova ora posizionato sopra il centro di massa della propria cella
 \centering
 \end{figure}
 
-\section{Convergenza dell'algoritmo}
+\section{Concezione intuitiva della convergenza dell'algoritmo}
 
-Intuitivamente, si può dire che l'algoritmo converga in quanto i punti che si trovano a minor distanza tra loro tendono a compiere un movimento più alto, mentre i punti che si trovano a distanze elevate tendono a muoversi meno.
+Intuitivamente, si può dire che l'algoritmo converge in quanto i punti che si trovano a minor distanza tra loro tendono a compiere un movimento più alto, mentre i punti che si trovano a distanze elevate tendono a muoversi meno.
 
 \section{Esecuzione dell'algoritmo}
 
@@ -220,11 +224,11 @@ L'esecuzione, per ogni drone, diviene quindi:
 
 \chapter{Prototipazione}
 
-Al fine di realizzare l'algoritmo, si è reso necessario attraversare una prima fase di \textit{prototipazione}.
+Al fine di realizzare l'algoritmo, si è reso necessario attraversare una prima fase di prototipazione.
 
 Le specifiche del linguaggio di prototipazione erano le seguenti: un linguaggio dinamico che permettesse una concisa scrittura del codice e una rapida compilazione; strumenti di \textit{testing} integrati per verificare l'effettiva correttezza delle funzioni implementate; la disponibilità di un framework grafico per effettuare simulazioni in modo rapido e dimanico.
 
-La scelta è ricaduta quindi sul linguaggio \textit{Python 3}\footnote{https://www.python.org/} e sul framework \textit{Pygame}\footnote{https://www.pygame.org/}
+La scelta è ricaduta quindi sul linguaggio Python\footnote{https://www.python.org/} e sul framework \textit{Pygame}\footnote{https://www.pygame.org/}
 
 \begin{figure}[H]
 \centering
@@ -235,7 +239,7 @@ La scelta è ricaduta quindi sul linguaggio \textit{Python 3}\footnote{https://w
 
 \section{Codifica}
 
-Il codice dell'implementazione \textit{Python 3} non viene qui riportato, in quanto viene successivamente illustrato e commentato il porting dei prototipi nel linguaggio \textit{OpenModelica}.
+Il codice dell'implementazione Python non viene qui riportato, in quanto viene successivamente illustrato e commentato il porting dei prototipi nel linguaggio \textit{OpenModelica}.
 
 È comunque possibile prendere visione del codice di prototipazione presso il repository Github del progetto\footnote{https://github.com/zapateo/Tesi-Gianluca-Mondini-UNIPI}.
 
@@ -282,9 +286,9 @@ Eseguendo quindi il codice sorgente, verrano eseguiti i test presenti nella docu
 
 \chapter{Implementazione in \textit{OpenModelica}}
 
-L'implementazione dell'algoritmo di Lloyd richiede una funzione che effettui la tassellazione di Voronoi, la quale a sua volta utilizza una serie di funzioni geometriche che operino nello spazio bidimensionale.
+L'implementazione dell'algoritmo di Lloyd richiede una funzione che effettui la tassellazione di Voronoi, la quale a sua volta utilizza una serie di funzioni geometriche che operano nello spazio bidimensionale.
 
-Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio \textit{Python} per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica}
+Nell'implementazione che verrà illustrata successivamente, si è scelto di implementare in primo luogo l'algoritmo utilizzando il linguaggio Python per avere a disposizione una maggior quantità di strumenti di debugging e testing; successivamente è stato effettuato il porting del codice in \textit{OpenModelica}
 
 \section{OpenModelica}
 
@@ -737,7 +741,7 @@ La funzione \name{TargetPos} effettua una singola iterazione dell'algoritmo di L
 
 Attualmente \textit{OpenModelica} non fornisce un meccanismo di testing solido e standardizzato. Per questo motivo è stato necessario realizzare un sistema che automatizzasse la verifica della correttezza delle funzioni implementate.
 
-A questo proposito si è deciso di ricorrere ad uno script \textit{Python} che:
+A questo proposito si è deciso di ricorrere ad uno script Python che:
 
 \begin{enumerate}
 	\item Ottenga la lista delle classi implementate

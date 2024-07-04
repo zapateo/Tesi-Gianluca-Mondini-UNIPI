@@ -37,6 +37,8 @@
 
 \begin{document}
 
+\setlength{\parindent}{0pt}
+
 %TODO sistemare i pagebreak, in particolare quelli tra capitoli
 %TODO controllare che i codici non vengano spezzati tra più pagine, e nel caso usare \begin{figure} .. se necessario
 %TODO scegliere un tempo verbale e tenerlo costante per tutto il documento
@@ -48,7 +50,7 @@
 
 \emptypage
 
-\chapter*{Prefazione (bozza)}
+\chapter*{Prefazione}
 
 %TODO scrivere alla fine
 
@@ -88,7 +90,7 @@ In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd.
 \includegraphics[scale=0.5]{drone.jpg}
 \end{figure}
 
-Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante tre componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}
+Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediante tre componenti: il \textit{centro fisico}, il \textit{controllo di volo} e il \textit{controllo della traiettoria}.
 
 %TODO rivedere i nomi delle 3 componenti
 
@@ -96,17 +98,19 @@ Possiamo schematizzare, ai fini di questa trattazione, un \textit{drone} mediant
 
 \paragraph{Centro fisico}
 
-Il centro fisico è un'astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono quindi qui considerati parametri la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza che viene fornita a questi.
+Il centro fisico è un'astrazione che rappresenta il rapporto del drone con il mondo esterno. Vengono qui considerati parametri come la massa, la velocità, l'accelerazione, la posizione, la rotazione, la velocità di rotazione dei motori e la potenza ad essi fornita.
 
 \paragraph{Controllo di volo}
 
-Il centro di volo considera il drone come un velivolo, ed utilizzando i dati forniti dal centro fisico e dal controllo della traiettoria permette il controllo della direzione, della quota e della velocità.
+Il centro di volo considera il drone come un velivolo, e utilizzando i dati forniti dal centro fisico e dal controllo della traiettoria permette il controllo della direzione, della quota e della velocità.
 
 \paragraph{Controllo della traiettoria}
 
 Componente centrale della trattazione, il controllo della traiettoria ha la funzione di comunicare al centro di volo la posizione da raggiungere.
 
-Nel nostro modello astratto, il controllo della traiettoria si orienta utilizzando la funzione \name{TargetPos}, la cui ideazione ed implementazione viene illustrata in seguito.
+\
+
+Nel nostro modello astratto, il controllo della traiettoria si orienta utilizzando la funzione \name{TargetPos}, la cui ideazione e implementazione viene illustrata in seguito.
 
 \section{Ipotesi e semplificazioni}
 
@@ -117,16 +121,28 @@ La trattazione e l'implementazione richiedono che vengano effettuate alcune ipot
 \begin{itemize}
 	\item l'area nella quale il drone opera sia un poligono convesso
 	\item non siano presenti degli ostacoli all'interno dell'area, in quanto questi non verrebbero considerati dal controllo di traiettoria portando il drone a una collisione
-	\item il mondo nel quale il drone opera sia bidimensionale, ovvero si suppone che non sia definita una componente $z$ per le tuple rappresentanti la posizione. Nell'implementazione pratica, quest'ipotesi può essere gestita mediante l'utilizzo di un valore costante per la coordinata $z$ (ad esempio ogni drone si trova a 650 m sul livello del mare) oppure tale coordinata può essere determinata in funzione della distanza dal suolo.
+	\item il mondo nel quale il drone opera sia bidimensionale, ovvero si suppone che non sia definita una terza componente $z$ per le tuple rappresentanti la posizione. Nell'implementazione pratica, quest'ipotesi può essere gestita mediante l'utilizzo di un valore costante per la coordinata $z$ (ad esempio ogni drone si trova a 650 m sul livello del mare) oppure tale coordinata può essere determinata in funzione della distanza dal suolo.
 \end{itemize}
 
-La trattazione per la funzione precedentemente discussa, a cui si è fatto precedentemente riferimento col nome \name{TargetPos}, richiede la conoscenza di aspetti teorici legati all'algoritmo di Lloyd.
+La trattazione della funzione \name{TargetPos} richiede la conoscenza di aspetti teorici legati all'algoritmo di Lloyd.
 
-\pagebreak
+\chapter{Diagramma di Voronoi}
+
+TODO: questo l'ho preso da Wikipedia, riscriverlo.
+
+In matematica, un diagramma di Voronoi (dal nome di Georgij Voronoi), anche detto tassellatura, partizione o decomposizione di Voronoi, o tassellatura di Dirichlet (dal nome di Lejeune Dirichlet) è un particolare tipo di decomposizione di uno spazio metrico determinata dalle distanze rispetto ad un determinato insieme discreto di elementi dello spazio (ad esempio, un insieme finito di punti).
+
+Nel caso più semplice e comune, quello del piano, dato un insieme finito di punti S, il diagramma di Voronoi per S è la partizione del piano che associa una regione V(p) ad ogni punto p in S in modo tale che tutti i punti all'interno del perimetro di V(p) siano più vicini a p che a ogni altro punto in S.
+
+TODO: spiegare cos'è la tassellazione di voronoi centroidale
 
 \chapter{L'algoritmo di Lloyd}
 
-L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di suddividere un'area in celle convesse uniformemente dimensionate, denominata \textit{tassellazione di Voronoi centroidale}, indicata con la sigla \textit{CVT}\footnote{Dall'inglese \textit{Centroidal Voronoi Tesselation}}.
+L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voronoi}, è un algoritmo che permette di suddividere un'area in celle convesse uniformemente dimensionate. 
+
+\
+
+Tale suddivisione è denominata \textit{tassellazione di Voronoi centroidale}, ed è spesso indicata con la sigla \textit{CVT} (dall'inglese \textit{Centroidal Voronoi Tesselation}).
 
 \begin{figure}[H]
 \centering
@@ -148,7 +164,7 @@ In natura sono riscontrabili diversi esempi di CVT, come la struttura macroscopi
 \caption{Scala del gigante, Irlanda del Nord}
 \end{figure}
 
-\section{Descrizione dell'algoritmo}
+\section{Descrizione dell'algoritmo (TODO)}
 
 L'algoritmo esegue ripetutamente i seguenti passi:
 

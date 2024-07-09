@@ -1,14 +1,10 @@
 in-latex-file := "Tesi Gianluca Mondini.tex"
 out-pdf-file := "Tesi_Gianluca_Mondini.pdf"
-texlive-packages := "texlive-scheme-basic texlive-babel-italian"
+texlive-packages := "texlive-scheme-basic texlive-babel-italian texlive-ucs"
 
 # Build and view the PDF.
 view: build
 	xdg-open "{{out-pdf-file}}"
-
-# Build and view the PDF with Codium.
-view-codium: build
-	codium "{{out-pdf-file}}"
 
 # Build the PDF.
 build:

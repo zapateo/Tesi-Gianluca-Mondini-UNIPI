@@ -42,9 +42,11 @@
 
 \graphicspath{ {./images/} }
 \author{Gianluca Mondini}
-\title{Tesi (titolo da definire)}
+\title{Algoritmo di coordinamento di sciame di droni\\Università di Pisa\\Ingegneria Informatica}
 
 \begin{document}
+
+\maketitle
 
 \setlength{\parindent}{0pt}
 
@@ -77,18 +79,6 @@ In particolare, si vedrà l'implementazione dell'algoritmo di Lloyd.
 \tableofcontents
 
 \pagebreak
-
-%\chapter*{Parole chiave}
-
-%Prima di procedere con la trattazione, è necessario indicare alcune parole chiave presenti in questo documento e nel codice dell'implementazione
-
-%\begin{description}
-%	\item[Drone] Velivolo che, nel nostro caso di interesse, è rappresentato come un punto bidimensionale
-%	\item[Area] Poligono convesso che delimita l'algoritmo;
-%	\item[Cella] Porzione di spazio alla quale appartiene un drone; la cella relativa ad un drone è l'insieme di punti dell'area per i quali, tra tutti i vari droni, quello appartenente alla cella è il più vicino
-%\end{description}
-
-%\pagebreak
 
 \emptypage
 
@@ -123,8 +113,6 @@ Nel nostro modello astratto, il controllo della traiettoria si orienta utilizzan
 
 \section{Ipotesi e semplificazioni}
 
-%TODO
-
 La trattazione e l'implementazione richiedono che vengano effettuate alcune ipotesi semplificative in relazione al mondo esterno nel quale l'algoritmo andrà ad operare. In particolare, si suppone che:
 
 \begin{itemize}
@@ -148,6 +136,12 @@ Si definisce quindi un \textbf{diagramma di Voronoi} un particolare tipo di deco
 \
 
 Nel caso più semplice e comune, quello del piano, dato un insieme finito di punti S, il diagramma di Voronoi per S è la partizione del piano che associa una regione $V(p)$ ad ogni punto $p \in S$ in modo tale che tutti i punti all'interno del perimetro di $V(p)$ siano più vicini a $p$ che a ogni altro punto in $S$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm]{Coloured_Voronoi_2D.png}
+	\caption{Il diagramma di Voronoi di un insieme casuale di punti su un piano}
+\end{figure}
 
 \section{Tassellazione di Voronoi Centroidale}
 
@@ -184,8 +178,6 @@ L'algoritmo di Lloyd, conosciuto anche con il nome di \textit{iterazione di Voro
 \
 
 Tale suddivisione è denominata \textit{tassellazione di Voronoi centroidale}, ed è spesso indicata con la sigla \textit{CVT} (dall'inglese \textit{Centroidal Voronoi Tesselation}).
-
-% L'algoritmo, che prende il nome da Stuart P. Lloyd, il suo ideatore, è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
 
 L'algoritmo, che prende il nome da Stuart P. Lloyd, il suo ideatore, è implementato mediante iterazioni continue dell'algoritmo di Voronoi.
 
@@ -261,8 +253,6 @@ L'esecuzione, per ogni drone, diviene quindi:
 	\end{enumerate}
 \end{enumerate}
 
-\pagebreak
-
 \chapter{Prototipazione}
 
 Al fine di realizzare l'algoritmo, si è reso necessario attraversare una prima fase di prototipazione.
@@ -322,8 +312,6 @@ if __name__ == "__main__":
 \end{figure}
 
 Eseguendo quindi il codice sorgente, verrano eseguiti i test presenti nella documentazione delle varie funzioni e l'output verrà confrontato con quello atteso. Nel caso in cui tutti i test vengano superati non verrà mostrato alcun output a schermo, in caso contrario un messaggio d'errore indicherà il test non superato, l'output atteso e l'output ottenuto.
-
-\pagebreak
 
 \chapter{Implementazione in \textit{OpenModelica}}
 
@@ -795,16 +783,23 @@ A questo proposito si è deciso di ricorrere ad uno script Python che:
 
 \lstinputlisting[language=Python]{../Implementazioni algoritmo/openmodelica/runtests}
 
-\pagebreak
-
 \chapter{Conclusioni}
+
+Nelle pagine di questo documento si è quindi mostrato come poter implementare l'algoritmo di Lloyd utilizzando le iterazioni continue dell'algoritmo di Voronoi.
+
+\
+
+L'algoritmo qui esposto è orientato verso il formalismo matematico, sacrificando quindi le performance; in un caso d'applicazione reale sarà necessario implementare l'algoritmo utilizzando un linguaggio di più basso livello rispetto ad OpenModelica, come ad esempio C, C++ oppure Rust, orientando lo sviluppo verso una maggiore efficienza d'esecuzione.
 
 \chapter*{Bibliografia}
 
-\begin{itemize}
-	\item https://en.wikipedia.org/wiki/Lloyd\%27s\_algorithm
-	\item github.com/zapateocallisto
-	\item https://en.wikipedia.org/wiki/Centroid
-\end{itemize}
+\begin{description}
+	\item[Centroid (Wikipedia)] \url{https://en.wikipedia.org/wiki/Centroid}
+	\item[Coverage control for mobile sensing networks] Jorge Cortés, Sonia Mart inez, Timur Karatas, Francesco Bullo
+	\item[Diagramma di Voronoi (Wikipedia)] \url{https://it.wikipedia.org/wiki/Diagramma_di_Voronoi}
+	\item[Implementation of Voronoi Diagrams] \url{https://cs.brown.edu/courses/cs252/misc/resources/lectures/pdf/notes10.pdf}
+	\item[LLoyd algorithm (Wikipedia)] \url{https://en.wikipedia.org/wiki/Lloyd%27s_algorithm}
+	\item[intersections.py] \url{https://www.cs.hmc.edu/ACM/lectures/intersections.html}
+\end{description}
 
 \end{document}

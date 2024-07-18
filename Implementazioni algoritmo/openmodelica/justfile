@@ -1,2 +1,2 @@
 test:
-    ./runtests-v2
+    ./runtests

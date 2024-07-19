@@ -20,7 +20,7 @@ def main() -> None:
             content += f.read()
 
     identifiers = re.findall(r"test_\w+", content)
-    identifiers = list(set(identifiers))
+    identifiers = sorted(list(set(identifiers)))
 
     with open("tmp_simulate.mos", mode="w+", encoding="utf-8") as f:
         for filename in filenames:
@@ -29,11 +29,11 @@ def main() -> None:
         for i in identifiers:
             f.write(f"simulate({i}); getErrorString();\n")
             f.write(
-                'print("--------------------------------------------------------------------");\n'
+                f"print(\"{"-"*68}\");\n"
             )
 
     result = subprocess.run(
-        ["omc", "./tmp_simulate.mos"], stdout=subprocess.PIPE, check=True
+        ["omc", "--std=3.2", "./tmp_simulate.mos"], stdout=subprocess.PIPE, check=True
     ).stdout.decode()
 
     # prettify the output

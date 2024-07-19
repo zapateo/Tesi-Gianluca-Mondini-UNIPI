@@ -1,6 +1,7 @@
-# Gianluca Mondini - 2018
+# Gianluca Mondini - 2024
 
 import math
+
 
 class Point:
     """
@@ -14,12 +15,14 @@ class Point:
     >>> p1.y
     -11.89
     """
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def __str__(self):
         return f"Point({round(self.x, 1)}, {round(self.y, 1)})"
+
 
 def points_are_close(p1, p2):
     """
@@ -36,16 +39,18 @@ def points_are_close(p1, p2):
             return True
     return False
 
+
 class Edge:
     """
     Un bordo, composto da un punto iniziale e da un punto finale
     """
+
     def __init__(self, start, end):
         assert type(start) == Point
         assert type(end) == Point
         self.start = start
         self.end = end
-        self.to_be_deleted = False # Usato nell'algoritmo di Voronoi
+        self.to_be_deleted = False  # Usato nell'algoritmo di Voronoi
 
     def mark_to_be_deleted(self):
         self.to_be_deleted = True
@@ -53,29 +58,36 @@ class Edge:
     def __str__(self):
         return f"Edge_from:{self.start}to:{self.end}"
 
+
 def edges_are_close(e1, e2):
     return points_are_close(e1.start, e2.start) and points_are_close(e1.end, e2.end)
 
+
 def E(x1, y1, x2, y2):
     return Edge(Point(x1, y1), Point(x2, y2))
+
 
 class Cell:
     """
     Una cella di Voronoi, composta da un drone e da una lista di bordi
     """
+
     def __init__(self, drone, edges):
         self.drone = drone
         self.edges = edges
+
 
 class Line_abc:
     """
     Una linea retta rappresentata nella forma
     ax + by + c = 0
     """
+
     def __init__(self, a, b, c):
         self.a = a
         self.b = b
         self.c = c
+
 
 # def point_to_point_distance(p1, p2):
 #     """
@@ -90,6 +102,7 @@ class Line_abc:
 #     dx = p1.x - p2.x
 #     dy = p1.y - p2.y
 #     return math.sqrt(dx**2 + dy**2)
+
 
 def segment_slope(edge):
     """
@@ -110,7 +123,8 @@ def segment_slope(edge):
     if dx == 0:
         return None
     else:
-        return dy/dx
+        return dy / dx
+
 
 def midpoint(edge):
     """
@@ -128,9 +142,10 @@ def midpoint(edge):
     >>> p.y
     -2.0
     """
-    xm = (edge.start.x + edge.end.x)/2
-    ym = (edge.start.y + edge.end.y)/2
+    xm = (edge.start.x + edge.end.x) / 2
+    ym = (edge.start.y + edge.end.y) / 2
     return Point(xm, ym)
+
 
 def perpendicular_bisector(edge):
     """
@@ -182,20 +197,21 @@ def perpendicular_bisector(edge):
     """
     p = midpoint(edge)
     m1 = segment_slope(edge)
-    if m1 == None: # edge è verticale
+    if m1 == None:  # edge è verticale
         # a·x + b·y + c = 0
-        neg_c = (edge.start.y + edge.end.y)/2
+        neg_c = (edge.start.y + edge.end.y) / 2
         # raise Exception("qui c'è un problema..")
         return Line_abc(0, 1, -neg_c)
-    elif m1 == 0: # edge è orizzontale
+    elif m1 == 0:  # edge è orizzontale
         a = 1
         b = 0
-        c = -(edge.start.x + edge.end.x)/2
+        c = -(edge.start.x + edge.end.x) / 2
         return Line_abc(a, b, c)
-    else: # edge è "obliquo", caso più frequente
-        m2 = -1/m1
-        q = - m2 * p.x + p.y
+    else:  # edge è "obliquo", caso più frequente
+        m2 = -1 / m1
+        q = -m2 * p.x + p.y
         return Line_abc(-m2, 1, -q)
+
 
 def from_line_to_segment(line):
     """
@@ -218,15 +234,16 @@ def from_line_to_segment(line):
         p2 = Point(-c, -big)
         return Edge(p1, p2)
     else:
-        m = -a/b
-        q = -c/b
+        m = -a / b
+        q = -c / b
 
-    f = lambda x: m*x + q
+    f = lambda x: m * x + q
 
     p1 = Point(-big, f(-big))
     p2 = Point(+big, f(+big))
 
     return Edge(p1, p2)
+
 
 def segment_intersection(edge1, edge2):
     """
@@ -267,19 +284,23 @@ def segment_intersection(edge1, edge2):
     DET_TOLERANCE = 0.00000001
 
     pt1 = (edge1.start.x, edge1.start.y)
-    pt2 = (edge1.end.x,   edge1.end.y)
+    pt2 = (edge1.end.x, edge1.end.y)
 
     ptA = (edge2.start.x, edge2.start.y)
-    ptB = (edge2.end.x,   edge2.end.y)
+    ptB = (edge2.end.x, edge2.end.y)
 
     # the first line is pt1 + r*(pt2-pt1)
     # in component form:
-    x1, y1 = pt1;   x2, y2 = pt2
-    dx1 = x2 - x1;  dy1 = y2 - y1
+    x1, y1 = pt1
+    x2, y2 = pt2
+    dx1 = x2 - x1
+    dy1 = y2 - y1
 
     # the second line is ptA + s*(ptB-ptA)
-    x, y = ptA;   xB, yB = ptB;
-    dx = xB - x;  dy = yB - y;
+    x, y = ptA
+    xB, yB = ptB
+    dx = xB - x
+    dy = yB - y
 
     # we need to find the (typically unique) values of r and s
     # that will satisfy
@@ -300,24 +321,24 @@ def segment_intersection(edge1, edge2):
     #
     # if DET is too small, they're parallel
     #
-    DET = (-dx1 * dy + dy1 * dx)
+    DET = -dx1 * dy + dy1 * dx
 
     if math.fabs(DET) < DET_TOLERANCE:
         # return (0,0,0,0,0)
         return None
 
     # now, the determinant should be OK
-    DETinv = 1.0/DET
+    DETinv = 1.0 / DET
 
     # find the scalar amount along the "self" segment
-    r = DETinv * (-dy  * (x-x1) +  dx * (y-y1))
+    r = DETinv * (-dy * (x - x1) + dx * (y - y1))
 
     # find the scalar amount along the input line
-    s = DETinv * (-dy1 * (x-x1) + dx1 * (y-y1))
+    s = DETinv * (-dy1 * (x - x1) + dx1 * (y - y1))
 
     # return the average of the two descriptions
-    xi = (x1 + r*dx1 + x + s*dx)/2.0
-    yi = (y1 + r*dy1 + y + s*dy)/2.0
+    xi = (x1 + r * dx1 + x + s * dx) / 2.0
+    yi = (y1 + r * dy1 + y + s * dy) / 2.0
     # return ( xi, yi, 1, r, s )
 
     # print(f"r = {r}, s = {s}, xi = {xi}, yi = {yi}")
@@ -326,6 +347,7 @@ def segment_intersection(edge1, edge2):
         return Point(xi, yi)
     else:
         return None
+
 
 # def point_segment_distance(point, edge):
 #     """
@@ -371,4 +393,5 @@ def segment_intersection(edge1, edge2):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

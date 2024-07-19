@@ -1,9 +1,9 @@
 /*
- *    Gianluca Mondini - 2018
+ *    Gianluca Mondini - 2024
  *
  *    Tesi Ing. Informatica - Università di Pisa
  *
- *    https://github.com/zapateo/Tesi_GianlucaMondini
+ *    https://github.com/zapateo/Tesi-Gianluca-Mondini-UNIPI
  */
 
 model test_PointsAreClose
